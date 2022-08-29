@@ -3,7 +3,7 @@ project(Accoutrement)
 
 set(wxBUILD_SHARED False)
 set(wxBUILD_MONOLITHIC True)
-add_subdirectory(wxWidgets/3.2.0)
+add_subdirectory($ENV{wxWidgets_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/3rdParty/wxWidgets)
 
 add_executable(
         Accoutrement

@@ -1,0 +1,41 @@
+#pragma once
+
+
+
+#include <cstdint>
+#include <vector>
+#include <optional>
+#include "Sample.hpp"
+#include "Packet.hpp"
+
+
+
+extern "C"
+{
+#include "libavcodec/avcodec.h"
+}
+
+
+
+class OpusEncoder
+{
+public:
+    OpusEncoder();
+    ~OpusEncoder();
+
+    std::vector<Packet> Encode(const std::vector<Sample>& samples);
+    std::vector<Packet> Finish();
+
+    inline       AVCodecContext* operator*()        { return mContext; }
+    inline const AVCodecContext* operator*()  const { return mContext; }
+    inline       AVCodecContext* operator->()       { return mContext; }
+    inline const AVCodecContext* operator->() const { return mContext; }
+
+    AVCodecParameters* Parameters() const;
+
+private:
+    AVCodecContext* mContext;
+    AVCodecParameters *mParameters;
+    int64_t mPTS;
+    std::vector<Sample> mSampleBuffer;
+};

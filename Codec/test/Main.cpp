@@ -2,6 +2,7 @@
 #include "Codec/AudioFile.hpp"
 #include "Codec/OpusEncoder.hpp"
 #include "Codec/Muxer.hpp"
+#include "Codec/SodiumEncrypter.hpp"
 
 
 
@@ -22,11 +23,23 @@ int main()
         }
     }
 
+
     std::vector<Packet> packets = encoder.Encode(samples);
     {
         auto final = encoder.Finish();
         packets.insert(packets.end(), final.begin(), final.end());
     }
+
+
+    Key key;
+    crypto_secretbox_keygen(key.data());
+    std::vector<EncryptedPacket> encrypted;
+    SodiumEncrypter encrypter(key);
+    for (const auto& packet : packets)
+    {
+        encrypted.push_back(encrypter.Encrypt(packet));
+    }
+
 
     Muxer muxer("output.opus");
     muxer.OpenStream(encoder.Parameters());

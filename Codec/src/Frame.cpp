@@ -66,10 +66,7 @@ Frame::~Frame()
 
 
 
-std::vector<Sample> Frame::Samples() const
+Samples Frame::GetSamples() const
 {
-    std::vector<Sample> samples;
-    samples.resize(mFrame->nb_samples);
-    memcpy(samples.data(), mFrame->data[0], mFrame->nb_samples * sizeof(Sample));
-    return samples;
+    return {mFrame->data[0], mFrame->data[1], static_cast<size_t>(mFrame->nb_samples * sizeof(Sample))};
 }

@@ -22,11 +22,10 @@ OpusEncoder::OpusEncoder()
     mContext = avcodec_alloc_context3(opusCodec);
     assert(mContext != nullptr);
     mContext->strict_std_compliance = -2;
-    mContext->time_base = AVRational{1, 48000};
     mContext->sample_rate = 48000;
-    mContext->sample_fmt = AV_SAMPLE_FMT_FLT;
-    mContext->ch_layout = AV_CHANNEL_LAYOUT_MONO;
-    mContext->bit_rate = sizeof(float) * 48000;
+    mContext->time_base = AVRational{1, mContext->sample_rate};
+    mContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
+    mContext->ch_layout = AV_CHANNEL_LAYOUT_STEREO;
 
     auto result = avcodec_open2(mContext, opusCodec, nullptr);
     assert(result == 0);
@@ -49,44 +48,41 @@ OpusEncoder::~OpusEncoder()
 
 
 
-std::vector<Packet> OpusEncoder::Encode(const std::vector<Sample>& samples)
+std::vector<Packet> OpusEncoder::Encode(const Samples& samples)
 {
-    mSampleBuffer.insert(mSampleBuffer.end(), samples.begin(), samples.end());
-    if (mSampleBuffer.size() < mContext->frame_size)
+    mSampleBuffer.Append(samples);
+    if (mSampleBuffer.Size() < mContext->frame_size)
     {
         return {};
     }
 
     std::vector<Frame> frames;
-    unsigned int availableSamples = mSampleBuffer.size() / mContext->frame_size;
-    std::vector<std::vector<Sample>> splitSamples;
-    for (int i = 0; i < availableSamples; ++i)
-    {
-        splitSamples.emplace_back(mSampleBuffer.begin() + i * mContext->frame_size, mSampleBuffer.begin() + (i + 1) * mContext->frame_size);
-    }
-    mSampleBuffer.erase(mSampleBuffer.begin(), mSampleBuffer.begin() + availableSamples * mContext->frame_size);
+    auto [split, leftover] = mSampleBuffer.Split(mContext->frame_size);
+    mSampleBuffer = leftover;
 
-    for (const auto& someSamples : splitSamples)
+    for (const auto& sampleFrame : split)
     {
-        assert(someSamples.size() == mContext->frame_size);
+        assert(sampleFrame.Size() == mContext->frame_size);
 
         Frame frame;
-        frame->sample_rate = 48000;
-        frame->ch_layout = AV_CHANNEL_LAYOUT_MONO;
-        frame->format = AV_SAMPLE_FMT_FLT;
-        frame->nb_samples = someSamples.size();
-        frame->pts = mPTS;
-        frame->time_base = AVRational{1, 48000};
-        frame->duration = someSamples.size();
+        frame->sample_rate = mContext->sample_rate;
+        frame->ch_layout   = mContext->ch_layout;
+        frame->format      = mContext->sample_fmt;
+        frame->pts         = mPTS;
+        frame->time_base   = mContext->time_base;
+        frame->nb_samples  = sampleFrame.Size();
+        frame->duration    = sampleFrame.Size();
+
         auto result = av_frame_get_buffer(*frame, 0);
         assert(result == 0);
         result = av_frame_make_writable(*frame);
         assert(result == 0);
         assert(av_frame_is_writable(*frame));
-        memcpy(frame->data[0], someSamples.data(), someSamples.size() * sizeof(Sample));
+        memcpy(frame->data[0], sampleFrame.Left().data(),  sampleFrame.Left().size()  * sizeof(Sample));
+        memcpy(frame->data[1], sampleFrame.Right().data(), sampleFrame.Right().size() * sizeof(Sample));
         frames.push_back(std::move(frame));
 
-        mPTS += someSamples.size();
+        mPTS += sampleFrame.Size();
     }
 
 
@@ -117,19 +113,24 @@ std::vector<Packet> OpusEncoder::Encode(const std::vector<Sample>& samples)
 
 std::vector<Packet> OpusEncoder::Finish()
 {
+    assert(mSampleBuffer.Size() < mContext->frame_size);
+
     Frame frame;
-    frame->sample_rate = 48000;
-    frame->ch_layout = AV_CHANNEL_LAYOUT_MONO;
-    frame->format = AV_SAMPLE_FMT_FLT;
-    frame->nb_samples = mSampleBuffer.size();
-    frame->pts = mPTS;
-    frame->time_base = AVRational{1, 48000};
+    frame->sample_rate = mContext->sample_rate;
+    frame->ch_layout   = mContext->ch_layout;
+    frame->format      = mContext->sample_fmt;
+    frame->time_base   = mContext->time_base;
+    frame->pts         = mPTS;
+    frame->nb_samples  = mSampleBuffer.Size();
+    frame->duration    = mSampleBuffer.Size();
+
     auto result = av_frame_get_buffer(*frame, 0);
     assert(result == 0);
     result = av_frame_make_writable(*frame);
     assert(result == 0);
     assert(av_frame_is_writable(*frame));
-    memcpy(frame->data[0], mSampleBuffer.data(), mSampleBuffer.size() * sizeof(Sample));
+    memcpy(frame->data[0], mSampleBuffer.Left().data(),  mSampleBuffer.Left().size()  * sizeof(Sample));
+    memcpy(frame->data[1], mSampleBuffer.Right().data(), mSampleBuffer.Right().size() * sizeof(Sample));
 
     std::vector<Packet> packets;
     auto send = avcodec_send_frame(mContext, *frame);

@@ -30,6 +30,7 @@ add_library(Codec STATIC
         Codec/src/OpusEncoder.cpp
         Codec/include/Codec/OpusEncoder.hpp
         Codec/include/Codec/Sample.hpp
+        Codec/src/Sample.cpp
         Codec/src/Muxer.cpp
         Codec/include/Codec/Muxer.hpp
         Codec/src/Utilities.hpp)

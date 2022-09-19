@@ -1,11 +1,14 @@
 #include "Codec/Resampler.hpp"
+#include "Utilities.hpp"
 
 
 #include <cassert>
 
 
 
-static constexpr unsigned int TARGET_SAMPLE_RATE = 48000;
+static constexpr unsigned int    TARGET_SAMPLE_RATE    = 48000;
+static constexpr AVChannelLayout TARGET_CHANNEL_LAYOUT = AV_CHANNEL_LAYOUT_STEREO;
+static constexpr AVSampleFormat  TARGET_SAMPLE_FORMAT  = AV_SAMPLE_FMT_FLTP;
 
 
 
@@ -20,25 +23,23 @@ Resampler::Resampler()
 Resampler::Resampler(const AVCodecParameters* codecParameters)
     : mSwrContext(nullptr)
 {
-    AVChannelLayout outputLayout = AV_CHANNEL_LAYOUT_STEREO;
-    auto result = swr_alloc_set_opts2(&mSwrContext, &outputLayout, AV_SAMPLE_FMT_S32, TARGET_SAMPLE_RATE, &codecParameters->ch_layout, static_cast<AVSampleFormat>(codecParameters->format), codecParameters->sample_rate, 0, nullptr);
+    auto result = swr_alloc_set_opts2(&mSwrContext, &TARGET_CHANNEL_LAYOUT, TARGET_SAMPLE_FORMAT, TARGET_SAMPLE_RATE, &codecParameters->ch_layout, static_cast<AVSampleFormat>(codecParameters->format), codecParameters->sample_rate, 0, nullptr);
     assert(result == 0);
 }
 
 
 
-Resampler::Resampler(Resampler&& other)
- noexcept {
-    mSwrContext = other.mSwrContext;
-    other.mSwrContext = nullptr;
+Resampler::Resampler(Resampler&& other) noexcept
+    : mSwrContext(Take(other.mSwrContext))
+{
+
 }
 
 
 
-Resampler& Resampler::operator=(Resampler&& other)
- noexcept {
-    mSwrContext = other.mSwrContext;
-    other.mSwrContext = nullptr;
+Resampler& Resampler::operator=(Resampler&& other) noexcept
+{
+    mSwrContext = Take(other.mSwrContext);
     return (*this);
 }
 
@@ -56,8 +57,8 @@ Frame Resampler::Resample(const Frame& input)
     assert(mSwrContext != nullptr);
 
     Frame output;
-    output->ch_layout = AV_CHANNEL_LAYOUT_MONO;
-    output->format = AV_SAMPLE_FMT_FLT;
+    output->ch_layout = TARGET_CHANNEL_LAYOUT;
+    output->format = TARGET_SAMPLE_FORMAT;
     output->sample_rate = TARGET_SAMPLE_RATE;
     auto result = swr_convert_frame(mSwrContext, *output, *input);
     assert(result == 0);

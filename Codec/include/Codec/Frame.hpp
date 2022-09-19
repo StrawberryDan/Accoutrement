@@ -29,7 +29,7 @@ public:
     inline       AVFrame* operator->()       { return mFrame; }
     inline const AVFrame* operator->() const { return mFrame; }
 
-    std::vector<Sample> Samples() const;
+    Samples GetSamples() const;
 
 private:
     AVFrame* mFrame;

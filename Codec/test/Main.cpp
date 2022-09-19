@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Codec/AudioFile.hpp"
 #include "Codec/OpusEncoder.hpp"
 #include "Codec/Muxer.hpp"
@@ -10,16 +11,17 @@ int main()
 
     AudioFile file("data/music.mp3");
     OpusEncoder encoder;
-    std::vector<Sample> samples;
+    Samples samples;
     while (!file.IsEof())
     {
         auto frame = file.ReadFrame();
         if (frame)
         {
-            auto someSamples = frame->Samples();
-            samples.insert(samples.end(), someSamples.begin(), someSamples.end());
+            auto someSamples = frame->GetSamples();
+            samples.Append(std::move(someSamples));
         }
     }
+    samples.Multiply(10.0);
 
     std::vector<Packet> packets = encoder.Encode(samples);
     {

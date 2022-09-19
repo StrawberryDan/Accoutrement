@@ -23,7 +23,7 @@ public:
     OpusEncoder();
     ~OpusEncoder();
 
-    std::vector<Packet> Encode(const std::vector<Sample>& samples);
+    std::vector<Packet> Encode(const Samples& samples);
     std::vector<Packet> Finish();
 
     inline       AVCodecContext* operator*()        { return mContext; }
@@ -37,5 +37,5 @@ private:
     AVCodecContext* mContext;
     AVCodecParameters *mParameters;
     int64_t mPTS;
-    std::vector<Sample> mSampleBuffer;
+    Samples mSampleBuffer;
 };

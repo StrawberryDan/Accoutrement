@@ -21,7 +21,6 @@ int main()
             samples.Append(std::move(someSamples));
         }
     }
-    samples.Multiply(10.0);
 
     std::vector<Packet> packets = encoder.Encode(samples);
     {

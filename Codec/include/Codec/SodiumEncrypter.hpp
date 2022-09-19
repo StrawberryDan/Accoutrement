@@ -22,7 +22,7 @@ class SodiumEncrypter
 public:
     SodiumEncrypter(Key key);
 
-    EncryptedPacket Encrypt(const Packet& packet);
+    EncryptedPacket Encrypt(Nonce nonce, const Packet& packet);
 private:
     Key mKey;
 };

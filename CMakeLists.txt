@@ -16,6 +16,7 @@ target_link_libraries(FFMPEG INTERFACE $ENV{FFMPEG_ROOT}/lib/libavformat.a $ENV{
 
 
 
+add_subdirectory(Util)
 add_subdirectory(Codec)
 add_subdirectory(Bot)
 add_subdirectory(Accoutrement)

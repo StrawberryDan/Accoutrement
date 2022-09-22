@@ -15,12 +15,10 @@ add_library(Codec STATIC
         src/Sample.cpp
         src/Muxer.cpp
         include/Codec/Muxer.hpp
-        src/Utilities.hpp
         src/SodiumEncrypter.cpp
         include/Codec/SodiumEncrypter.hpp)
-target_include_directories(Codec PUBLIC include FFMPEG)
-target_link_directories(Codec PUBLIC FFMPEG)
-target_link_libraries(Codec PUBLIC FFMPEG sodium)
+target_include_directories(Codec PUBLIC include)
+target_link_libraries(Codec PUBLIC FFMPEG sodium Util)
 
 add_executable(Codec_Test test/Main.cpp)
 target_include_directories(Codec_Test PRIVATE Codec)

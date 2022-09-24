@@ -1,9 +1,5 @@
-#include "TLSSocket.hpp"
-
-
-
 template<typename T>
-T TLSSocket::Read() requires ( std::is_trivial_v<T> )
+T Socket::ReadType() requires ( std::is_trivial_v<T> )
 {
     T data;
     Read(&data, sizeof(T));
@@ -13,7 +9,7 @@ T TLSSocket::Read() requires ( std::is_trivial_v<T> )
 
 
 template<typename T>
-void TLSSocket::Read(T* data, size_t count) requires ( std::is_trivial_v<T> )
+void Socket::ReadArray(T* data, size_t count) requires ( std::is_trivial_v<T> )
 {
     Read(reinterpret_cast<void*>(data), count * sizeof(T));
 }
@@ -21,7 +17,7 @@ void TLSSocket::Read(T* data, size_t count) requires ( std::is_trivial_v<T> )
 
 
 template<typename T>
-std::vector<T> TLSSocket::Read(size_t count) requires ( std::is_trivial_v<T> )
+std::vector<T> Socket::ReadVector(size_t count) requires ( std::is_trivial_v<T> )
 {
     std::vector<T> data;
     data.resize(count);
@@ -32,7 +28,7 @@ std::vector<T> TLSSocket::Read(size_t count) requires ( std::is_trivial_v<T> )
 
 
 template<typename T>
-void TLSSocket::Write(const T& data) requires ( std::is_trivial_v<T> )
+void Socket::WriteType(const T& data) requires ( std::is_trivial_v<T> )
 {
     Write(reinterpret_cast<void*>(&data), sizeof(T));
 }
@@ -40,7 +36,7 @@ void TLSSocket::Write(const T& data) requires ( std::is_trivial_v<T> )
 
 
 template<typename T>
-void TLSSocket::Write(const T* data, size_t count) requires ( std::is_trivial_v<T> )
+void Socket::WriteArray(const T* data, size_t count) requires ( std::is_trivial_v<T> )
 {
     Write(reinterpret_cast<const void*>(data), count * sizeof(T));
 }
@@ -48,7 +44,7 @@ void TLSSocket::Write(const T* data, size_t count) requires ( std::is_trivial_v<
 
 
 template<typename T>
-void TLSSocket::Write(const std::vector<T>& data) requires ( std::is_trivial_v<T> )
+void Socket::WriteVector(const std::vector<T>& data) requires ( std::is_trivial_v<T> )
 {
     Write(reinterpret_cast<void*>(data), data.size() * sizeof(T));
 }

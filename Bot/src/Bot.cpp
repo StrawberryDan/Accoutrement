@@ -15,7 +15,7 @@ Bot::Bot()
 
     while (true)
     {
-        char c = mSocket.Read<char>();
+        char c = mSocket.ReadType<char>();
         std::cout << c;
         if (c == '\0') break;
     }

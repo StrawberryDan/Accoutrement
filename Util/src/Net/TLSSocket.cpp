@@ -1,4 +1,4 @@
-#include "TLSSocket.hpp"
+#include "Util/Net/TLSSocket.hpp"
 
 
 
@@ -62,26 +62,8 @@ size_t TLSSocket::Read(void* data, size_t len)
 
 
 
-std::vector<uint8_t> TLSSocket::Read(size_t len)
-{
-    std::vector<uint8_t> data;
-    data.resize(len);
-    auto bytesRead = Read(reinterpret_cast<void*>(data.data()), len);
-    data.resize(bytesRead);
-    return data;
-}
-
-
-
 void TLSSocket::Write(const void* data, size_t len)
 {
     auto bytesWritten = tls_write(mTLS, reinterpret_cast<const void*>(data), len);
     assert(bytesWritten == len);
-}
-
-
-
-void TLSSocket::Write(const std::vector<uint8_t>& data)
-{
-    Write(reinterpret_cast<const void*>(data.data()), data.size());
 }

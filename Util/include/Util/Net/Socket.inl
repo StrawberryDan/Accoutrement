@@ -1,5 +1,5 @@
 template<typename T>
-T Socket::ReadType() requires ( std::is_trivial_v<T> )
+T Socket::ReadType() requires ( std::is_fundamental_v<T> )
 {
     T data;
     Read(&data, sizeof(T));
@@ -9,7 +9,7 @@ T Socket::ReadType() requires ( std::is_trivial_v<T> )
 
 
 template<typename T>
-void Socket::ReadArray(T* data, size_t count) requires ( std::is_trivial_v<T> )
+void Socket::ReadArray(T* data, size_t count) requires ( std::is_fundamental_v<T> )
 {
     Read(reinterpret_cast<void*>(data), count * sizeof(T));
 }
@@ -17,7 +17,7 @@ void Socket::ReadArray(T* data, size_t count) requires ( std::is_trivial_v<T> )
 
 
 template<typename T>
-std::vector<T> Socket::ReadVector(size_t count) requires ( std::is_trivial_v<T> )
+std::vector<T> Socket::ReadVector(size_t count) requires ( std::is_fundamental_v<T> )
 {
     std::vector<T> data;
     data.resize(count);
@@ -28,7 +28,7 @@ std::vector<T> Socket::ReadVector(size_t count) requires ( std::is_trivial_v<T> 
 
 
 template<typename T>
-void Socket::WriteType(const T& data) requires ( std::is_trivial_v<T> )
+void Socket::WriteType(const T& data) requires ( std::is_fundamental_v<T> )
 {
     Write(reinterpret_cast<void*>(&data), sizeof(T));
 }
@@ -36,7 +36,7 @@ void Socket::WriteType(const T& data) requires ( std::is_trivial_v<T> )
 
 
 template<typename T>
-void Socket::WriteArray(const T* data, size_t count) requires ( std::is_trivial_v<T> )
+void Socket::WriteArray(const T* data, size_t count) requires ( std::is_fundamental_v<T> )
 {
     Write(reinterpret_cast<const void*>(data), count * sizeof(T));
 }
@@ -44,7 +44,7 @@ void Socket::WriteArray(const T* data, size_t count) requires ( std::is_trivial_
 
 
 template<typename T>
-void Socket::WriteVector(const std::vector<T>& data) requires ( std::is_trivial_v<T> )
+void Socket::WriteVector(const std::vector<T>& data) requires ( std::is_fundamental_v<T> )
 {
     Write(reinterpret_cast<void*>(data), data.size() * sizeof(T));
 }

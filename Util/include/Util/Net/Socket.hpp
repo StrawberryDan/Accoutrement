@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <vector>
 #include <cstdint>
+#include <string>
 
 
 
@@ -15,27 +16,31 @@ public:
 
     virtual void Write(const void* data, size_t len) = 0;
 
-    virtual std::vector<uint8_t> ReadVector(size_t len) final;
+    template<typename T>
+    T ReadType() requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    T ReadType() requires ( std::is_trivial_v<T> );
+    void ReadArray(T* data, size_t count) requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    void ReadArray(T* data, size_t count) requires ( std::is_trivial_v<T> );
+    std::vector<T> ReadVector(size_t count) requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    std::vector<T> ReadVector(size_t count) requires ( std::is_trivial_v<T> );
-
-    virtual void WriteVector(const std::vector<uint8_t>& data) final;
+    void WriteType(const T& data) requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    void WriteType(const T& data) requires ( std::is_trivial_v<T> );
+    void WriteArray(const T* data, size_t count) requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    void WriteArray(const T* data, size_t count) requires ( std::is_trivial_v<T> );
+    void WriteVector(const std::vector<T>& data) requires ( std::is_fundamental_v<T> );
+};
 
-    template<typename T>
-    void WriteVector(const std::vector<T>& data) requires ( std::is_trivial_v<T> );
+
+
+template<typename T>
+concept SocketImpl = requires(T t, std::string hostname, uint16_t port)
+{
+    std::is_base_of_v<Socket, T>;
 };
 
 

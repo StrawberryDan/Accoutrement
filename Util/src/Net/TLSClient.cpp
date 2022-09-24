@@ -1,4 +1,4 @@
-#include "Util/Net/TLSSocket.hpp"
+#include "Util/Net/TLSClient.hpp"
 
 
 
@@ -7,7 +7,7 @@
 
 
 
-TLSSocket::TLSSocket(const std::string& host, uint16_t port)
+TLSClient::TLSClient(const std::string& host, uint16_t port)
     : mTLS(nullptr)
     , mConfig(nullptr)
 {
@@ -29,7 +29,7 @@ TLSSocket::TLSSocket(const std::string& host, uint16_t port)
 
 
 
-TLSSocket::TLSSocket(TLSSocket&& other) noexcept
+TLSClient::TLSClient(TLSClient&& other) noexcept
     : mTLS(Take(other.mTLS))
     , mConfig(Take(other.mConfig))
 {
@@ -38,7 +38,7 @@ TLSSocket::TLSSocket(TLSSocket&& other) noexcept
 
 
 
-TLSSocket& TLSSocket::operator=(TLSSocket&& other) noexcept
+TLSClient& TLSClient::operator=(TLSClient&& other) noexcept
 {
     mTLS = Take(other.mTLS);
     mConfig = Take(other.mConfig);
@@ -47,7 +47,7 @@ TLSSocket& TLSSocket::operator=(TLSSocket&& other) noexcept
 
 
 
-TLSSocket::~TLSSocket()
+TLSClient::~TLSClient()
 {
     tls_config_free(mConfig);
     tls_free(mTLS);
@@ -55,14 +55,14 @@ TLSSocket::~TLSSocket()
 
 
 
-size_t TLSSocket::Read(void* data, size_t len)
+size_t TLSClient::Read(void* data, size_t len)
 {
     return tls_read(mTLS, data, len);
 }
 
 
 
-void TLSSocket::Write(const void* data, size_t len)
+void TLSClient::Write(const void* data, size_t len)
 {
     auto bytesWritten = tls_write(mTLS, reinterpret_cast<const void*>(data), len);
     assert(bytesWritten == len);

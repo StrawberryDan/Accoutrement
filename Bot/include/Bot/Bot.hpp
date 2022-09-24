@@ -2,7 +2,8 @@
 
 
 
-#include "Util/Net/TLSSocket.hpp"
+#include "Util/Net/TLSClient.hpp"
+#include "Util/Net/UDPClient.hpp"
 
 
 
@@ -12,5 +13,6 @@ public:
     Bot();
 
 private:
-    TLSSocket mSocket;
+    TLSClient mSocket;
+    UDPClient mUDPSocket;
 };

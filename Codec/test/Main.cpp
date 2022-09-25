@@ -37,7 +37,7 @@ int main()
     SodiumEncrypter encrypter(key);
     for (const auto& packet : packets)
     {
-        encrypted.push_back(encrypter.Encrypt(packet));
+        encrypted.push_back(encrypter.Encrypt({ 0 }, packet));
     }
 
 

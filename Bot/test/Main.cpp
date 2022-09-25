@@ -2,7 +2,8 @@
 
 
 
-int main()
+int main(int argc, const char** argv)
 {
-    Bot bot;
+    Bot bot(argv[1]);
+    bot.Run();
 }

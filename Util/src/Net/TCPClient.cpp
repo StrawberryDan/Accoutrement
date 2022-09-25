@@ -60,19 +60,19 @@ TCPClient::~TCPClient()
 
 
 
-size_t TCPClient::Read(void* data, size_t len)
+size_t TCPClient::Read(uint8_t* data, size_t len)
 {
 #if _WIN32
-    return recv(mSocket, reinterpret_cast<char*>(data), len, 0);
+    return recv(mSocket, reinterpret_cast<char*>(data), static_cast<int>(len), 0);
 #endif // _WIN32
 }
 
 
 
-void TCPClient::Write(const void* data, size_t len)
+void TCPClient::Write(const uint8_t* data, size_t len)
 {
 #if _WIN32
-    auto bytesSent = send(mSocket, reinterpret_cast<const char*>(data), len, 0);
+    auto bytesSent = send(mSocket, reinterpret_cast<const char*>(data), static_cast<int>(len), 0);
     assert(bytesSent == len);
 #endif // _WIN32
 }

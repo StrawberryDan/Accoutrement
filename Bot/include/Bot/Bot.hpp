@@ -2,17 +2,22 @@
 
 
 
-#include "Util/Net/TLSClient.hpp"
-#include "Util/Net/UDPClient.hpp"
+#include <string>
+#include "Util/Net/HTTP/HTTPClient.hpp"
 
 
 
 class Bot
 {
 public:
-    Bot();
+    using Token = std::string;
+
+public:
+    Bot(Token  token);
+
+    void Run();
 
 private:
-    TLSClient mSocket;
-    UDPClient mUDPSocket;
+    Token       mToken;
+    HTTPSClient mHTTPS;
 };

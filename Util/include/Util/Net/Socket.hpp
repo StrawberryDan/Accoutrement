@@ -12,9 +12,9 @@
 class Socket
 {
 public:
-    virtual size_t Read(void* data, size_t len) = 0;
+    virtual size_t Read(uint8_t * data, size_t len) = 0;
 
-    virtual void Write(const void* data, size_t len) = 0;
+    virtual void Write(const uint8_t* data, size_t len) = 0;
 
     template<typename T>
     T ReadType() requires ( std::is_fundamental_v<T> );

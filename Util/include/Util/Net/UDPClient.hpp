@@ -23,8 +23,8 @@ public:
     UDPClient& operator=(UDPClient&& other);
     ~UDPClient();
 
-    size_t Read(void* data, size_t len) override;
-    void Write(const void* data, size_t len) override;
+    size_t Read(uint8_t* data, size_t len) override;
+    void Write(const uint8_t* data, size_t len) override;
 
 
 private:

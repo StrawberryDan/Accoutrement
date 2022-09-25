@@ -1,4 +1,4 @@
-#include "Util/Net/TCPClient.hpp"
+#include "Util/Net/Socket/UDPClient.hpp"
 
 
 
@@ -16,11 +16,11 @@
 
 
 
-TCPClient::TCPClient(const std::string& hostname, uint16_t port)
+UDPClient::UDPClient(const std::string& hostname, uint16_t port)
     : mSocket{}
 {
 #if _WIN32
-    mSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    mSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     assert(mSocket != INVALID_SOCKET);
 
     std::string portAsString = std::to_string(port);
@@ -35,7 +35,7 @@ TCPClient::TCPClient(const std::string& hostname, uint16_t port)
 
 
 
-TCPClient::TCPClient(TCPClient&& other)
+UDPClient::UDPClient(UDPClient&& other)
     : mSocket(Take(other.mSocket))
 {
 
@@ -43,7 +43,7 @@ TCPClient::TCPClient(TCPClient&& other)
 
 
 
-TCPClient& TCPClient::operator=(TCPClient&& other)
+UDPClient& UDPClient::operator=(UDPClient&& other)
 {
     mSocket = Take(other.mSocket);
     return (*this);
@@ -51,7 +51,7 @@ TCPClient& TCPClient::operator=(TCPClient&& other)
 
 
 
-TCPClient::~TCPClient()
+UDPClient::~UDPClient()
 {
 #if _WIN32
     closesocket(mSocket);
@@ -60,19 +60,19 @@ TCPClient::~TCPClient()
 
 
 
-size_t TCPClient::Read(uint8_t* data, size_t len)
+size_t UDPClient::Read(uint8_t* data, size_t len)
 {
 #if _WIN32
-    return recv(mSocket, reinterpret_cast<char*>(data), static_cast<int>(len), 0);
+    return recv(mSocket, reinterpret_cast<char*>(data), len, 0);
 #endif // _WIN32
 }
 
 
 
-void TCPClient::Write(const uint8_t* data, size_t len)
+void UDPClient::Write(const uint8_t* data, size_t len)
 {
 #if _WIN32
-    auto bytesSent = send(mSocket, reinterpret_cast<const char*>(data), static_cast<int>(len), 0);
+    auto bytesSent = send(mSocket, reinterpret_cast<const char*>(data), len, 0);
     assert(bytesSent == len);
 #endif // _WIN32
 }

@@ -1,13 +1,13 @@
 add_library(Util STATIC
         include/Util/Utilities.hpp
-        include/Util/Net/TLSClient.hpp
-        src/Net/TLSClient.cpp
-        include/Util/Net/Socket.inl
-        include/Util/Net/Socket.hpp
-        src/Net/UDPClient.cpp
-        include/Util/Net/UDPClient.hpp
-        src/Net/TCPClient.cpp
-        include/Util/Net/TCPClient.hpp
+        include/Util/Net/Socket/TLSClient.hpp
+        src/Net/Socket/TLSClient.cpp
+        include/Util/Net/Socket/Socket.inl
+        include/Util/Net/Socket/Socket.hpp
+        src/Net/Socket/UDPClient.cpp
+        include/Util/Net/Socket/UDPClient.hpp
+        src/Net/Socket/TCPClient.cpp
+        include/Util/Net/Socket/TCPClient.hpp
         include/Util/Net/HTTP/HTTPClient.inl
         include/Util/Net/HTTP/HTTPClient.hpp
         src/Net/HTTP/HTTPRequest.cpp

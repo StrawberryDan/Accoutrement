@@ -2,11 +2,11 @@
 
 
 
-#include "Util/Net/Socket.hpp"
+#include "Util/Net/Socket/Socket.hpp"
 #include "HTTPResponse.hpp"
 #include "HTTPRequest.hpp"
-#include "Util/Net/TCPClient.hpp"
-#include "Util/Net/TLSClient.hpp"
+#include "Util/Net/Socket/TCPClient.hpp"
+#include "Util/Net/Socket/TLSClient.hpp"
 
 
 

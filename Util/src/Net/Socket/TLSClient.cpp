@@ -60,7 +60,9 @@ TLSClient::~TLSClient()
 
 size_t TLSClient::Read(uint8_t* data, size_t len)
 {
-    return tls_read(mTLS, data, len);
+    auto bytesRead =  tls_read(mTLS, data, len);
+    assert(bytesRead == len);
+    return bytesRead;
 }
 
 

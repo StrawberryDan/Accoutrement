@@ -1,3 +1,7 @@
+#include <cassert>
+
+
+
 template<typename T>
 T Socket::ReadType() requires ( std::is_fundamental_v<T> )
 {

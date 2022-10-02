@@ -7,10 +7,14 @@
 
 
 
+#include "HTTPSimplePayload.hpp"
+
+
+
 class HTTPChunkedPayload
 {
 public:
-    using Chunk  = std::vector<uint8_t>;
+    using Chunk  = HTTPSimplePayload;
     using Chunks = std::vector<Chunk>;
 
     void AddChunk(const Chunk& chunk);

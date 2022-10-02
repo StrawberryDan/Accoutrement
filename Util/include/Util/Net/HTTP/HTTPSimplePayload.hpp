@@ -8,9 +8,16 @@
 
 
 
+#include "nlohmann/json.hpp"
+
+
+
 class HTTPSimplePayload
 {
 public:
+    HTTPSimplePayload() = default;
+    HTTPSimplePayload(std::vector<uint8_t>  bytes);
+
     void Read(uint8_t* data, size_t len);
 
     template<typename T>
@@ -24,8 +31,12 @@ public:
     std::vector<uint8_t>&       operator*()       { return mData; }
     const std::vector<uint8_t>& operator*() const { return mData; }
 
-    const uint8_t* Data() const { return mData.data(); }
-    size_t Size() const { return mData.size(); }
+    [[nodiscard]] const uint8_t* Data() const { return mData.data(); }
+    [[nodiscard]] size_t Size() const { return mData.size(); }
+
+
+
+    std::optional<nlohmann::json> AsJSON();
 
 
 private:

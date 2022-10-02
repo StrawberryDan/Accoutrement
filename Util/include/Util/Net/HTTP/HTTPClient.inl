@@ -46,7 +46,7 @@ void HTTPClientImpl<S, PORT>::Request(const HTTPRequest& request)
         const auto& payload = std::get<HTTPChunkedPayload>(request.Payload());
         for (const auto& chunk : *payload)
         {
-            mSocket.WriteVector(chunk);
+            mSocket.WriteVector(*chunk);
         }
     }
 
@@ -130,10 +130,11 @@ HTTPChunkedPayload HTTPClientImpl<S, PORT>::ReadChunkedPayload()
             break;
         }
 
-        auto bytesToRead = std::__cxx11::stoul(matchResults[1]);
+        auto bytesToRead = std::stoul(matchResults[1], nullptr, 16);
         if (bytesToRead > 0)
         {
             HTTPChunkedPayload::Chunk chunk = this->mSocket.template ReadVector<uint8_t>(bytesToRead);
+            assert(chunk.Size() == bytesToRead);
             payload.AddChunk(chunk);
         }
     }

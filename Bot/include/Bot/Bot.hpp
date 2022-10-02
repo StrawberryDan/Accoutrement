@@ -18,11 +18,12 @@ public:
     using Token = std::string;
 
 public:
-    Bot(Token  token);
+    explicit Bot(Token token);
 
     void Run();
 
 private:
-    Token       mToken;
-    HTTPSClient mHTTPS;
+    Token                    mToken;
+    HTTPSClient              mHTTPS;
+    std::optional<WSSClient> mWSS;
 };

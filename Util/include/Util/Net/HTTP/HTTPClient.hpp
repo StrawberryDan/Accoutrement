@@ -2,6 +2,7 @@
 
 
 
+#include "Util/Utilities.hpp"
 #include "Util/Net/Socket/Socket.hpp"
 #include "HTTPResponse.hpp"
 #include "HTTPRequest.hpp"

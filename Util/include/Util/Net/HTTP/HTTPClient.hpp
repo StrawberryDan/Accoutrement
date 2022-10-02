@@ -16,6 +16,7 @@ class HTTPClientImpl
 public:
     HTTPClientImpl(const std::string& hostname);
 
+    inline S TakeSocket() { return Take(mSocket); }
 
     void Request(const HTTPRequest& request);
     HTTPResponse Receive();

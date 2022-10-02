@@ -21,6 +21,8 @@ std::string HTTPVerbToString(HTTPVerb verb)
             return "PATCH";
         case HTTPVerb::DELETE:
             return "DELETE";
+        default:
+            std::abort();
     }
 }
 
@@ -89,5 +91,7 @@ std::string HTTPVersionToString(HTTPVersion version)
             return "2";
         case HTTPVersion::VERSION_3:
             return "3";
+        default:
+            std::abort();
     }
 }

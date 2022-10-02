@@ -3,7 +3,12 @@
 
 
 #include <string>
+#include <optional>
+
+
+
 #include "Util/Net/HTTP/HTTPClient.hpp"
+#include "Util/Net/Websocket/WebsocketClient.hpp"
 
 
 

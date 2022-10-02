@@ -12,27 +12,27 @@
 class Socket
 {
 public:
-    virtual size_t Read(uint8_t * data, size_t len) = 0;
+    virtual size_t Read(uint8_t * data, size_t len) const = 0;
 
-    virtual void Write(const uint8_t* data, size_t len) = 0;
-
-    template<typename T>
-    T ReadType() requires ( std::is_fundamental_v<T> );
+    virtual void Write(const uint8_t* data, size_t len) const = 0;
 
     template<typename T>
-    void ReadArray(T* data, size_t count) requires ( std::is_fundamental_v<T> );
+    T ReadType() const requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    std::vector<T> ReadVector(size_t count) requires ( std::is_fundamental_v<T> );
+    void ReadArray(T* data, size_t count) const requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    void WriteType(const T& data) requires ( std::is_fundamental_v<T> );
+    std::vector<T> ReadVector(size_t count) const requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    void WriteArray(const T* data, size_t count) requires ( std::is_fundamental_v<T> );
+    void WriteType(const T& data) const requires ( std::is_fundamental_v<T> );
 
     template<typename T>
-    void WriteVector(const std::vector<T>& data) requires ( std::is_fundamental_v<T> );
+    void WriteArray(const T* data, size_t count) const requires ( std::is_fundamental_v<T> );
+
+    template<typename T>
+    void WriteVector(const std::vector<T>& data) const requires ( std::is_fundamental_v<T> );
 };
 
 

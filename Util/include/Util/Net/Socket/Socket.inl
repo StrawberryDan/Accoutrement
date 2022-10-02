@@ -3,7 +3,7 @@
 
 
 template<typename T>
-T Socket::ReadType() requires ( std::is_fundamental_v<T> )
+T Socket::ReadType() const requires ( std::is_fundamental_v<T> )
 {
     T data;
     Read(reinterpret_cast<uint8_t*>(&data), sizeof(T));
@@ -13,7 +13,7 @@ T Socket::ReadType() requires ( std::is_fundamental_v<T> )
 
 
 template<typename T>
-void Socket::ReadArray(T* data, size_t count) requires ( std::is_fundamental_v<T> )
+void Socket::ReadArray(T* data, size_t count) const requires ( std::is_fundamental_v<T> )
 {
     Read(reinterpret_cast<uint8_t*>(data), count * sizeof(T));
 }
@@ -21,7 +21,7 @@ void Socket::ReadArray(T* data, size_t count) requires ( std::is_fundamental_v<T
 
 
 template<typename T>
-std::vector<T> Socket::ReadVector(size_t count) requires ( std::is_fundamental_v<T> )
+std::vector<T> Socket::ReadVector(size_t count) const requires ( std::is_fundamental_v<T> )
 {
     std::vector<T> data;
     data.resize(count);
@@ -32,7 +32,7 @@ std::vector<T> Socket::ReadVector(size_t count) requires ( std::is_fundamental_v
 
 
 template<typename T>
-void Socket::WriteType(const T& data) requires ( std::is_fundamental_v<T> )
+void Socket::WriteType(const T& data) const requires ( std::is_fundamental_v<T> )
 {
     Write(reinterpret_cast<uint8_t*>(&data), sizeof(T));
 }
@@ -40,7 +40,7 @@ void Socket::WriteType(const T& data) requires ( std::is_fundamental_v<T> )
 
 
 template<typename T>
-void Socket::WriteArray(const T* data, size_t count) requires ( std::is_fundamental_v<T> )
+void Socket::WriteArray(const T* data, size_t count) const requires ( std::is_fundamental_v<T> )
 {
     Write(reinterpret_cast<const uint8_t*>(data), count * sizeof(T));
 }
@@ -48,7 +48,7 @@ void Socket::WriteArray(const T* data, size_t count) requires ( std::is_fundamen
 
 
 template<typename T>
-void Socket::WriteVector(const std::vector<T>& data) requires ( std::is_fundamental_v<T> )
+void Socket::WriteVector(const std::vector<T>& data) const requires ( std::is_fundamental_v<T> )
 {
     Write(reinterpret_cast<const uint8_t*>(data.data()), data.size() * sizeof(T));
 }

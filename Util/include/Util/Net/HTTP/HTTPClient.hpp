@@ -15,7 +15,7 @@ template<SocketImpl S, uint16_t PORT>
 class HTTPClientImpl
 {
 public:
-    HTTPClientImpl(const std::string& hostname);
+    explicit HTTPClientImpl(const std::string& hostname);
 
     inline S TakeSocket() { return Take(mSocket); }
 

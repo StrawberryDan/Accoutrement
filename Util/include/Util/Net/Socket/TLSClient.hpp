@@ -18,9 +18,9 @@ public:
     TLSClient& operator=(TLSClient&& other) noexcept ;
     ~TLSClient();
 
-    size_t Read(uint8_t* data, size_t len) override;
+    size_t Read(uint8_t* data, size_t len) const override;
 
-    void Write(const uint8_t* data, size_t len) override;
+    void Write(const uint8_t* data, size_t len) const override;
 
 
 private:

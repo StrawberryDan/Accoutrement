@@ -60,7 +60,7 @@ UDPClient::~UDPClient()
 
 
 
-size_t UDPClient::Read(uint8_t* data, size_t len)
+size_t UDPClient::Read(uint8_t* data, size_t len) const
 {
 #if _WIN32
     return recv(mSocket, reinterpret_cast<char*>(data), len, 0);
@@ -69,7 +69,7 @@ size_t UDPClient::Read(uint8_t* data, size_t len)
 
 
 
-void UDPClient::Write(const uint8_t* data, size_t len)
+void UDPClient::Write(const uint8_t* data, size_t len) const
 {
 #if _WIN32
     auto bytesSent = send(mSocket, reinterpret_cast<const char*>(data), len, 0);

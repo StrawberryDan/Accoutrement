@@ -16,7 +16,7 @@ class HTTPSimplePayload
 {
 public:
     HTTPSimplePayload() = default;
-    HTTPSimplePayload(std::vector<uint8_t>  bytes);
+    explicit HTTPSimplePayload(std::vector<uint8_t>  bytes);
 
     void Read(uint8_t* data, size_t len);
 

@@ -58,7 +58,7 @@ TLSClient::~TLSClient()
 
 
 
-size_t TLSClient::Read(uint8_t* data, size_t len)
+size_t TLSClient::Read(uint8_t* data, size_t len) const
 {
     auto bytesRead =  tls_read(mTLS, data, len);
     assert(bytesRead == len);
@@ -67,7 +67,7 @@ size_t TLSClient::Read(uint8_t* data, size_t len)
 
 
 
-void TLSClient::Write(const uint8_t* data, size_t len)
+void TLSClient::Write(const uint8_t* data, size_t len) const
 {
     auto bytesWritten = tls_write(mTLS, reinterpret_cast<const void*>(data), len);
     assert(bytesWritten == len);

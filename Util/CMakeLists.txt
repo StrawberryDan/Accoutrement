@@ -28,7 +28,7 @@ add_library(Util STATIC
         src/Net/Socket/TCPClient.cpp
         src/Net/Socket/TLSClient.cpp
         src/Net/Socket/UDPClient.cpp
-        include/Util/Net/Websocket/WebsocketClient.inl)
+        include/Util/Net/Websocket/WebsocketClient.inl include/Util/Mutex.hpp)
 target_include_directories(Util PUBLIC include)
 target_link_libraries(Util PRIVATE libressl libretls ws2_32 fmt)
 

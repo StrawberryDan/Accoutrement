@@ -7,6 +7,7 @@
 
 
 
+#include "Util/Mutex.hpp"
 #include "Util/Net/HTTP/HTTPClient.hpp"
 #include "Util/Net/Websocket/WebsocketClient.hpp"
 
@@ -23,7 +24,7 @@ public:
     void Run();
 
 private:
-    Token                    mToken;
-    HTTPSClient              mHTTPS;
-    std::optional<WSSClient> mWSS;
+    Token                           mToken;
+    Mutex<HTTPSClient>              mHTTPS;
+    std::optional<Mutex<WSSClient>> mWSS;
 };

@@ -11,7 +11,7 @@
 class HTTPResponse
 {
 public:
-    HTTPResponse(HTTPVersion mVersion, unsigned int mStatus, const std::string& mStatusText);
+    HTTPResponse(HTTPVersion mVersion, unsigned int mStatus, std::string  mStatusText);
 
     inline const HTTPVersion&     Version() const { return    mVersion; }
     inline const unsigned int&     Status() const { return     mStatus; }

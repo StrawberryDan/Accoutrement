@@ -31,7 +31,7 @@ public:
     inline       AVCodecContext* operator->()       { return mContext; }
     inline const AVCodecContext* operator->() const { return mContext; }
 
-    AVCodecParameters* Parameters() const;
+    [[nodiscard]] AVCodecParameters* Parameters() const;
 
 private:
     AVCodecContext* mContext;

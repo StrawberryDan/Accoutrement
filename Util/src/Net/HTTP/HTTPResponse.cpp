@@ -1,11 +1,13 @@
+#include <utility>
+
 #include "Util/Net/HTTP/HTTPResponse.hpp"
 
 
 
-HTTPResponse::HTTPResponse(HTTPVersion mVersion, unsigned int mStatus, const std::string& mStatusText)
+HTTPResponse::HTTPResponse(HTTPVersion mVersion, unsigned int mStatus, std::string mStatusText)
     : mVersion(mVersion)
     , mStatus(mStatus)
-    , mStatusText(mStatusText)
+    , mStatusText(std::move(mStatusText))
 {
 
 }

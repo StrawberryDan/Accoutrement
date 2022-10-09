@@ -28,7 +28,7 @@ add_library(Util STATIC
         src/Net/Socket/TCPClient.cpp
         src/Net/Socket/TLSClient.cpp
         src/Net/Socket/UDPClient.cpp
-        include/Util/Net/Websocket/WebsocketClient.inl include/Util/Mutex.hpp src/Net/Websocket/WebsocketMessage.cpp include/Util/Net/Websocket/WebsocketMessage.hpp include/Util/Result.hpp)
+        include/Util/Net/Websocket/WebsocketClient.inl include/Util/Mutex.hpp src/Net/Websocket/WebsocketMessage.cpp include/Util/Net/Websocket/WebsocketMessage.hpp include/Util/Result.hpp src/Clock.cpp include/Util/Clock.hpp include/Util/Endian.hpp include/Util/Option.hpp src/Net/Socket/Socket.cpp)
 target_include_directories(Util PUBLIC include)
 target_link_libraries(Util PRIVATE libressl libretls ws2_32 fmt)
 

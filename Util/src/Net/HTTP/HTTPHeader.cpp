@@ -1,20 +1,24 @@
 #include "Util/Net/HTTP/HTTPHeader.hpp"
 
 
-
 #include <cassert>
+
+
+
+#include "Util/Utilities.hpp"
 
 
 
 void HTTPHeader::Add(const HTTPHeader::Key& key, const HTTPHeader::Value& value)
 {
-    if (mEntries.contains(key))
+    auto lc = ToLowercase(key);
+    if (mEntries.contains(lc))
     {
-        mEntries.at(key).push_back(value);
+        mEntries.at(lc).push_back(value);
     }
     else
     {
-        mEntries.insert({key, {value}});
+        mEntries.insert({lc, {value}});
     }
 }
 
@@ -22,28 +26,32 @@ void HTTPHeader::Add(const HTTPHeader::Key& key, const HTTPHeader::Value& value)
 
 void HTTPHeader::Set(const HTTPHeader::Key& key, const HTTPHeader::Value& value)
 {
-    mEntries.insert_or_assign(key, std::vector<Value>{value});
+    auto lc = ToLowercase(key);
+    mEntries.insert_or_assign(lc, std::vector<Value>{value});
 }
 
 
 
 HTTPHeader::Value HTTPHeader::Get(const HTTPHeader::Key& key) const
 {
-    assert(mEntries.contains(key));
-    return mEntries.at(key)[0];
+    auto lc = ToLowercase(key);
+    assert(mEntries.contains(lc));
+    return mEntries.at(lc)[0];
 }
 
 
 
 std::vector<HTTPHeader::Value> HTTPHeader::GetAll(const HTTPHeader::Key& key) const
 {
-    assert(mEntries.contains(key));
-    return mEntries.at(key);
+    auto lc = ToLowercase(key);
+    assert(mEntries.contains(lc));
+    return mEntries.at(lc);
 }
 
 
 
 bool HTTPHeader::Contains(const HTTPHeader::Key& key) const
 {
-    return mEntries.contains(key);
+    auto lc = ToLowercase(key);
+    return mEntries.contains(lc);
 }

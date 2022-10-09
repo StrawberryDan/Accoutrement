@@ -20,7 +20,7 @@ using EncryptedPacket = std::pair<Nonce, Encrypted>;
 class SodiumEncrypter
 {
 public:
-    SodiumEncrypter(Key key);
+    explicit SodiumEncrypter(Key key);
 
     EncryptedPacket Encrypt(Nonce nonce, const Packet& packet);
 private:

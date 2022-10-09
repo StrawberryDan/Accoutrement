@@ -4,6 +4,8 @@
 
 #include <mutex>
 #include <cassert>
+#include <memory>
+#include "Util/Option.hpp"
 
 
 
@@ -24,7 +26,7 @@ public:
     MutexGuard& operator=(const MutexGuard&) = delete;
     MutexGuard& operator=(MutexGuard&& other)  noexcept = default;
 
-    inline PayloadType& operator*()  const { return *mPayload; }
+    inline PayloadType& operator *() const { return *mPayload; }
     inline PayloadType* operator->() const { return  mPayload; }
 private:
     MutexGuard(LockType lock, PayloadType* ptr) : mLock(std::move(lock)), mPayload(ptr) {}
@@ -41,38 +43,102 @@ template<typename T>
 class Mutex
 {
 public:
-    Mutex() requires ( std::is_default_constructible_v<T> ) = default;
-    ~Mutex() { assert(mMutex.try_lock()); }
-
-    explicit Mutex(T&& payload) : mPayload(std::forward<T>(payload)) {}
-
     template<typename ... Ts>
-    Mutex(Ts ... ts) : mPayload(std::forward<Ts>(ts)...) {}
-
-    Mutex Copy(const Mutex& other) const requires ( std::is_copy_constructible_v<T> )
+    Mutex(Ts ... ts)
+        : mMutex()
+        , mPayload{}
     {
-        auto lock = other.Lock();
-        return Mutex(*lock);
+        new (mPayload) T(std::forward<Ts>(ts)...);
+    }
+
+    Mutex(const Mutex& rhs) requires ( std::is_copy_constructible_v<T> )
+        : mMutex()
+        , mPayload{}
+    {
+        auto lock = rhs.Lock();
+        new (mPayload) T(*lock);
+    }
+
+    Mutex(Mutex&& rhs) requires ( std::is_move_constructible_v<T> )
+        : mMutex()
+        , mPayload{}
+    {
+        auto lock = rhs.Lock();
+        new (mPayload) T(std::forward<T>(*lock));
     }
 
     Mutex& operator=(const Mutex& other) requires ( std::is_copy_assignable_v<T> )
     {
-        auto lock = other.Lock();
-        mPayload = *lock;
+        auto lockA = this->Lock();
+        auto lockB = other.Lock();
+        *lockA = *lockB;
         return (*this);
     }
 
     Mutex& operator=(Mutex&& other) requires ( std::is_move_assignable_v<T> )
     {
-        auto lock = other.Lock();
-        mPayload = std::move(*lock);
+        auto lockA = this->Lock();
+        auto lockB = other.Lock();
+        *lockA = std::move(*lockB);
         return (*this);
     }
 
-    MutexGuard<T, false> Lock()       { return {typename MutexGuard<T, false>::LockType(mMutex), &mPayload}; }
-    MutexGuard<T,  true> Lock() const { return {typename MutexGuard<T,  true>::LockType(mMutex), &mPayload}; }
+    ~Mutex()
+    {
+        auto lock = Lock();
+        lock->~T();
+    }
+
+
+    MutexGuard<T, false> Lock()       { return {typename MutexGuard<T, false>::LockType(mMutex), reinterpret_cast<      T*>(mPayload)}; }
+    MutexGuard<T,  true> Lock() const { return {typename MutexGuard<T,  true>::LockType(mMutex), reinterpret_cast<const T*>(mPayload)}; }
+
+
+    Option<MutexGuard<T, false>> TryLock()
+    {
+        std::unique_lock<std::mutex> lk(mMutex, std::defer_lock);
+        if (lk.try_lock())
+        {
+            return {lk, mPayload};
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    Option<MutexGuard<T, false>> TryLock() const
+    {
+        std::unique_lock<std::mutex> lk(mMutex, std::defer_lock);
+        if (lk.try_lock())
+        {
+            return {lk, &mPayload};
+        }
+        else
+        {
+            return {};
+        }
+    }
 
 private:
     std::mutex mMutex;
-    T          mPayload;
+    uint8_t    mPayload[sizeof(T)];
+};
+
+
+
+template<typename T>
+class SharedMutex
+{
+public:
+    template<typename ... Ts>
+    SharedMutex(Ts ... ts) : mPayload(std::make_shared<Mutex<T>>(std::forward<Ts>(ts)...)) {}
+
+    MutexGuard<T, false> Lock()       { return mPayload->Lock(); }
+    MutexGuard<T,  true> Lock() const { return mPayload->Lock(); }
+
+    Option<MutexGuard<T, false>> TryLock()       { return mPayload->TryLock(); }
+    Option<MutexGuard<T,  true>> TryLock() const { return mPayload->TryLock(); }
+private:
+    std::shared_ptr<Mutex<T>> mPayload;
 };

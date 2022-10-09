@@ -3,7 +3,7 @@
 
 
 #include <string>
-#include <optional>
+#include "Util/Option.hpp"
 #include "Packet.hpp"
 #include "Decoder.hpp"
 #include "Resampler.hpp"
@@ -33,16 +33,16 @@ public:
     inline       AVFormatContext* operator->()       { return mFile; }
     inline const AVFormatContext* operator->() const { return mFile; }
 
-    std::optional<Frame> ReadFrame();
+    Option<Frame> ReadFrame();
 
     [[nodiscard]] inline bool IsEof() const { return mIsEof; }
 
 private:
-    std::optional<Packet> ReadPacket();
+    Option<Packet> ReadPacket();
 
     AVFormatContext* mFile;
     const AVCodec* mCodec;
-    std::optional<int> mStreamIndex;
+    Option<int> mStreamIndex;
     bool mIsEof;
 
     Decoder             mDecoder;

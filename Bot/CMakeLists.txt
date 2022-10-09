@@ -1,6 +1,8 @@
 add_library(Bot STATIC
         include/Bot/Bot.hpp
-        src/Bot.cpp)
+        src/Bot.cpp
+        src/Heartbeater.cpp
+        include/Bot/Heartbeater.hpp)
 target_include_directories(Bot PUBLIC include)
 target_link_libraries(Bot PUBLIC Codec Util)
 

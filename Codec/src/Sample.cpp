@@ -21,7 +21,7 @@ Samples::Samples(Channel left, Channel right)
     : mLeft(std::move(left))
     , mRight(std::move(right))
 {
-    assert(left.size() == right.size());
+    assert(mLeft.size() == mRight.size());
 }
 
 
@@ -59,7 +59,6 @@ Samples::SplitSamples Samples::Split(std::size_t count) const
 {
     Samples stem, leaf;
     std::size_t stemSize = count * (Size() / count);
-    std::size_t leafSize = Size() % count;
 
     stem.mLeft  = {mLeft.begin(),  mLeft.begin()  + stemSize};
     stem.mRight = {mRight.begin(), mRight.begin() + stemSize};

@@ -2,7 +2,7 @@
 
 
 #include <variant>
-
+#include <optional>
 
 
 
@@ -11,8 +11,8 @@
 
 
 
-using HTTPPayload = std::variant
+using HTTPPayload = Option<std::variant
 <
     HTTPSimplePayload,
     HTTPChunkedPayload
->;
+>>;

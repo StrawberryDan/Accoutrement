@@ -64,7 +64,7 @@ AudioFile::~AudioFile()
 
 
 
-std::optional<Frame> AudioFile::ReadFrame()
+Option<Frame> AudioFile::ReadFrame()
 {
     if (!mLeftoverFrames.empty())
     {
@@ -104,7 +104,7 @@ std::optional<Frame> AudioFile::ReadFrame()
 
 
 
-std::optional<Packet> AudioFile::ReadPacket()
+Option<Packet> AudioFile::ReadPacket()
 {
     Packet packet;
 

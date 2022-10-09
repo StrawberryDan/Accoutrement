@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <string>
 #include <optional>
+#include <thread>
+#include <future>
 
 
 
@@ -27,26 +29,44 @@ public:
 public:
     WebsocketClientImpl(const std::string& hostname, const std::string& subresource);
 
-    void Send(const WebsocketMessage& message) const;
-    Result<WebsocketMessage, Error> Receive();
+    ~WebsocketClientImpl();
+
+    void SendFrame(const WebsocketMessage& message);
 
 
-    [[nodiscard]] inline bool IsValid() const { return mSocket.has_value(); }
+    [[nodiscard]] inline bool IsValid() const { return mSocket.HasValue(); }
     inline S TakeSocket() { return Take(mSocket); }
 
+    Result<WebsocketMessage, Error> ReadMessage();
+
 private:
-    [[nodiscard]] std::pair<bool, WebsocketMessage> ReceiveFragment() const;
+    using Fragment = std::pair<bool, WebsocketMessage>;
+
+
+    [[nodiscard]] Result<WebsocketMessage, Error>   ReceiveFrame();
+    [[nodiscard]] Result<Fragment,         Error>   ReceiveFragment();
+    [[nodiscard]] Result<size_t,           Error>   TransmitFrame(const WebsocketMessage& frame);
 
 
     [[nodiscard]] static std::string GenerateNonce();
     [[nodiscard]] static uint8_t GetOpcodeMask(WebsocketMessage::Opcode opcode);
-    [[nodiscard]] static std::optional<WebsocketMessage::Opcode> GetOpcodeFromByte(uint8_t byte);
+    [[nodiscard]] static Option<WebsocketMessage::Opcode> GetOpcodeFromByte(uint8_t byte);
     [[nodiscard]] static uint32_t GenerateMaskingKey();
+    [[nodiscard]] static Error ErrorFromSocketError(Socket::Error err);
 
 
 private:
-    std::optional<S>     mSocket;
-    std::optional<Error> mError;
+    using MessageBuffer = Mutex<std::vector<WebsocketMessage>>;
+
+    Option<S>        mSocket;
+    Option<Error>    mError;
+
+    std::future<void> mReceiver;
+    std::future<void> mTransmitter;
+
+    Mutex<bool>                   mRunning;
+    MessageBuffer                 mRecvMessageBuffer;
+    MessageBuffer                 mSendMessageBuffer;
 };
 
 
@@ -54,6 +74,7 @@ private:
 template<SocketImpl S, uint16_t PORT>
 enum class WebsocketClientImpl<S, PORT>::Error
 {
+    NoMessage,
     Closed,
 };
 

@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <vector>
+#include "Util/Option.hpp"
 
 
 
@@ -36,7 +37,7 @@ public:
 
 
 
-    std::optional<nlohmann::json> AsJSON();
+    Option<nlohmann::json> AsJSON();
 
 
 private:

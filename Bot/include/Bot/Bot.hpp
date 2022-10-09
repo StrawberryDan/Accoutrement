@@ -10,6 +10,7 @@
 #include "Util/Mutex.hpp"
 #include "Util/Net/HTTP/HTTPClient.hpp"
 #include "Util/Net/Websocket/WebsocketClient.hpp"
+#include "Heartbeater.hpp"
 
 
 
@@ -24,7 +25,11 @@ public:
     void Run();
 
 private:
-    Token                           mToken;
-    Mutex<HTTPSClient>              mHTTPS;
-    std::optional<Mutex<WSSClient>> mWSS;
+    std::string GetGatewayEndpoint();
+
+private:
+    Token                                 mToken;
+    SharedMutex<HTTPSClient>              mHTTPS;
+    Option<SharedMutex<WSSClient>> mWSS;
+    Option<Heartbeater>            mHeartbeat;
 };

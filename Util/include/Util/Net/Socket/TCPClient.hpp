@@ -21,13 +21,13 @@ public:
     TCPClient(const std::string& hostname, uint16_t port);
     TCPClient(const TCPClient&) = delete;
     TCPClient& operator=(const TCPClient&) = delete;
-    TCPClient(TCPClient&& other);
-    TCPClient& operator=(TCPClient&& other);
+    TCPClient(TCPClient&& other) noexcept ;
+    TCPClient& operator=(TCPClient&& other) noexcept ;
     ~TCPClient();
 
-    size_t Read(uint8_t* data, size_t len) const override;
+    Result<size_t, Error> Read(uint8_t* data, size_t len) const override;
 
-    void Write(const uint8_t* data, size_t len) const override;
+    Result<size_t, Error> Write(const uint8_t* data, size_t len) const override;
 
 
 

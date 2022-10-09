@@ -4,6 +4,7 @@
 
 #include "Util/Utilities.hpp"
 #include <cassert>
+#include <iostream>
 
 
 
@@ -20,6 +21,8 @@ TCPClient::TCPClient(const std::string& hostname, uint16_t port)
     : mSocket{}
 {
 #if _WIN32
+    WSAData wsaData;
+    WSAStartup(MAKEWORD(2,2), &wsaData);
     mSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     assert(mSocket != INVALID_SOCKET);
 
@@ -30,12 +33,20 @@ TCPClient::TCPClient(const std::string& hostname, uint16_t port)
 
     result = connect(mSocket, addressInfo->ai_addr, static_cast<int>(addressInfo->ai_addrlen));
     assert(result == 0);
+
+    unsigned long iMode = 0;
+    result = ioctlsocket(mSocket, FIONBIO, &iMode);
+    assert(result == 0);
+
+    int timeout = 1000;
+    result = setsockopt(mSocket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&timeout), sizeof(timeout));
+    assert(result >= 0);
 #endif // _WIN32
 }
 
 
 
-TCPClient::TCPClient(TCPClient&& other)
+TCPClient::TCPClient(TCPClient&& other) noexcept
     : mSocket(Take(other.mSocket))
 {
 
@@ -43,7 +54,7 @@ TCPClient::TCPClient(TCPClient&& other)
 
 
 
-TCPClient& TCPClient::operator=(TCPClient&& other)
+TCPClient& TCPClient::operator=(TCPClient&& other) noexcept
 {
     mSocket = Take(other.mSocket);
     return (*this);
@@ -54,25 +65,47 @@ TCPClient& TCPClient::operator=(TCPClient&& other)
 TCPClient::~TCPClient()
 {
 #if _WIN32
-    closesocket(mSocket);
+    if (mSocket)
+    {
+        shutdown(mSocket, SD_BOTH);
+        closesocket(mSocket);
+    }
 #endif // _WIN32
 }
 
 
 
-size_t TCPClient::Read(uint8_t* data, size_t len) const
+Result<size_t, Socket::Error> TCPClient::Read(uint8_t* data, size_t len) const
 {
 #if _WIN32
-    return recv(mSocket, reinterpret_cast<char*>(data), static_cast<int>(len), 0);
+    auto bytesRead = recv(mSocket, reinterpret_cast<char*>(data), static_cast<int>(len), 0);
+    if (bytesRead == SOCKET_ERROR)
+    {
+
+        int wsaError = WSAGetLastError();
+        return Result<size_t, Socket::Error>::Err(Socket::ErrorFromWSACode(wsaError));
+    }
+    else
+    {
+        return Result<size_t, Socket::Error>::Ok(bytesRead);
+    }
 #endif // _WIN32
 }
 
 
 
-void TCPClient::Write(const uint8_t* data, size_t len) const
+Result<size_t, Socket::Error> TCPClient::Write(const uint8_t* data, size_t len) const
 {
 #if _WIN32
     auto bytesSent = send(mSocket, reinterpret_cast<const char*>(data), static_cast<int>(len), 0);
-    assert(bytesSent == len);
+    if (bytesSent == SOCKET_ERROR)
+    {
+        int wsaError = WSAGetLastError();
+        return Result<size_t, Socket::Error>::Err(Socket::ErrorFromWSACode(wsaError));
+    }
+    else
+    {
+        return Result<size_t, Socket::Error>::Ok(bytesSent);
+    }
 #endif // _WIN32
 }

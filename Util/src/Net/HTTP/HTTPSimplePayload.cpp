@@ -22,7 +22,7 @@ void HTTPSimplePayload::Write(const uint8_t* data, size_t len)
 
 
 
-std::optional<nlohmann::json> HTTPSimplePayload::AsJSON()
+Option<nlohmann::json> HTTPSimplePayload::AsJSON()
 {
     std::string asString(mData.begin(), mData.end());
 

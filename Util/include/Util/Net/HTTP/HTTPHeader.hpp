@@ -21,12 +21,12 @@ public:
 public:
     void  Add(const Key& key, const Value& value);
     void  Set(const Key& key, const Value& value);
-    Value Get(const Key& key) const;
-    std::vector<Value> GetAll(const Key& key) const;
-    bool  Contains(const Key& key) const;
+    [[nodiscard]] Value Get(const Key& key) const;
+    [[nodiscard]] std::vector<Value> GetAll(const Key& key) const;
+    [[nodiscard]] bool  Contains(const Key& key) const;
 
-    inline ConstIterator Begin() const { return mEntries.cbegin(); }
-    inline ConstIterator   End() const { return   mEntries.cend(); }
+    [[nodiscard]] inline ConstIterator Begin() const { return mEntries.cbegin(); }
+    [[nodiscard]] inline ConstIterator   End() const { return   mEntries.cend(); }
     inline Iterator      Begin()       { return  mEntries.begin(); }
     inline Iterator        End()       { return    mEntries.end(); }
 

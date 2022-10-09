@@ -2,6 +2,9 @@
 
 
 
+#include "Util/Utilities.hpp"
+
+
 #include <map>
 
 
@@ -28,7 +31,7 @@ std::string HTTPVerbToString(HTTPVerb verb)
 
 
 
-std::optional<HTTPVerb> HTTPVerbFromString(const std::string& string)
+Option<HTTPVerb> HTTPVerbFromString(const std::string& string)
 {
     static const std::map<std::string, HTTPVerb> mapping =
     {
@@ -39,12 +42,7 @@ std::optional<HTTPVerb> HTTPVerbFromString(const std::string& string)
         {"DELETE", HTTPVerb::DELETE}
     };
 
-    std::string upper;
-    for (auto c : string)
-    {
-        upper += static_cast<char>(toupper(c));
-    }
-
+    std::string upper = ToUppercase(string);
     if (mapping.contains(upper))
     {
         return mapping.at(upper);
@@ -57,7 +55,7 @@ std::optional<HTTPVerb> HTTPVerbFromString(const std::string& string)
 
 
 
-std::optional<HTTPVersion> HTTPVersionFromString(const std::string& string)
+Option<HTTPVersion> HTTPVersionFromString(const std::string& string)
 {
     static const std::map<std::string, HTTPVersion> mapping =
     {

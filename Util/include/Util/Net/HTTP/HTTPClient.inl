@@ -20,37 +20,37 @@ void HTTPClientImpl<S, PORT>::Request(const HTTPRequest& request)
     std::string headerLine = fmt::format(
         "{} {} HTTP/{}\r\n",
         HTTPVerbToString(request.Verb()), request.URI(), HTTPVersionToString(request.Version()));
-    mSocket.WriteArray(headerLine.data(), headerLine.length());
+    mSocket.WriteArray(headerLine.data(), headerLine.length()).Unwrap();
     for (const auto& [key, values] : *request.Header())
     {
         for (const auto& value : values)
         {
             std::string formatted = fmt::format("{}: {}\r\n", key, value);
-            mSocket.WriteArray(formatted.data(), formatted.length());
+            mSocket.WriteArray(formatted.data(), formatted.length()).Unwrap();
         }
     }
 
     std::vector<char> blankLine = {'\r', '\n'};
-    mSocket.WriteVector(blankLine);
+    mSocket.WriteVector(blankLine).Unwrap();
 
-    if (std::holds_alternative<HTTPSimplePayload>(request.Payload()))
+    if (request.Payload())
     {
-        const auto& payload = std::get<HTTPSimplePayload>(request.Payload());
-        if (payload.Size() > 0)
+        if (std::holds_alternative<HTTPSimplePayload>(*request.Payload()))
         {
-            mSocket.WriteVector(*payload);
+            const auto& payload = std::get<HTTPSimplePayload>(*request.Payload());
+            if (payload.Size() > 0)
+            {
+                mSocket.WriteVector(*payload).Unwrap();
+            }
+        } else if (std::holds_alternative<HTTPChunkedPayload>(*request.Payload()))
+        {
+            const auto& payload = std::get<HTTPChunkedPayload>(*request.Payload());
+            for (const auto& chunk: *payload)
+            {
+                mSocket.WriteVector(*chunk).Unwrap();
+            }
         }
     }
-    else if (std::holds_alternative<HTTPChunkedPayload>(request.Payload()))
-    {
-        const auto& payload = std::get<HTTPChunkedPayload>(request.Payload());
-        for (const auto& chunk : *payload)
-        {
-            mSocket.WriteVector(*chunk);
-        }
-    }
-
-    mSocket.WriteVector(blankLine);
 }
 
 
@@ -103,7 +103,8 @@ HTTPResponse HTTPClientImpl<S, PORT>::Receive()
     else if (response.Header().Contains("Content-Length"))
     {
         HTTPSimplePayload simplePayload;
-        std::vector<uint8_t> data = mSocket.template ReadVector<uint8_t>(std::stoul(response.Header().Get("Content-Length")));
+        unsigned long contentLength = std::stoul(response.Header().Get("Content-Length"));
+        std::vector<uint8_t> data = mSocket.template ReadVector<uint8_t>(contentLength).Unwrap();
         simplePayload.Write(data.data(), data.size());
         payload = simplePayload;
     }
@@ -133,7 +134,7 @@ HTTPChunkedPayload HTTPClientImpl<S, PORT>::ReadChunkedPayload()
         auto bytesToRead = std::stoul(matchResults[1], nullptr, 16);
         if (bytesToRead > 0)
         {
-            HTTPChunkedPayload::Chunk chunk = this->mSocket.template ReadVector<uint8_t>(bytesToRead);
+            HTTPChunkedPayload::Chunk chunk(this->mSocket.template ReadVector<uint8_t>(bytesToRead).Unwrap());
             assert(chunk.Size() == bytesToRead);
             payload.AddChunk(chunk);
         }
@@ -150,7 +151,7 @@ std::string HTTPClientImpl<S, PORT>::ReadLine()
     std::string line;
     while (!line.ends_with("\r\n"))
     {
-        line += mSocket.template ReadType<char>();
+        line += mSocket.template ReadType<char>().Unwrap();
     }
     return line;
 }

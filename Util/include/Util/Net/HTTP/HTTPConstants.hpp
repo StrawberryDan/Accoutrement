@@ -3,7 +3,7 @@
 
 
 #include <string>
-#include <optional>
+#include "Util/Option.hpp"
 
 
 
@@ -19,7 +19,7 @@ enum class HTTPVerb
 
 
 std::string HTTPVerbToString(HTTPVerb verb);
-std::optional<HTTPVerb> HTTPVerbFromString(const std::string& string);
+Option<HTTPVerb> HTTPVerbFromString(const std::string& string);
 
 
 
@@ -32,5 +32,5 @@ enum class HTTPVersion
 };
 
 
-std::optional<HTTPVersion> HTTPVersionFromString(const std::string& string);
+Option<HTTPVersion> HTTPVersionFromString(const std::string& string);
 std::string                HTTPVersionToString(HTTPVersion version);

@@ -18,10 +18,10 @@ public:
     [[nodiscard]] inline const std::string&     URI() const { return     mURI; }
     [[nodiscard]] inline const HTTPVersion& Version() const { return mVersion; }
 
-    inline const HTTPHeader& Header() const { return mHeader; }
+    [[nodiscard]] inline const HTTPHeader& Header() const { return mHeader; }
     inline       HTTPHeader& Header()       { return mHeader; }
 
-    inline const HTTPPayload& Payload() const { return mPayload; }
+    [[nodiscard]] inline const HTTPPayload& Payload() const { return mPayload; }
     inline void SetPayload(const HTTPPayload& payload) { mPayload = payload; }
 
 private:

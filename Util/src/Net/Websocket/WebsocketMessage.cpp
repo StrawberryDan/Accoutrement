@@ -2,6 +2,10 @@
 
 
 
+#include "Util/Endian.hpp"
+
+
+
 WebsocketMessage::WebsocketMessage(WebsocketMessage::Opcode opcode, Payload payload)
     : mOpcode(opcode)
     , mPayload(payload)
@@ -52,12 +56,21 @@ Result<nlohmann::json, std::string> WebsocketMessage::AsJSON() const
             {
                 return Result<nlohmann::json, std::string>::Err("Parse Error");
             }
-            return Result<nlohmann::json, std::string>::Ok(std::move(json));
+            return Result<nlohmann::json, std::string>::Ok(json);
         }
 
         default:
             return Result<nlohmann::json, std::string>::Err("Invalid Message Type");
     }
+}
+
+
+
+uint16_t WebsocketMessage::GetCloseStatusCode() const
+{
+    uint16_t s = static_cast<uint16_t>(mPayload[0]) << 0 | static_cast<uint16_t>(mPayload[1]) << 8;
+    s = FromBigEndian(s);
+    return s;
 }
 
 

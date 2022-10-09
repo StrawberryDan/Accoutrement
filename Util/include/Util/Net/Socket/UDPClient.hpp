@@ -19,12 +19,12 @@ public:
     UDPClient(const std::string& hostname, uint16_t port);
     UDPClient(const UDPClient&) = delete;
     UDPClient& operator=(const UDPClient&) = delete;
-    UDPClient(UDPClient&& other);
-    UDPClient& operator=(UDPClient&& other);
+    UDPClient(UDPClient&& other) noexcept;
+    UDPClient& operator=(UDPClient&& other) noexcept;
     ~UDPClient();
 
-    size_t Read(uint8_t* data, size_t len) const override;
-    void Write(const uint8_t* data, size_t len) const override;
+    Result<size_t, Socket::Error> Read(uint8_t* data, size_t len) const override;
+    Result<size_t, Socket::Error> Write(const uint8_t* data, size_t len) const override;
 
 
 private:

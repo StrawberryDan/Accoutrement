@@ -20,6 +20,8 @@ UDPClient::UDPClient(const std::string& hostname, uint16_t port)
     : mSocket{}
 {
 #if _WIN32
+    WSAData wsaData;
+    WSAStartup(MAKEWORD(2,2), &wsaData);
     mSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     assert(mSocket != INVALID_SOCKET);
 
@@ -35,7 +37,7 @@ UDPClient::UDPClient(const std::string& hostname, uint16_t port)
 
 
 
-UDPClient::UDPClient(UDPClient&& other)
+UDPClient::UDPClient(UDPClient&& other) noexcept
     : mSocket(Take(other.mSocket))
 {
 
@@ -43,7 +45,7 @@ UDPClient::UDPClient(UDPClient&& other)
 
 
 
-UDPClient& UDPClient::operator=(UDPClient&& other)
+UDPClient& UDPClient::operator=(UDPClient&& other) noexcept
 {
     mSocket = Take(other.mSocket);
     return (*this);
@@ -60,19 +62,34 @@ UDPClient::~UDPClient()
 
 
 
-size_t UDPClient::Read(uint8_t* data, size_t len) const
+Result<size_t, Socket::Error> UDPClient::Read(uint8_t* data, size_t len) const
 {
 #if _WIN32
-    return recv(mSocket, reinterpret_cast<char*>(data), len, 0);
+    auto bytesRead = recv(mSocket, reinterpret_cast<char*>(data), len, 0);
+    if (bytesRead == SOCKET_ERROR)
+    {
+        return Result<size_t, Socket::Error>::Err(Socket::ErrorFromWSACode(WSAGetLastError()));
+    }
+    else
+    {
+        return Result<size_t, Socket::Error>::Ok(bytesRead);
+    }
 #endif // _WIN32
 }
 
 
 
-void UDPClient::Write(const uint8_t* data, size_t len) const
+Result<size_t, Socket::Error> UDPClient::Write(const uint8_t* data, size_t len) const
 {
 #if _WIN32
     auto bytesSent = send(mSocket, reinterpret_cast<const char*>(data), len, 0);
-    assert(bytesSent == len);
+    if (bytesSent == SOCKET_ERROR)
+    {
+        return Result<size_t, Socket::Error>::Err(Socket::ErrorFromWSACode(WSAGetLastError()));
+    }
+    else
+    {
+        return Result<size_t, Socket::Error>::Ok(bytesSent);
+    }
 #endif // _WIN32
 }

@@ -4,7 +4,9 @@
 
 #include "tls.h"
 #include <string>
+#include <memory>
 #include "Socket.hpp"
+#include "TCPClient.hpp"
 
 
 
@@ -18,12 +20,13 @@ public:
     TLSClient& operator=(TLSClient&& other) noexcept ;
     ~TLSClient();
 
-    size_t Read(uint8_t* data, size_t len) const override;
+    Result<size_t, Error> Read(uint8_t* data, size_t len) const override;
 
-    void Write(const uint8_t* data, size_t len) const override;
+    Result<size_t, Error> Write(const uint8_t* data, size_t len) const override;
 
 
 private:
-    tls* mTLS;
-    tls_config* mConfig;
+    tls*                       mTLS;
+    tls_config*                mConfig;
+    std::unique_ptr<TCPClient> mTCP;
 };

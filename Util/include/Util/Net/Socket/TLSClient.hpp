@@ -28,5 +28,4 @@ public:
 private:
     tls*                       mTLS;
     tls_config*                mConfig;
-    std::unique_ptr<TCPClient> mTCP;
 };

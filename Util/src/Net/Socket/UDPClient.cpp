@@ -3,7 +3,7 @@
 
 
 #include "Util/Utilities.hpp"
-#include <cassert>
+#include "Util/Assert.hpp"
 
 
 
@@ -23,15 +23,15 @@ UDPClient::UDPClient(const std::string& hostname, uint16_t port)
     WSAData wsaData;
     WSAStartup(MAKEWORD(2,2), &wsaData);
     mSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    assert(mSocket != INVALID_SOCKET);
+    Assert(mSocket != INVALID_SOCKET);
 
     std::string portAsString = std::to_string(port);
     addrinfo* addressInfo;
     auto result = getaddrinfo(hostname.c_str(), portAsString.c_str(), nullptr, &addressInfo);
-    assert(result == 0);
+    Assert(result == 0);
 
     result = connect(mSocket, addressInfo->ai_addr, static_cast<int>(addressInfo->ai_addrlen));
-    assert(result == 0);
+    Assert(result == 0);
 #endif // _WIN32
 }
 
@@ -72,7 +72,7 @@ Result<size_t, Socket::Error> UDPClient::Read(uint8_t* data, size_t len) const
     }
     else
     {
-        return Result<size_t, Socket::Error>::Ok(bytesRead);
+        return Result<size_t, Socket::Error>::Ok(static_cast<size_t>(bytesRead));
     }
 #endif // _WIN32
 }
@@ -89,7 +89,7 @@ Result<size_t, Socket::Error> UDPClient::Write(const uint8_t* data, size_t len) 
     }
     else
     {
-        return Result<size_t, Socket::Error>::Ok(bytesSent);
+        return Result<size_t, Socket::Error>::Ok(static_cast<size_t>(bytesSent));
     }
 #endif // _WIN32
 }

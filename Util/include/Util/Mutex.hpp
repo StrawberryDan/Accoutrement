@@ -3,7 +3,7 @@
 
 
 #include <mutex>
-#include <cassert>
+#include "Util/Assert.hpp"
 #include <memory>
 #include "Util/Option.hpp"
 

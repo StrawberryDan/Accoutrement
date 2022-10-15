@@ -1,7 +1,7 @@
 #include "Util/Net/HTTP/HTTPHeader.hpp"
 
 
-#include <cassert>
+#include "Util/Assert.hpp"
 
 
 
@@ -35,7 +35,7 @@ void HTTPHeader::Set(const HTTPHeader::Key& key, const HTTPHeader::Value& value)
 HTTPHeader::Value HTTPHeader::Get(const HTTPHeader::Key& key) const
 {
     auto lc = ToLowercase(key);
-    assert(mEntries.contains(lc));
+    Assert(mEntries.contains(lc));
     return mEntries.at(lc)[0];
 }
 
@@ -44,7 +44,7 @@ HTTPHeader::Value HTTPHeader::Get(const HTTPHeader::Key& key) const
 std::vector<HTTPHeader::Value> HTTPHeader::GetAll(const HTTPHeader::Key& key) const
 {
     auto lc = ToLowercase(key);
-    assert(mEntries.contains(lc));
+    Assert(mEntries.contains(lc));
     return mEntries.at(lc);
 }
 

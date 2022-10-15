@@ -2,7 +2,7 @@
 #include "Util/Utilities.hpp"
 
 
-#include <cassert>
+
 #include <iostream>
 
 
@@ -16,21 +16,21 @@ AudioFile::AudioFile(const std::string& path)
     , mResampler()
 {
     auto result = avformat_open_input(&mFile, path.c_str(), nullptr, nullptr);
-    assert(result == 0);
+    Assert(result == 0);
 
     result = avformat_find_stream_info(mFile, nullptr);
-    assert(result == 0);
+    Assert(result == 0);
 
     result = av_find_best_stream(mFile, AVMEDIA_TYPE_AUDIO, -1, -1, &mCodec, 0);
-    assert(result >= 0);
-    assert(mCodec != nullptr);
+    Assert(result >= 0);
+    Assert(mCodec != nullptr);
     if (result >= 0)
     {
         mStreamIndex = result;
     }
 
     result = av_seek_frame(mFile, *mStreamIndex, 0, 0);
-    assert(result >= 0);
+    Assert(result >= 0);
 
     mDecoder   = Decoder(mCodec, mFile->streams[*mStreamIndex]->codecpar);
     mResampler = Resampler(mFile->streams[*mStreamIndex]->codecpar);
@@ -113,7 +113,7 @@ Option<Packet> AudioFile::ReadPacket()
     do
     {
         result = av_read_frame(mFile, *packet);
-        assert(result == 0 || result == AVERROR_EOF);
+        Assert(result == 0 || result == AVERROR_EOF);
     }
     while (packet->stream_index != *mStreamIndex && result != AVERROR_EOF);
 

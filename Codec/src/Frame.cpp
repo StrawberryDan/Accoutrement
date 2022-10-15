@@ -2,7 +2,7 @@
 
 
 
-#include <cassert>
+#include "Util/Assert.hpp"
 
 
 
@@ -10,7 +10,7 @@ Frame::Frame()
     : mFrame(nullptr)
 {
     mFrame = av_frame_alloc();
-    assert(mFrame != nullptr);
+    Assert(mFrame != nullptr);
 }
 
 
@@ -18,9 +18,9 @@ Frame::Frame()
 Frame::Frame(const Frame& other)
     : mFrame(nullptr)
 {
-    assert(other.mFrame != nullptr);
+    Assert(other.mFrame != nullptr);
     mFrame = av_frame_clone(other.mFrame);
-    assert(mFrame != nullptr);
+    Assert(mFrame != nullptr);
 }
 
 
@@ -28,10 +28,10 @@ Frame::Frame(const Frame& other)
 Frame& Frame::operator=(const Frame& other)
 {
     if (this == &other) return (*this);
-    assert(other.mFrame != nullptr);
+    Assert(other.mFrame != nullptr);
     if (mFrame) av_frame_free(&mFrame);
     mFrame = av_frame_clone(other.mFrame);
-    assert(mFrame != nullptr);
+    Assert(mFrame != nullptr);
     return (*this);
 }
 
@@ -42,7 +42,7 @@ Frame::Frame(Frame&& other) noexcept
 {
     av_frame_unref(mFrame);
     av_frame_move_ref(mFrame, other.mFrame);
-    assert(mFrame != nullptr);
+    Assert(mFrame != nullptr);
     other.mFrame = nullptr;
 }
 
@@ -52,7 +52,7 @@ Frame& Frame::operator=(Frame&& other) noexcept
 {
     av_frame_unref(mFrame);
     av_frame_move_ref(mFrame, other.mFrame);
-    assert(mFrame != nullptr);
+    Assert(mFrame != nullptr);
     other.mFrame = nullptr;
     return (*this);
 }

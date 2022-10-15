@@ -2,7 +2,7 @@
 
 
 
-#include <cassert>
+#include "Util/Assert.hpp"
 #include <cstring>
 #include <utility>
 
@@ -21,7 +21,7 @@ Samples::Samples(Channel left, Channel right)
     : mLeft(std::move(left))
     , mRight(std::move(right))
 {
-    assert(mLeft.size() == mRight.size());
+    Assert(mLeft.size() == mRight.size());
 }
 
 
@@ -30,7 +30,7 @@ Samples::Samples(const void* left, const void* right, std::size_t size)
     : mLeft()
     , mRight()
 {
-    assert(size % sizeof(Sample) == 0);
+    Assert(size % sizeof(Sample) == 0);
     mLeft.resize(size / sizeof(Sample));
     mRight.resize(size / sizeof(Sample));
     memcpy(mLeft.data(), left, size);
@@ -81,7 +81,7 @@ Samples::SplitSamples Samples::Split(std::size_t count) const
     {
         sizeCheck += split.Size();
     }
-    assert(sizeCheck == Size());
+    Assert(sizeCheck == Size());
 
     return {splits, leaf};
 }

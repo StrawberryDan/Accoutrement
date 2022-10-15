@@ -11,7 +11,7 @@ Bot::Bot(Token token)
 {
     auto gateway = GetGatewayEndpoint();
     mWSS.Emplace(gateway, "/?v=10&encoding=json");
-    assert(mWSS->Lock()->IsValid());
+    Assert(mWSS->Lock()->IsValid());
 
     auto hello = mWSS->Lock()->ReadMessage();
     while (!hello)
@@ -34,7 +34,7 @@ Bot::Bot(Token token)
         interval = static_cast<double>(helloJSON["d"]["heartbeat_interval"]) / 1000.0;
     }
 
-    assert(op == 10);
+    Assert(op == 10);
     mHeartbeat.Emplace(*mWSS, interval);
 }
 
@@ -43,7 +43,7 @@ Bot::Bot(Token token)
 void Bot::Run()
 {
     int i = 0;
-    while (i < 100)
+    while (i < 80 * 10)
     {
         auto message = mWSS->Lock()->ReadMessage();
 
@@ -76,7 +76,7 @@ std::string Bot::GetGatewayEndpoint()
     request.Header().Add("Host", "discord.com");
     mHTTPS.Lock()->Request(request);
     auto response = mHTTPS.Lock()->Receive();
-    assert(response.Status() == 200);
+    Assert(response.Status() == 200);
     auto payload = std::get<HTTPChunkedPayload>(*response.Payload());
     auto json = *payload[0].AsJSON();
     auto url = (std::string) json["url"];

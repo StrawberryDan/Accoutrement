@@ -3,7 +3,7 @@
 
 
 #include <vector>
-#include <cassert>
+#include "Util/Assert.hpp"
 
 
 
@@ -38,7 +38,7 @@ public:
     void Append(const Samples& other);
     void Append(Samples&& other);
 
-    [[nodiscard]] inline std::size_t Size() const { assert(mLeft.size() == mRight.size()); return mLeft.size(); }
+    [[nodiscard]] inline std::size_t Size() const { Assert(mLeft.size() == mRight.size()); return mLeft.size(); }
 
     [[nodiscard]] SplitSamples Split(std::size_t count) const;
 

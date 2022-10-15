@@ -1,5 +1,5 @@
 #include <regex>
-#include <cassert>
+#include "Util/Assert.hpp"
 #include <iostream>
 #include "fmt/core.h"
 
@@ -64,7 +64,7 @@ HTTPResponse HTTPClientImpl<S, PORT>::Receive()
     auto currentLine = ReadLine();
     std::smatch matchResults;
     auto matched = std::regex_match(currentLine, matchResults, statusLinePattern);
-    assert(matched);
+    Assert(matched);
 
     std::string version    = matchResults[1],
                 status     = matchResults[2],
@@ -135,7 +135,7 @@ HTTPChunkedPayload HTTPClientImpl<S, PORT>::ReadChunkedPayload()
         if (bytesToRead > 0)
         {
             HTTPChunkedPayload::Chunk chunk(this->mSocket.template ReadVector<uint8_t>(bytesToRead).Unwrap());
-            assert(chunk.Size() == bytesToRead);
+            Assert(chunk.Size() == bytesToRead);
             payload.AddChunk(chunk);
         }
     }

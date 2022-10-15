@@ -3,7 +3,7 @@
 
 
 #include <cstdint>
-#include <cassert>
+#include "Util/Assert.hpp"
 #include <utility>
 #include <concepts>
 
@@ -115,11 +115,11 @@ public:
     explicit inline operator bool() const { return mHasValue; }
 
 
-          T& operator *()       { assert(mHasValue); return *reinterpret_cast<      T*>(mData); }
-    const T& operator *() const { assert(mHasValue); return *reinterpret_cast<const T*>(mData); }
+          T& operator *()       { Assert(mHasValue); return *reinterpret_cast<      T*>(mData); }
+    const T& operator *() const { Assert(mHasValue); return *reinterpret_cast<const T*>(mData); }
 
-          T* operator->()       { assert(mHasValue); return  reinterpret_cast<      T*>(mData); }
-    const T* operator->() const { assert(mHasValue); return  reinterpret_cast<const T*>(mData); }
+          T* operator->()       { Assert(mHasValue); return  reinterpret_cast<      T*>(mData); }
+    const T* operator->() const { Assert(mHasValue); return  reinterpret_cast<const T*>(mData); }
 
 
     bool operator==(const Option<T>& rhs) const requires ( std::equality_comparable<T> )

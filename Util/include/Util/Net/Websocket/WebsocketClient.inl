@@ -26,9 +26,9 @@ WebsocketClientImpl<S, PORT>::WebsocketClientImpl(const std::string& hostname, c
 
 
     auto response = handshaker.Receive();
-    assert(response.Status() == 101);
-    assert(response.Header().Get("Upgrade") == "websocket");
-    assert(response.Header().Get("Connection") == "upgrade");
+    Assert(response.Status() == 101);
+    Assert(response.Header().Get("Upgrade") == "websocket");
+    Assert(response.Header().Get("Connection") == "upgrade");
     if (response.Status() == 101)
     {
         mSocket = handshaker.TakeSocket();
@@ -103,9 +103,9 @@ std::string WebsocketClientImpl<S, PORT>::GenerateNonce()
             nonce.push_back(reinterpret_cast<uint8_t*>(&val)[i]);
         }
     }
-    assert(nonce.size() == 16);
+    Assert(nonce.size() == 16);
     auto base64 = Base64::Encode(nonce);
-    assert(base64.size() == 24);
+    Assert(base64.size() == 24);
     return base64;
 }
 
@@ -302,7 +302,7 @@ WebsocketClientImpl<S, PORT>::ReceiveFragment()
     if (auto byte = mSocket->template ReadType<uint8_t>())
     {
         masked = *byte & 0b10000000;
-        assert(!masked);
+        Assert(!masked);
         uint8_t sizeByte = *byte & 0b01111111;
         if (sizeByte == 126)
         {

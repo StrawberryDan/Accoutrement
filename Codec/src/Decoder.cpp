@@ -2,7 +2,6 @@
 #include "Util/Utilities.hpp"
 
 
-#include <cassert>
 #include <iostream>
 
 
@@ -19,15 +18,15 @@ Decoder::Decoder(const AVCodec* codec, const AVCodecParameters* parameters)
     : mCodecContext(nullptr)
     , mParameters(parameters)
 {
-    assert(av_codec_is_decoder(codec));
+    Assert(av_codec_is_decoder(codec));
 
     mCodecContext = avcodec_alloc_context3(codec);
-    assert(mCodecContext != nullptr);
+    Assert(mCodecContext != nullptr);
     auto result = avcodec_open2(mCodecContext, codec, nullptr);
-    assert(result == 0);
-    assert(avcodec_is_open(mCodecContext));
+    Assert(result == 0);
+    Assert(avcodec_is_open(mCodecContext));
     result = avcodec_parameters_to_context(mCodecContext, mParameters);
-    assert(result >= 0);
+    Assert(result >= 0);
 }
 
 
@@ -60,10 +59,10 @@ Decoder::~Decoder()
 
 std::vector<Frame> Decoder::DecodePacket(const Packet& packet)
 {
-    assert(mCodecContext != nullptr);
+    Assert(mCodecContext != nullptr);
 
     auto sendResult = avcodec_send_packet(mCodecContext, *packet);
-    assert(sendResult == 0 || sendResult == AVERROR(EAGAIN));
+    Assert(sendResult == 0 || sendResult == AVERROR(EAGAIN));
 
     std::vector<Frame> frames;
     int receiveResult;
@@ -71,7 +70,7 @@ std::vector<Frame> Decoder::DecodePacket(const Packet& packet)
     {
         Frame frame;
         receiveResult = avcodec_receive_frame(mCodecContext, *frame);
-        assert(receiveResult == 0 || receiveResult == AVERROR(EAGAIN) || receiveResult == AVERROR_EOF);
+        Assert(receiveResult == 0 || receiveResult == AVERROR(EAGAIN) || receiveResult == AVERROR_EOF);
         if (receiveResult == 0)
         {
             frames.push_back(std::move(frame));

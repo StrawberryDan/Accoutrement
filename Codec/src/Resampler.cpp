@@ -2,7 +2,7 @@
 #include "Util/Utilities.hpp"
 
 
-#include <cassert>
+#include "Util/Assert.hpp"
 
 
 
@@ -24,7 +24,7 @@ Resampler::Resampler(const AVCodecParameters* codecParameters)
     : mSwrContext(nullptr)
 {
     auto result = swr_alloc_set_opts2(&mSwrContext, &TARGET_CHANNEL_LAYOUT, TARGET_SAMPLE_FORMAT, TARGET_SAMPLE_RATE, &codecParameters->ch_layout, static_cast<AVSampleFormat>(codecParameters->format), codecParameters->sample_rate, 0, nullptr);
-    assert(result == 0);
+    Assert(result == 0);
 }
 
 
@@ -54,14 +54,14 @@ Resampler::~Resampler()
 
 Frame Resampler::Resample(const Frame& input)
 {
-    assert(mSwrContext != nullptr);
+    Assert(mSwrContext != nullptr);
 
     Frame output;
     output->ch_layout = TARGET_CHANNEL_LAYOUT;
     output->format = TARGET_SAMPLE_FORMAT;
     output->sample_rate = TARGET_SAMPLE_RATE;
     auto result = swr_convert_frame(mSwrContext, *output, *input);
-    assert(result == 0);
+    Assert(result == 0);
 
     return output;
 }
@@ -70,7 +70,7 @@ Frame Resampler::Resample(const Frame& input)
 
 std::vector<Frame> Resampler::Resample(const std::vector<Frame>& input)
 {
-    assert(mSwrContext != nullptr);
+    Assert(mSwrContext != nullptr);
     std::vector<Frame> output;
     output.reserve(input.size());
     for (const auto& frame : input)

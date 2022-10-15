@@ -2,7 +2,7 @@
 
 
 #include <cstring>
-#include <cassert>
+#include "Util/Assert.hpp"
 #include <random>
 
 
@@ -18,9 +18,9 @@ namespace Test
         auto encoded = Base64::Encode(bytes);
         auto decoded = Base64::Decode(encoded);
         unsigned long long expectedSize = RoundUpToNearestMultiple(CeilDiv(8 * bytes.size(), 6), 3);
-        assert(encoded.size() == expectedSize);
-        assert(decoded.size() == bytes.size());
-        assert(decoded == bytes);
+        Assert(encoded.size() == expectedSize);
+        Assert(decoded.size() == bytes.size());
+        Assert(decoded == bytes);
     }
 
     void Base64()

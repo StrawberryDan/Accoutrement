@@ -3,7 +3,7 @@
 
 
 #include <variant>
-#include <cassert>
+#include "Util/Assert.hpp"
 
 
 
@@ -20,14 +20,14 @@ public:
     inline bool  IsOk() const { return  mIsOk; }
     inline bool IsErr() const { return !mIsOk; }
 
-          D& operator *()        { assert(IsOk()); return  std::get<D>(mPayload); }
-    const D& operator *()  const { assert(IsOk()); return  std::get<D>(mPayload); }
-          D* operator->()       { assert(IsOk()); return &std::get<D>(mPayload); }
-    const D* operator->() const { assert(IsOk()); return &std::get<D>(mPayload); }
+          D& operator *()        { Assert(IsOk()); return  std::get<D>(mPayload); }
+    const D& operator *()  const { Assert(IsOk()); return  std::get<D>(mPayload); }
+          D* operator->()       { Assert(IsOk()); return &std::get<D>(mPayload); }
+    const D* operator->() const { Assert(IsOk()); return &std::get<D>(mPayload); }
 
-    D        Unwrap() { assert(IsOk());  return std::move(std::get<D>(mPayload)); }
+    D        Unwrap() { Assert(IsOk());  return std::move(std::get<D>(mPayload)); }
     D        UnwrapOr(D value) { if (IsOk()) { return Unwrap(); } else { return value; }}
-    const E&    Err() { assert(IsErr()); return std::move(std::get<E>(mPayload)); }
+    const E&    Err() { Assert(IsErr()); return std::move(std::get<E>(mPayload)); }
 
     explicit inline operator bool() { return IsOk(); }
 

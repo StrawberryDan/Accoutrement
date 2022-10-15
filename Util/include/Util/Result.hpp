@@ -11,11 +11,27 @@ template<typename D, typename E>
 class Result
 {
 public:
-    template <typename ...Args>
-    static Result   Ok(Args ...args)  { return Result(true,  D{std::forward<Args>(args)...}); }
+    static Result Ok(const D& value) requires ( std::is_copy_constructible_v<D> )
+        { return Result(true, value); }
+
+    static Result Ok(D&& value) requires ( std::is_move_constructible_v<D> )
+        { return Result(true, value); }
 
     template <typename ...Args>
-    static Result  Err(Args ...args)  { return Result(false, E{std::forward<Args>(args)...}); }
+    static Result   Ok(Args ...args) requires ( std::is_constructible_v<D, Args...> )
+        { return Result(true,  D(std::forward<Args>(args)...)); }
+
+
+
+    static Result Err(const E& value) requires ( std::is_copy_constructible_v<D> )
+        { return Result(false, value); }
+
+    static Result Err(E&& value) requires ( std::is_move_constructible_v<D> )
+        { return Result(false, value); }
+
+    template <typename ...Args>
+    static Result  Err(Args ...args) requires ( std::is_constructible_v<D, Args...> )
+        { return Result(false, E(std::forward<Args>(args)...)); }
 
     inline bool  IsOk() const { return  mIsOk; }
     inline bool IsErr() const { return !mIsOk; }

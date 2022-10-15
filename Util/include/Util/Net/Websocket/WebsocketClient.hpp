@@ -10,7 +10,9 @@
 
 
 
+#include "Util/Option.hpp"
 #include "Util/Result.hpp"
+#include "Util/Mutex.hpp"
 #include "Util/Net/Socket/Socket.hpp"
 #include "Util/Net/Socket/TCPClient.hpp"
 #include "Util/Net/Socket/TLSClient.hpp"
@@ -31,13 +33,18 @@ public:
 
     ~WebsocketClientImpl();
 
-    void SendFrame(const WebsocketMessage& message);
+
+
+    void SendMessage(const WebsocketMessage& message);
+
+    Result<WebsocketMessage, Error> ReadMessage();
+
+    Result<WebsocketMessage, Error> WaitMessage();
+
 
 
     [[nodiscard]] inline bool IsValid() const { return mSocket.HasValue(); }
     inline S TakeSocket() { return Take(mSocket); }
-
-    Result<WebsocketMessage, Error> ReadMessage();
 
 private:
     using Fragment = std::pair<bool, WebsocketMessage>;

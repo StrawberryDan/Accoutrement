@@ -33,9 +33,9 @@ WebsocketMessage::WebsocketMessage(std::vector<uint8_t> bytes)
 
 
 
-std::string WebsocketMessage::AsString() const
+std::u8string WebsocketMessage::AsString() const
 {
-    return std::string(mPayload.data(), mPayload.data() + mPayload.size());
+    return std::u8string(mPayload.data(), mPayload.data() + mPayload.size());
 }
 
 
@@ -56,7 +56,7 @@ Result<nlohmann::json, std::string> WebsocketMessage::AsJSON() const
             {
                 return Result<nlohmann::json, std::string>::Err("Parse Error");
             }
-            return Result<nlohmann::json, std::string>::Ok(json);
+            return Result<nlohmann::json, std::string>::Ok(std::forward<nlohmann::json>(json));
         }
 
         default:

@@ -29,7 +29,7 @@ public:
 
     inline Opcode GetOpcode() const { return mOpcode; }
     inline std::vector<uint8_t>         AsBytes() const { return mPayload; }
-    std::string                         AsString() const;
+    std::u8string                       AsString() const;
     Result<nlohmann::json, std::string> AsJSON() const;
     uint16_t GetCloseStatusCode() const;
 

@@ -38,7 +38,7 @@ add_library(Util STATIC
         include/Util/Endian.hpp
         include/Util/Option.hpp
         src/Net/Socket/Socket.cpp
-        include/Util/Assert.hpp)
+        include/Util/Assert.hpp include/Util/Concepts.hpp)
 target_include_directories(Util PUBLIC include)
 target_link_libraries(Util PRIVATE libressl libretls ws2_32 fmt)
 

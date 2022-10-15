@@ -4,65 +4,37 @@
 
 
 
-Bot::Bot(Token token)
+Bot::Bot(Token token, Intent intents)
     : mToken(std::move(token))
+    , mIntents(intents)
     , mHTTPS("discord.com")
-    , mWSS()
+    , mGateway(GetGatewayEndpoint(), mToken, mIntents)
 {
-    auto gateway = GetGatewayEndpoint();
-    mWSS.Emplace(gateway, "/?v=10&encoding=json");
-    Assert(mWSS->Lock()->IsValid());
 
-    auto hello = mWSS->Lock()->ReadMessage();
-    while (!hello)
-    {
-        hello = mWSS->Lock()->ReadMessage();
-    }
-
-    auto helloJSON = hello->AsJSON().Unwrap();
-    std::cout << std::setw(8) << helloJSON << std::endl;
-    nlohmann::json op;
-    double interval;
-    if (helloJSON.is_array())
-    {
-        op = helloJSON[0]["op"];
-        interval = static_cast<double>(helloJSON[0]["d"]["heartbeat_interval"]) / 1000.0;
-    }
-    else
-    {
-        op = helloJSON["op"];
-        interval = static_cast<double>(helloJSON["d"]["heartbeat_interval"]) / 1000.0;
-    }
-
-    Assert(op == 10);
-    mHeartbeat.Emplace(*mWSS, interval);
 }
 
 
 
 void Bot::Run()
 {
-    int i = 0;
-    while (i < 80 * 10)
+    while (true)
     {
-        auto message = mWSS->Lock()->ReadMessage();
-
-        if (message)
+        auto msg = mGateway->Receive();
+        if (msg)
         {
-            switch (message->GetOpcode())
+            auto json = msg->AsJSON();
+            if (json)
             {
-                case WebsocketMessage::Opcode::Close:
-                    std::cout << "Closing. Reason: " << message->GetCloseStatusCode() << std::endl;
-                    break;
-                case WebsocketMessage::Opcode::Text:
-                    std::cout << message->AsString() << std::endl;
-                    break;
-                default:
-                    break;
+                std::cout << std::setw(8) << json.Unwrap() << std::endl;
             }
-
-            std::cout << i + 1 << "/100" << std::endl;
-            i++;
+            else if (msg->GetOpcode() == WebsocketMessage::Opcode::Close)
+            {
+                std::cout << "Closing: " << msg->GetCloseStatusCode() << std::endl;
+            }
+            else
+            {
+                std::cout << reinterpret_cast<const char*>(msg->AsString().c_str()) << std::endl;
+            }
         }
     }
 }

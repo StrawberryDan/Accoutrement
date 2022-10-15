@@ -51,8 +51,7 @@ void Heartbeater::Run()
             message["d"] = mLastSequenceNumber ? nlohmann::json(*mLastSequenceNumber) : nlohmann::json();
             WebsocketMessage wssMessage(to_string(message));
 
-            mWSS.Lock()->SendFrame(wssMessage);
-            std::cout << "Sent Heartbeat" << std::endl;
+	        mWSS.Lock()->SendMessage(wssMessage);
             count += 1;
             mClock.Restart();
         }

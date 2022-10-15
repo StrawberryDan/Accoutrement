@@ -9,8 +9,8 @@
 
 #include "Util/Mutex.hpp"
 #include "Util/Net/HTTP/HTTPClient.hpp"
-#include "Util/Net/Websocket/WebsocketClient.hpp"
-#include "Heartbeater.hpp"
+#include "../../src/Gateway.hpp"
+#include "Intent.hpp"
 
 
 
@@ -20,7 +20,7 @@ public:
     using Token = std::string;
 
 public:
-    explicit Bot(Token token);
+    explicit Bot(Token token, Intent intents);
 
     void Run();
 
@@ -28,8 +28,12 @@ private:
     std::string GetGatewayEndpoint();
 
 private:
-    Token                                 mToken;
-    SharedMutex<HTTPSClient>              mHTTPS;
-    Option<SharedMutex<WSSClient>> mWSS;
-    Option<Heartbeater>            mHeartbeat;
+    Token                          mToken;
+    Intent                         mIntents;
+    SharedMutex<HTTPSClient>       mHTTPS;
+
+    Option<Gateway>                mGateway;
 };
+
+
+

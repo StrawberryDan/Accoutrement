@@ -18,27 +18,27 @@ public:
         , mData{}
     {}
 
-    template<typename ...Args>
-    Option(Args ...args)
-        : mHasValue(true)
-        , mData{}
-    {
-        new (mData) T(std::forward<Args>(args)...);
-    }
-
     Option(const Option& rhs) requires ( std::is_copy_constructible_v<T> )
-        : mHasValue(rhs.mHasValue)
-        , mData{}
+    : mHasValue(rhs.mHasValue)
+    , mData{}
     {
         new (mData) T(*rhs);
     }
 
     Option(Option&& rhs)  noexcept requires ( std::is_move_constructible_v<T> )
-        : mHasValue(rhs.mHasValue)
-        , mData{}
+    : mHasValue(rhs.mHasValue)
+    , mData{}
     {
         new (mData) T(std::move(*rhs));
         rhs.mHasValue = false;
+    }
+
+    template<typename ...Args>
+    Option(Args ...args) requires ( std::is_constructible_v<T, Args...> )
+        : mHasValue(true)
+        , mData{}
+    {
+        new (mData) T(std::forward<Args>(args)...);
     }
 
     Option& operator=(const Option& rhs) requires ( std::is_copy_assignable_v<T> )

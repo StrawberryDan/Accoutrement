@@ -78,6 +78,7 @@ Result<size_t, Socket::Error> TLSClient::Read(uint8_t* data, size_t len) const
         {
 #if !NDEBUG
             std::cout << tls_error(mTLS) << std::endl;
+            return Result<size_t, Socket::Error>::Err(Socket::Error::Unknown);
 #endif // !NDEBUG
         }
         else
@@ -101,6 +102,7 @@ Result<size_t, Socket::Error> TLSClient::Write(const uint8_t* data, size_t len) 
         {
 #if !NDEBUG
             std::cout << tls_error(mTLS) << std::endl;
+            return Result<size_t, Socket::Error>::Err(Socket::Error::Unknown);
 #endif // !NDEBUG
         }
         else

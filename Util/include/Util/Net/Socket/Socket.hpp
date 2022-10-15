@@ -59,6 +59,7 @@ concept SocketImpl = requires(T t, std::string hostname, uint16_t port)
 
 enum class Socket::Error
 {
+    Unknown,
     Closed,
 };
 

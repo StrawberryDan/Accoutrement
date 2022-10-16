@@ -16,7 +16,7 @@ public:
         { return Result(true, value); }
 
     static Result Ok(D&& value) requires ( std::is_move_constructible_v<D> )
-        { return Result(true, value); }
+        { return Result(true, std::forward<D>(value)); }
 
     template <typename ...Args>
     static Result   Ok(Args ...args) requires ( std::is_constructible_v<D, Args...> )
@@ -24,14 +24,14 @@ public:
 
 
 
-    static Result Err(const E& value) requires ( std::is_copy_constructible_v<D> )
+    static Result Err(const E& value) requires ( std::is_copy_constructible_v<E> )
         { return Result(false, value); }
 
-    static Result Err(E&& value) requires ( std::is_move_constructible_v<D> )
-        { return Result(false, value); }
+    static Result Err(E&& value) requires ( std::is_move_constructible_v<E> )
+        { return Result(false, std::forward<E>(value)); }
 
     template <typename ...Args>
-    static Result  Err(Args ...args) requires ( std::is_constructible_v<D, Args...> )
+    static Result  Err(Args ...args) requires ( std::is_constructible_v<E, Args...> )
         { return Result(false, E(std::forward<Args>(args)...)); }
 
 
@@ -74,7 +74,8 @@ public:
 private:
     using Payload = std::variant<D, E>;
 
-    Result(bool isOk, Payload&& payload) : mIsOk(isOk), mPayload(payload) {}
+	Result(bool isOk, const Payload&  payload) : mIsOk(isOk), mPayload(payload) {}
+    Result(bool isOk,       Payload&& payload) : mIsOk(isOk), mPayload(std::forward<Payload>(payload)) {}
 
     bool mIsOk;
     Payload mPayload;

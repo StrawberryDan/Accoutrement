@@ -3,7 +3,7 @@
 
 
 Gateway::Gateway(std::string endpoint, std::string token, Intent intent)
-	: mWSS(endpoint, "/?v=10&encoding=json")
+	: mWSS(WSSClient::Connect(endpoint, "/?v=10&encoding=json").Unwrap())
 	, mHeartbeat()
 {
 	auto hello = Receive().Unwrap().AsJSON().Unwrap();

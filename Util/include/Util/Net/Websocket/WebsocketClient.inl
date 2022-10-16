@@ -12,58 +12,122 @@
 
 
 
-template<SocketImpl S, uint16_t PORT>
-WebsocketClientImpl<S, PORT>::WebsocketClientImpl(const std::string& hostname, const std::string& subresource)
+template <SocketImpl S, uint16_t PORT>
+void WebsocketClientImpl<S, PORT>::ReceiverFunction()
 {
-    HTTPClientImpl<S, PORT> handshaker(hostname);
-    HTTPRequest upgradeRequest(HTTPVerb::GET, subresource);
-    upgradeRequest.Header().Add("Host", "gateway.discord.gg");
-    upgradeRequest.Header().Add("Upgrade", "websocket");
-    upgradeRequest.Header().Add("Connection", "Upgrade");
-    upgradeRequest.Header().Add("Sec-WebSocket-Key", GenerateNonce());
-    upgradeRequest.Header().Add("Sec-WebSocket-Version", "13");
-    handshaker.Request(upgradeRequest);
+	while (*mRunning.Lock())
+	{
+		auto msg = ReceiveFrame();
+		if (msg)
+		{
+			mRecvMessageBuffer.Lock()->push_back(msg.Unwrap());
+		}
+	}
+}
 
 
-    auto response = handshaker.Receive();
-    Assert(response.Status() == 101);
-    Assert(response.Header().Get("Upgrade") == "websocket");
-    Assert(response.Header().Get("Connection") == "upgrade");
-    if (response.Status() == 101)
-    {
-        mSocket = handshaker.TakeSocket();
-        *mRunning.Lock() = true;
 
-        mReceiver = std::async(std::launch::async, [this]()
-        {
-            while (*mRunning.Lock())
-            {
-                auto msg = ReceiveFrame();
-                if (msg)
-                {
-                    mRecvMessageBuffer.Lock()->push_back(msg.Unwrap());
-                }
-            }
-        });
+template <SocketImpl S, uint16_t PORT>
+void WebsocketClientImpl<S, PORT>::TransmitterFunction()
+{
+	while (*mRunning.Lock())
+	{
+		{
+			auto buffer = mSendMessageBuffer.Lock();
+			if (!buffer->empty())
+			{
 
-        mTransmitter = std::async(std::launch::async, [this]()
-        {
-            while (*mRunning.Lock())
-            {
-                {
-                    auto buffer = mSendMessageBuffer.Lock();
-                    if (!buffer->empty())
-                    {
+				auto msg = std::move(*buffer->rbegin());
+				buffer->pop_back();
+				TransmitFrame(msg).Unwrap();
+			}
+		}
+		std::this_thread::yield();
+	}
+}
 
-                        auto msg = std::move(*buffer->rbegin());
-                        buffer->pop_back();
-                        TransmitFrame(msg).Unwrap();
-                    }
-                }
-                std::this_thread::yield();
-            }
-        });
-    }
+
+
+template<SocketImpl S, uint16_t PORT>
+Result<WebsocketClientImpl<S, PORT>, typename WebsocketClientImpl<S, PORT>::Error>
+WebsocketClientImpl<S, PORT>::Connect(const std::string& host, const std::string& resource)
+{
+	HTTPClientImpl<S, PORT> handshaker(host);
+	HTTPRequest upgradeRequest(HTTPVerb::GET, resource);
+	upgradeRequest.Header().Add("Host", "gateway.discord.gg");
+	upgradeRequest.Header().Add("Upgrade", "websocket");
+	upgradeRequest.Header().Add("Connection", "Upgrade");
+	upgradeRequest.Header().Add("Sec-WebSocket-Key", GenerateNonce());
+	upgradeRequest.Header().Add("Sec-WebSocket-Version", "13");
+	handshaker.Request(upgradeRequest);
+	auto response = handshaker.Receive();
+	if (response.Status() != 101)
+	{
+		return Result<WebsocketClientImpl, Error>::Err(Error::Refused);
+	}
+
+
+	WebsocketClientImpl client;
+	client.mSocket  = handshaker.TakeSocket();
+	client.mRunning = true;
+
+	client.mReceiver    = std::async(std::launch::async, [&client]() {    client.ReceiverFunction(); });
+	client.mTransmitter = std::async(std::launch::async, [&client]() { client.TransmitterFunction(); });
+
+	return Result<WebsocketClientImpl, Error>::Ok(std::move(client));
+}
+
+
+
+template<SocketImpl S, uint16_t PORT>
+WebsocketClientImpl<S, PORT>::WebsocketClientImpl(WebsocketClientImpl<S, PORT>&& rhs) noexcept
+{
+	if (this != &rhs)
+	{
+		(*rhs.mRunning.Lock()) = false;
+		rhs.mReceiver.wait();
+		rhs.mTransmitter.wait();
+
+		mSocket = Take(rhs.mSocket);
+		mError = Take(rhs.mError);
+		mRecvMessageBuffer = Take(rhs.mRecvMessageBuffer);
+		mSendMessageBuffer = Take(rhs.mSendMessageBuffer);
+
+		(*mRunning.Lock()) = true;
+		mReceiver = std::async(std::launch::async, [this]()
+		{ ReceiverFunction(); });
+		mTransmitter = std::async(std::launch::async, [this]()
+		{ TransmitterFunction(); });
+	}
+}
+
+
+
+template<SocketImpl S, uint16_t PORT>
+WebsocketClientImpl<S, PORT>& WebsocketClientImpl<S, PORT>::operator=(WebsocketClientImpl<S, PORT>&& rhs) noexcept
+{
+	if (this != &rhs)
+	{
+		(*mRunning.Lock()) = false;
+		(*rhs.mRunning.Lock()) = false;
+		mReceiver.wait();
+		mTransmitter.wait();
+		rhs.mReceiver.wait();
+		rhs.mTransmitter.wait();
+
+		mSocket = Take(rhs.mSocket);
+		mError = Take(rhs.mError);
+		mRecvMessageBuffer = Take(rhs.mRecvMessageBuffer);
+		mSendMessageBuffer = Take(rhs.mSendMessageBuffer);
+
+		(*mRunning.Lock()) = true;
+		mReceiver = std::async(std::launch::async, [this]()
+		{ ReceiverFunction(); });
+		mTransmitter = std::async(std::launch::async, [this]()
+		{ TransmitterFunction(); });
+	}
+
+	return (*this);
 }
 
 
@@ -71,20 +135,23 @@ WebsocketClientImpl<S, PORT>::WebsocketClientImpl(const std::string& hostname, c
 template<SocketImpl S, uint16_t PORT>
 WebsocketClientImpl<S, PORT>::~WebsocketClientImpl()
 {
-	SendMessage(WebsocketMessage(WebsocketMessage::Opcode::Close));
-    while (true)
-    {
-        auto msg = ReadMessage();
-        if (msg && msg.Unwrap().GetOpcode() == WebsocketMessage::Opcode::Close)
-        {
-            break;
-        }
-    }
+	if (mSocket)
+	{
+		SendMessage(WebsocketMessage(WebsocketMessage::Opcode::Close));
+		while (true)
+		{
+			auto msg = ReadMessage();
+			if (msg && msg.Unwrap().GetOpcode() == WebsocketMessage::Opcode::Close)
+			{
+				break;
+			}
+		}
 
-    *mRunning.Lock() = false;
-    mReceiver.wait();
-    mTransmitter.wait();
-    mSocket.Reset();
+		*mRunning.Lock() = false;
+		mReceiver.wait();
+		mTransmitter.wait();
+		mSocket.Reset();
+	}
 }
 
 

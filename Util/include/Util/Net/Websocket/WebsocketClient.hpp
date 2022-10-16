@@ -20,7 +20,6 @@
 
 
 
-
 template<SocketImpl S, uint16_t PORT>
 class WebsocketClientImpl
 {
@@ -29,7 +28,12 @@ public:
 
 
 public:
-    WebsocketClientImpl(const std::string& hostname, const std::string& subresource);
+	static Result<WebsocketClientImpl, Error> Connect(const std::string& host, const std::string& resource);
+
+	WebsocketClientImpl(const WebsocketClientImpl&)                =  delete;
+	WebsocketClientImpl& operator=(const WebsocketClientImpl&)     =  delete;
+	WebsocketClientImpl(WebsocketClientImpl&& rhs) noexcept;
+	WebsocketClientImpl& operator=(WebsocketClientImpl&& rhs) noexcept;
 
     ~WebsocketClientImpl();
 
@@ -46,8 +50,15 @@ public:
     [[nodiscard]] inline bool IsValid() const { return mSocket.HasValue(); }
     inline S TakeSocket() { return Take(mSocket); }
 
+
+
 private:
     using Fragment = std::pair<bool, WebsocketMessage>;
+
+
+private:
+	WebsocketClientImpl() = default;
+
 
 
     [[nodiscard]] Result<WebsocketMessage, Error>   ReceiveFrame();
@@ -62,18 +73,23 @@ private:
     [[nodiscard]] static Error ErrorFromSocketError(Socket::Error err);
 
 
+
+	void ReceiverFunction();
+	void TransmitterFunction();
+
+
 private:
     using MessageBuffer = Mutex<std::vector<WebsocketMessage>>;
 
-    Option<S>        mSocket;
-    Option<Error>    mError;
+    Option<S>         mSocket;
+    Option<Error>     mError;
 
     std::future<void> mReceiver;
     std::future<void> mTransmitter;
 
-    Mutex<bool>                   mRunning;
-    MessageBuffer                 mRecvMessageBuffer;
-    MessageBuffer                 mSendMessageBuffer;
+    Mutex<bool>       mRunning;
+    MessageBuffer     mRecvMessageBuffer;
+    MessageBuffer     mSendMessageBuffer;
 };
 
 
@@ -83,6 +99,7 @@ enum class WebsocketClientImpl<S, PORT>::Error
 {
     NoMessage,
     Closed,
+	Refused,
 };
 
 

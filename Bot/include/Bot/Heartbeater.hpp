@@ -18,6 +18,8 @@ public:
     Heartbeater(SharedMutex<WSSClient> wss, double interval);
     ~Heartbeater();
 
+	void UpdateSequenceNumber(size_t value);
+
 private:
     void Run();
 
@@ -26,5 +28,5 @@ private:
     Clock                  mClock;
     Mutex<bool>            mShouldStop;
     SharedMutex<WSSClient> mWSS;
-    Option<size_t>  mLastSequenceNumber;
+    Option<Mutex<size_t>>  mLastSequenceNumber;
 };

@@ -25,7 +25,7 @@ void Bot::Run()
             auto json = msg->AsJSON();
             if (json)
             {
-                std::cout << std::setw(8) << json.Unwrap() << std::endl;
+                std::cout << std::setw(4) << json.Unwrap() << std::endl;
             }
             else if (msg->GetOpcode() == WebsocketMessage::Opcode::Close)
             {

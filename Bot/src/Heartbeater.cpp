@@ -48,7 +48,7 @@ void Heartbeater::Run()
         {
             nlohmann::json message;
             message["op"] = 1;
-            message["d"] = mLastSequenceNumber ? nlohmann::json(*mLastSequenceNumber) : nlohmann::json();
+            message["d"] = mLastSequenceNumber ? nlohmann::json(*mLastSequenceNumber->Lock()) : nlohmann::json();
             WebsocketMessage wssMessage(to_string(message));
 
 	        mWSS.Lock()->SendMessage(wssMessage);
@@ -58,4 +58,18 @@ void Heartbeater::Run()
 
         std::this_thread::yield();
     }
+}
+
+
+
+void Heartbeater::UpdateSequenceNumber(size_t value)
+{
+	if (mLastSequenceNumber)
+	{
+		(*mLastSequenceNumber->Lock()) = value;
+	}
+	else
+	{
+		mLastSequenceNumber = value;
+	}
 }

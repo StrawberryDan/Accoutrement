@@ -1,4 +1,4 @@
-#include "Bot/Heartbeater.hpp"
+#include "Heartbeat.hpp"
 
 
 
@@ -6,17 +6,17 @@
 
 
 
-Heartbeater::Heartbeater(SharedMutex<WSSClient> wss, double interval)
+Heartbeat::Heartbeat(SharedMutex<WSSClient> wss, double interval)
     : mWSS(wss)
     , mInterval(interval)
     , mShouldStop(false)
 {
-    mThread = std::thread(&Heartbeater::Run, this);
+    mThread = std::thread(&Heartbeat::Run, this);
 }
 
 
 
-Heartbeater::~Heartbeater()
+Heartbeat::~Heartbeat()
 {
     (*mShouldStop.Lock()) = true;
     mThread.join();
@@ -24,7 +24,7 @@ Heartbeater::~Heartbeater()
 
 
 
-void Heartbeater::Run()
+void Heartbeat::Run()
 {
     std::cout << "Beginning Heartbeat" << std::endl;
 
@@ -62,7 +62,7 @@ void Heartbeater::Run()
 
 
 
-void Heartbeater::UpdateSequenceNumber(size_t value)
+void Heartbeat::UpdateSequenceNumber(size_t value)
 {
 	if (mLastSequenceNumber)
 	{

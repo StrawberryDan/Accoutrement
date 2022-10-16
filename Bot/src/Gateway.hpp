@@ -3,7 +3,7 @@
 
 
 #include "Util/Net/Websocket/WebsocketClient.hpp"
-#include "Bot/Heartbeater.hpp"
+#include "Heartbeat.hpp"
 #include "Bot/Intent.hpp"
 
 
@@ -17,5 +17,5 @@ public:
 	void                                       Send(const WebsocketMessage& msg);
 private:
 	SharedMutex<WSSClient> mWSS;
-	Option<Heartbeater>    mHeartbeat;
+	Option<Heartbeat>    mHeartbeat;
 };

@@ -12,11 +12,11 @@
 
 
 
-class Heartbeater
+class Heartbeat
 {
 public:
-    Heartbeater(SharedMutex<WSSClient> wss, double interval);
-    ~Heartbeater();
+    Heartbeat(SharedMutex<WSSClient> wss, double interval);
+    ~Heartbeat();
 
 	void UpdateSequenceNumber(size_t value);
 

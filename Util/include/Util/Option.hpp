@@ -3,9 +3,12 @@
 
 
 #include <cstdint>
-#include "Util/Assert.hpp"
 #include <utility>
 #include <concepts>
+
+
+#include "Util/Assert.hpp"
+#include "Util/Utilities.hpp"
 
 
 
@@ -18,28 +21,43 @@ public:
         , mData{}
     {}
 
+
+
+	template<typename ...Args>
+	Option(Args ...args) requires ( std::is_constructible_v<T, Args...> )
+	: mHasValue(true)
+	, mData{}
+	{
+		new (mData) T(std::forward<Args>(args)...);
+	}
+
+
+
     Option(const Option& rhs) requires ( std::is_copy_constructible_v<T> )
     : mHasValue(rhs.mHasValue)
     , mData{}
     {
-        new (mData) T(*rhs);
+		if (rhs)
+		{
+			new(mData) T(*rhs);
+		}
     }
+
+
 
     Option(Option&& rhs)  noexcept requires ( std::is_move_constructible_v<T> )
-    : mHasValue(rhs.mHasValue)
+    : mHasValue(false)
     , mData{}
     {
-        new (mData) T(std::move(*rhs));
-        rhs.mHasValue = false;
+        if (rhs)
+        {
+			new (mData) T(std::move(*rhs));
+			mHasValue = Replace(rhs.mHasValue, false);
+	        std::fill(rhs.mData, rhs.mData + sizeof(T), 0);
+		}
     }
 
-    template<typename ...Args>
-    Option(Args ...args) requires ( std::is_constructible_v<T, Args...> )
-        : mHasValue(true)
-        , mData{}
-    {
-        new (mData) T(std::forward<Args>(args)...);
-    }
+
 
     Option& operator=(const Option& rhs) requires ( std::is_copy_assignable_v<T> )
     {
@@ -67,13 +85,15 @@ public:
             if (mHasValue)
             {
                 (*this)->~T();
+	            std::fill(mData, mData + sizeof(T), 0);
             }
 
             mHasValue = rhs.mHasValue;
             if (mHasValue)
             {
                 new (mData) T(std::move(*rhs));
-                rhs.mHasValue;
+                rhs.mHasValue = false;
+				std::fill(rhs.mData, rhs.mData + sizeof(T), 0);
             }
         }
 

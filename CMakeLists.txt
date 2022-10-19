@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 
 set(wxBUILD_SHARED False)
 set(wxBUILD_MONOLITHIC True)
+set(wxBUILD_CXX_STANDARD 20)
 add_subdirectory($ENV{wxWidgets_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/3rdParty/wxWidgets)
 
 

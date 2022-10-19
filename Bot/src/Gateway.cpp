@@ -25,6 +25,22 @@ Gateway::Gateway(std::string endpoint, std::string token, Intent intent)
 
 
 
+Result<WebsocketMessage, WSSClient::Error> Gateway::Read()
+{
+	if (mMessageBuffer.empty())
+	{
+		return Receive();
+	}
+	else
+	{
+		auto msg = std::move(mMessageBuffer[0]);
+		mMessageBuffer.erase(mMessageBuffer.begin());
+		return msg;
+	}
+}
+
+
+
 Result<WebsocketMessage, WSSClient::Error> Gateway::Receive()
 {
 	while (true)
@@ -50,6 +66,34 @@ Result<WebsocketMessage, WSSClient::Error> Gateway::Receive()
 			else
 			{
 				return msg;
+			}
+		}
+	}
+}
+
+
+
+Result<WebsocketMessage, WSSClient::Error> Gateway::Await(bool (* pred)(const WebsocketMessage&))
+{
+	auto bufferCheck = std::find_if(mMessageBuffer.begin(), mMessageBuffer.end(), pred);
+	if (bufferCheck != mMessageBuffer.end())
+	{
+		return *bufferCheck;
+	}
+
+	while (true)
+	{
+		auto msg = Receive();
+
+		if (msg)
+		{
+			if (pred(*msg))
+			{
+				return msg.Unwrap();
+			}
+			else
+			{
+				mMessageBuffer.push_back(msg.Unwrap());
 			}
 		}
 	}

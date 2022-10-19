@@ -8,30 +8,50 @@
 
 
 
-template<typename D, typename E>
+template<typename D, typename E> requires ( !std::same_as<D, E> )
 class Result
 {
 public:
-    static Result Ok(const D& value) requires ( std::is_copy_constructible_v<D> )
+	Result(const D& value) requires ( std::copy_constructible<D> )
+		: mIsOk(true)
+		, mPayload(value)
+	{}
+
+	Result(D&& value) requires ( std::move_constructible<D> )
+		: mIsOk(true)
+		, mPayload(std::forward<D>(value))
+	{}
+
+	Result(const E& value) requires ( std::copy_constructible<E> )
+	: mIsOk(false)
+	, mPayload(value)
+	{}
+
+	Result(E&& value) requires ( std::move_constructible<E> )
+	: mIsOk(false)
+	, mPayload(std::forward<D>(value))
+	{}
+
+    static Result Ok(const D& value) requires ( std::copy_constructible<D> )
         { return Result(true, value); }
 
-    static Result Ok(D&& value) requires ( std::is_move_constructible_v<D> )
+    static Result Ok(D&& value) requires ( std::move_constructible<D> )
         { return Result(true, std::forward<D>(value)); }
 
     template <typename ...Args>
-    static Result   Ok(Args ...args) requires ( std::is_constructible_v<D, Args...> )
+    static Result   Ok(Args ...args) requires ( std::constructible_from<D, Args...> )
         { return Result(true,  D(std::forward<Args>(args)...)); }
 
 
 
-    static Result Err(const E& value) requires ( std::is_copy_constructible_v<E> )
+    static Result Err(const E& value) requires ( std::copy_constructible<E> )
         { return Result(false, value); }
 
-    static Result Err(E&& value) requires ( std::is_move_constructible_v<E> )
+    static Result Err(E&& value) requires ( std::move_constructible<E> )
         { return Result(false, std::forward<E>(value)); }
 
     template <typename ...Args>
-    static Result  Err(Args ...args) requires ( std::is_constructible_v<E, Args...> )
+    static Result  Err(Args ...args) requires ( std::constructible_from<E, Args...> )
         { return Result(false, E(std::forward<Args>(args)...)); }
 
 

@@ -36,7 +36,6 @@ Result<WebsocketMessage, WSSClient::Error> Gateway::Receive()
 			auto json = msg->AsJSON();
 			if (mHeartbeat && json && json->at("s").is_number())
 			{
-				std::cout << "Sequence Number: " << static_cast<int>(json->at("s")) << std::endl;
 				mHeartbeat->UpdateSequenceNumber(json.Unwrap()["s"]);
 			}
 

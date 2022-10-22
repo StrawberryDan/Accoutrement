@@ -7,6 +7,19 @@
 
 
 
+template<typename T> requires ( std::is_fundamental_v<T> )
+T Byteswap(T in)
+{
+    T out = 0;
+    for (int i = 0; i < sizeof(T); i++)
+    {
+        reinterpret_cast<uint8_t*>(&out)[sizeof(T) - i - 1] = reinterpret_cast<uint8_t*>(&in)[i];
+    }
+    return out;
+}
+
+
+
 template<typename T>
 T ToBigEndian(T v) requires( std::is_integral_v<T> )
 {
@@ -16,7 +29,7 @@ T ToBigEndian(T v) requires( std::is_integral_v<T> )
     }
     else if (std::endian::native == std::endian::little)
     {
-        return std::byteswap(v);
+        return Byteswap(v);
     }
 }
 
@@ -31,7 +44,7 @@ T ToLittleEndian(T v) requires( std::is_integral_v<T> )
     }
     else if (std::endian::native == std::endian::big)
     {
-        return std::byteswap(v);
+        return Byteswap(v);
     }
 }
 
@@ -46,7 +59,7 @@ T FromBigEndian(T v) requires( std::is_integral_v<T> )
     }
     else if (std::endian::native == std::endian::little)
     {
-        return std::byteswap(v);
+        return Byteswap(v);
     }
 }
 
@@ -61,6 +74,6 @@ T FromLittleEndian(T v) requires( std::is_integral_v<T> )
     }
     else if (std::endian::native == std::endian::big)
     {
-        return std::byteswap(v);
+        return Byteswap(v);
     }
 }

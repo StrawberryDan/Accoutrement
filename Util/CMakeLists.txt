@@ -1,3 +1,9 @@
+add_library(LibreSSL INTERFACE)
+target_link_libraries(LibreSSL INTERFACE $ENV{LibreSSL_ROOT}/lib/libssl.a $ENV{LibreSSL_ROOT}/lib/libtls.a)
+target_include_directories(LibreSSL INTERFACE $ENV{LibreSSL_ROOT}/include)
+
+
+
 add_library(Util STATIC
         include/Util/Base64.hpp
         include/Util/Math/Math.hpp
@@ -38,9 +44,14 @@ add_library(Util STATIC
         include/Util/Endian.hpp
         include/Util/Option.hpp
         src/Net/Socket/Socket.cpp
-        include/Util/Assert.hpp include/Util/Concepts.hpp)
+        include/Util/Assert.hpp
+        include/Util/Concepts.hpp
+        include/Util/Macros.hpp)
+
 target_include_directories(Util PUBLIC include)
-target_link_libraries(Util PRIVATE libressl libretls ws2_32 fmt)
+target_link_libraries(Util PRIVATE LibreSSL fmt)
+
+
 
 add_executable(Util_Test
         test/Main.cpp)

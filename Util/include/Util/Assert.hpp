@@ -2,7 +2,6 @@
 
 
 
-#include <stacktrace>
 #include <cstddef>
 #include <iostream>
 #include <utility>

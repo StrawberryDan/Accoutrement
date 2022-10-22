@@ -9,6 +9,7 @@
 #include "Util/Net/HTTP/HTTPClient.hpp"
 #include "Util/Base64.hpp"
 #include "Util/Endian.hpp"
+#include "Util/Macros.hpp"
 
 
 
@@ -293,7 +294,7 @@ typename WebsocketClientImpl<S, PORT>::Error WebsocketClientImpl<S, PORT>::Error
         case Socket::Error::Closed:
             return Error::Closed;
         default:
-            std::unreachable();
+            UNREACHABLE;
     }
 
 }

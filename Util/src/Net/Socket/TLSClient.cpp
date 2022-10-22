@@ -20,8 +20,8 @@ TLSClient::TLSClient(const std::string& host, uint16_t port)
     Assert(mConfig != nullptr);
     result = tls_config_set_protocols(mConfig, TLS_PROTOCOL_TLSv1_2);
     Assert(result >= 0);
-    result = tls_config_set_ca_file(mConfig, "./CA.pem");
-    Assert(result >= 0);
+    // result = tls_config_set_ca_file(mConfig, "./CA.pem");
+    // Assert(result >= 0);
     result = tls_configure(mTLS, mConfig);
     Assert(result >= 0);
     auto portAsString = std::to_string(port);

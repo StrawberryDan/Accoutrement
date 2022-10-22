@@ -71,7 +71,6 @@ std::vector<Packet> OpusEncoder::Encode(const Samples& samples)
         frame->pts         = mPTS;
         frame->time_base   = mContext->time_base;
         frame->nb_samples  = sampleFrame.Size();
-        frame->duration    = sampleFrame.Size();
 
         auto result = av_frame_get_buffer(*frame, 0);
         Assert(result == 0);
@@ -122,7 +121,6 @@ std::vector<Packet> OpusEncoder::Finish()
     frame->time_base   = mContext->time_base;
     frame->pts         = mPTS;
     frame->nb_samples  = mSampleBuffer.Size();
-    frame->duration    = mSampleBuffer.Size();
 
     auto result = av_frame_get_buffer(*frame, 0);
     Assert(result == 0);

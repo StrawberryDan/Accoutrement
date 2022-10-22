@@ -23,7 +23,9 @@ Resampler::Resampler()
 Resampler::Resampler(const AVCodecParameters* codecParameters)
     : mSwrContext(nullptr)
 {
-    auto result = swr_alloc_set_opts2(&mSwrContext, &TARGET_CHANNEL_LAYOUT, TARGET_SAMPLE_FORMAT, TARGET_SAMPLE_RATE, &codecParameters->ch_layout, static_cast<AVSampleFormat>(codecParameters->format), codecParameters->sample_rate, 0, nullptr);
+    auto target_channel_layout = TARGET_CHANNEL_LAYOUT;
+    auto source_channel_layout = codecParameters->ch_layout;
+    auto result = swr_alloc_set_opts2(&mSwrContext, &target_channel_layout, TARGET_SAMPLE_FORMAT, TARGET_SAMPLE_RATE, &source_channel_layout, static_cast<AVSampleFormat>(codecParameters->format), codecParameters->sample_rate, 0, nullptr);
     Assert(result == 0);
 }
 

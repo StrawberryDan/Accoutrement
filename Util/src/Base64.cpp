@@ -1,5 +1,6 @@
 #include "Util/Base64.hpp"
 #include "Util/Math/Math.hpp"
+#include "Util/Macros.hpp"
 
 
 #include <utility>
@@ -86,7 +87,7 @@ std::string Base64::Encode(const std::vector<uint8_t>& bytes)
         }
 
         default:
-            std::unreachable();
+            UNREACHABLE;
     }
 
     while (encoded.size() < encodedSize)
@@ -152,7 +153,7 @@ std::vector<uint8_t> Base64::Decode(std::string encoded)
         }
 
         default:
-            std::unreachable();
+            UNREACHABLE;
     }
 
 

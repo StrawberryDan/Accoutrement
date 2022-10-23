@@ -66,6 +66,8 @@ enum class Socket::Error
 {
     Unknown,
     Closed,
+	WouldBlock,
+	WouldCock,
 };
 
 

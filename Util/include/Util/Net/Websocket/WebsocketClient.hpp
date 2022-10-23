@@ -97,6 +97,7 @@ private:
 template<SocketImpl S, uint16_t PORT>
 enum class WebsocketClientImpl<S, PORT>::Error
 {
+	Unknown,
     NoMessage,
     Closed,
 	Refused,

@@ -70,6 +70,7 @@ WebsocketClientImpl<S, PORT>::Connect(const std::string& host, const std::string
 
 	WebsocketClientImpl client;
 	client.mSocket  = handshaker.TakeSocket();
+	client.mSocket->SetBlocking(false);
 	client.mRunning = true;
 
 	client.mReceiver    = std::async(std::launch::async, [&client]() {    client.ReceiverFunction(); });
@@ -399,7 +400,14 @@ WebsocketClientImpl<S, PORT>::ReceiveFragment()
     if (auto byte = mSocket->template ReadType<uint8_t>())
     {
         final = *byte & 0b10000000;
-        opcode = *GetOpcodeFromByte(*byte & 0b00001111);
+        if (auto op = GetOpcodeFromByte(*byte & 0b00001111))
+        {
+			opcode = *op;
+		}
+		else
+	    {
+			return Error::Unknown;
+		}
     }
     else
     {

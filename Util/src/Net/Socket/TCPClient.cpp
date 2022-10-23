@@ -119,8 +119,10 @@ Result<size_t, Socket::Error> TCPClient::Read(uint8_t* data, size_t len) const
     }
 	else
     {
-		switch (bytesRead)
+		switch (errno)
 		{
+			case EWOULDBLOCK:
+				return Error::WouldBlock;
 			default:
 				UNREACHABLE;
 		}
@@ -144,17 +146,22 @@ Result<size_t, Socket::Error> TCPClient::Write(const uint8_t* data, size_t len) 
         return Result<size_t, Socket::Error>::Ok(static_cast<size_t>(bytesSent));
     }
 #elif __APPLE__ || __linux__
-	auto bytesSent = send(mSocket, data, len, 0);
-	if (bytesSent >= 0)
+	while (true)
 	{
-		return bytesSent;
-	}
-	else
-	{
-		switch (bytesSent)
+		auto bytesSent = send(mSocket, data, len, 0);
+		if (bytesSent >= 0)
 		{
-			default:
-				UNREACHABLE;
+			return bytesSent;
+		}
+		else
+		{
+			switch (errno)
+			{
+				case EAGAIN:
+					continue;
+				default:
+					UNREACHABLE;
+			}
 		}
 	}
 #endif // _WIN32
@@ -184,7 +191,7 @@ void TCPClient::SetBlocking(bool blocking)
 #elif __APPLE__ || __linux__
 	auto flags = fcntl(mSocket, F_GETFL);
 	Assert(flags >= 0);
-	flags &= blocking ? ~FNONBLOCK : FNONBLOCK;
+	flags = blocking ? FNONBLOCK : ~FNONBLOCK;
 	auto result = fcntl(mSocket, F_SETFL, flags);
 	Assert(result >= 0);
 #else

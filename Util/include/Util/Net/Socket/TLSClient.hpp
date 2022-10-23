@@ -32,7 +32,7 @@ public:
 
 
 private:
-	using CallbackArg = std::tuple<TCPClient, Option<Result<size_t, Socket::Error>>>;
+	using CallbackArg = std::tuple<TCPClient, Option<Result<size_t, Socket::Error>>, Option<Result<size_t, Socket::Error>>>;
 
 
 

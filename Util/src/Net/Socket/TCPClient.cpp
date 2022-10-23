@@ -146,22 +146,19 @@ Result<size_t, Socket::Error> TCPClient::Write(const uint8_t* data, size_t len) 
         return Result<size_t, Socket::Error>::Ok(static_cast<size_t>(bytesSent));
     }
 #elif __APPLE__ || __linux__
-	while (true)
+	auto bytesSent = send(mSocket, data, len, 0);
+	if (bytesSent >= 0)
 	{
-		auto bytesSent = send(mSocket, data, len, 0);
-		if (bytesSent >= 0)
+		return bytesSent;
+	}
+	else
+	{
+		switch (errno)
 		{
-			return bytesSent;
-		}
-		else
-		{
-			switch (errno)
-			{
-				case EAGAIN:
-					continue;
-				default:
-					UNREACHABLE;
-			}
+			case EAGAIN:
+				return Error::WouldBlock;
+			default:
+				UNREACHABLE;
 		}
 	}
 #endif // _WIN32

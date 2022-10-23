@@ -209,6 +209,10 @@ public:
 private:
 	bool    mHasValue;
 	uint8_t mData[sizeof(T)];
+
+#if !NDEBUG
+	const T* mView = reinterpret_cast<T*>(mData);
+#endif // !NDEBUG
 };
 
 

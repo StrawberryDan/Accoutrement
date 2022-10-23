@@ -17,26 +17,7 @@ Gateway::Gateway(std::string endpoint, std::string token, Intent intent)
 	identifier["d"]["properties"]["os"]      = "windows";
 	identifier["d"]["properties"]["browser"] = "strawberry";
 	identifier["d"]["properties"]["device"]  = "strawberry";
-
 	Send(WebsocketMessage(to_string(identifier)));
-	auto ready = mWSS.Lock()->WaitMessage().Unwrap().AsJSON().Unwrap();
-	std::cout << std::setw(4) << ready << std::endl;
-}
-
-
-
-Result<WebsocketMessage, WSSClient::Error> Gateway::Read()
-{
-	if (mMessageBuffer.empty())
-	{
-		return Receive();
-	}
-	else
-	{
-		auto msg = std::move(mMessageBuffer[0]);
-		mMessageBuffer.erase(mMessageBuffer.begin());
-		return msg;
-	}
 }
 
 
@@ -61,39 +42,12 @@ Result<WebsocketMessage, WSSClient::Error> Gateway::Receive()
 		{
 			if (msg.Err() == WSSClient::Error::NoMessage)
 			{
+				std::this_thread::yield();
 				continue;
 			}
 			else
 			{
 				return msg;
-			}
-		}
-	}
-}
-
-
-
-Result<WebsocketMessage, WSSClient::Error> Gateway::Await(bool (* pred)(const WebsocketMessage&))
-{
-	auto bufferCheck = std::find_if(mMessageBuffer.begin(), mMessageBuffer.end(), pred);
-	if (bufferCheck != mMessageBuffer.end())
-	{
-		return *bufferCheck;
-	}
-
-	while (true)
-	{
-		auto msg = Receive();
-
-		if (msg)
-		{
-			if (pred(*msg))
-			{
-				return msg.Unwrap();
-			}
-			else
-			{
-				mMessageBuffer.push_back(msg.Unwrap());
 			}
 		}
 	}

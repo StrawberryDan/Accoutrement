@@ -26,14 +26,10 @@ Heartbeat::~Heartbeat()
 
 void Heartbeat::Run()
 {
-    std::cout << "Beginning Heartbeat" << std::endl;
-
     std::random_device rd;
     std::uniform_real_distribution<double> jitterDist(0.0, 0.9 * mInterval);
     std::mt19937_64 rng(rd());
     double jitter = jitterDist(rng);
-
-    std::cout << "Jitter: " << jitter << std::endl;
 
     mClock.Restart();
     while (mClock.Read() < jitter && !*mShouldStop.Lock())

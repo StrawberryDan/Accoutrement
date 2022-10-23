@@ -186,7 +186,7 @@ public:
 		}
 		else
 		{
-			return (*this) == rhs;
+			return (**this) == rhs;
 		}
 	}
 
@@ -200,7 +200,7 @@ public:
 		}
 		else
 		{
-			return (*this) != rhs;
+			return (**this) != rhs;
 		}
 	}
 

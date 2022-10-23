@@ -45,6 +45,11 @@ public:
 
     template<typename T>
     [[nodiscard]] Result<size_t, Error> WriteVector(const std::vector<T>& data) const requires ( std::is_fundamental_v<T> );
+
+
+
+	virtual bool IsBlocking() = 0;
+	virtual void SetBlocking(bool blocking) = 0;
 };
 
 

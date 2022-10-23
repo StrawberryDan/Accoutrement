@@ -15,6 +15,7 @@
 #elif __APPLE__ || __linux__
 #include <sys/socket.h>
 #include <netdb.h>
+#include <fcntl.h>
 #else
 #error "NO SOCKET IMPLEMENTATION FOR PLATFORM"
 #endif // _WIN32
@@ -158,3 +159,38 @@ Result<size_t, Socket::Error> TCPClient::Write(const uint8_t* data, size_t len) 
 	}
 #endif // _WIN32
 }
+
+
+
+bool TCPClient::IsBlocking()
+{
+#if _WIN32
+
+#elif __APPLE__ || __linux__
+	auto flags = fcntl(mSocket, F_GETFL);
+	Assert(flags >= 0);
+	return !(flags & FNONBLOCK);
+#else
+#warning "No Implementation for platform"
+#endif
+}
+
+
+
+void TCPClient::SetBlocking(bool blocking)
+{
+#if _WIN32
+
+#elif __APPLE__ || __linux__
+	auto flags = fcntl(mSocket, F_GETFL);
+	Assert(flags >= 0);
+	flags &= blocking ? ~FNONBLOCK : FNONBLOCK;
+	auto result = fcntl(mSocket, F_SETFL, flags);
+	Assert(result >= 0);
+#else
+#warning "No Implementation for platform"
+#endif
+}
+
+
+

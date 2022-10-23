@@ -5,6 +5,7 @@
 #include "Util/Assert.hpp"
 #include <iostream>
 #include "Util/Utilities.hpp"
+#include "Util/Macros.hpp"
 
 
 
@@ -113,4 +114,18 @@ Result<size_t, Socket::Error> TLSClient::Write(const uint8_t* data, size_t len) 
     while (bytesWritten < len);
 
     return Result<size_t, Socket::Error>::Ok(static_cast<size_t>(bytesWritten));
+}
+
+
+
+bool TLSClient::IsBlocking()
+{
+	UNREACHABLE;
+}
+
+
+
+void TLSClient::SetBlocking(bool blocking)
+{
+	UNREACHABLE;
 }

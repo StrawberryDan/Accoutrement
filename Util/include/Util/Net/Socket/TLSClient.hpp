@@ -25,6 +25,11 @@ public:
     Result<size_t, Error> Write(const uint8_t* data, size_t len) const override;
 
 
+
+	bool IsBlocking() override;
+	void SetBlocking(bool blocking) override;
+
+
 private:
     tls*                       mTLS;
     tls_config*                mConfig;

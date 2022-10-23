@@ -33,6 +33,11 @@ public:
 
 
 
+	bool IsBlocking() override;
+	void SetBlocking(bool blocking) override;
+
+
+
 private:
     SOCKET_HANDLE mSocket;
 };

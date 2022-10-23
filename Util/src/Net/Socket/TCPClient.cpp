@@ -90,7 +90,7 @@ TCPClient::~TCPClient()
     if (mSocket)
     {
         auto err = shutdown(mSocket, SHUT_RDWR);
-        Assert(err == 0);
+        Assert(err == 0 || errno == ENOTCONN);
     }
 #endif // _WIN32
 }

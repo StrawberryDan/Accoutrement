@@ -7,6 +7,7 @@
 #include <memory>
 #include "Socket.hpp"
 #include "TCPClient.hpp"
+#include "Util/Option.hpp"
 
 
 
@@ -16,21 +17,33 @@ public:
     TLSClient(const std::string& host, uint16_t port);
     TLSClient(const TLSClient&) = delete;
     TLSClient& operator=(const TLSClient&) = delete;
-    TLSClient(TLSClient&& other) noexcept ;
+    TLSClient(TLSClient&& rhs) noexcept ;
     TLSClient& operator=(TLSClient&& other) noexcept ;
     ~TLSClient();
 
+
     Result<size_t, Error> Read(uint8_t* data, size_t len) const override;
-
     Result<size_t, Error> Write(const uint8_t* data, size_t len) const override;
-
 
 
 	bool IsBlocking() override;
 	void SetBlocking(bool blocking) override;
 
 
+
 private:
-    tls*                       mTLS;
-    tls_config*                mConfig;
+	using CallbackArg = std::tuple<TCPClient, Option<Result<size_t, Socket::Error>>>;
+
+
+
+private:
+	static ssize_t SendData(tls* tls, const void* data, size_t len, void* args);
+	static ssize_t RecvData(tls* tls,       void* data, size_t len, void* args);
+
+
+
+private:
+    tls*                         mTLS;
+    tls_config*                  mConfig;
+	std::unique_ptr<CallbackArg> mCallbackArgs;
 };

@@ -12,6 +12,7 @@
 TLSClient::TLSClient(const std::string& host, uint16_t port)
     : mTLS(nullptr)
     , mConfig(nullptr)
+	, mCallbackArgs(std::make_unique<CallbackArg>(std::make_tuple<TCPClient, Option<Result<size_t, Socket::Error>>>({host, port}, {})))
 {
     auto result = tls_init();
     Assert(result >= 0);
@@ -21,23 +22,19 @@ TLSClient::TLSClient(const std::string& host, uint16_t port)
     Assert(mConfig != nullptr);
     result = tls_config_set_protocols(mConfig, TLS_PROTOCOL_TLSv1_2);
     Assert(result >= 0);
-    // result = tls_config_set_ca_file(mConfig, "./CA.pem");
-    // Assert(result >= 0);
     result = tls_configure(mTLS, mConfig);
     Assert(result >= 0);
     auto portAsString = std::to_string(port);
-    result = tls_connect(mTLS, host.c_str(), portAsString.c_str());
-    // result = tls_connect_cbs(mTLS, RecvData, SendData, mTCP.get(), host.c_str());
-    Assert(result >= 0);
-    result = tls_handshake(mTLS);
+    result = tls_connect_cbs(mTLS, RecvData, SendData, mCallbackArgs.get(), host.c_str());
     Assert(result >= 0);
 }
 
 
 
-TLSClient::TLSClient(TLSClient&& other) noexcept
-    : mTLS(Take(other.mTLS))
-    , mConfig(Take(other.mConfig))
+TLSClient::TLSClient(TLSClient&& rhs) noexcept
+    : mTLS(Take(rhs.mTLS))
+    , mConfig(Take(rhs.mConfig))
+	, mCallbackArgs(Take(rhs.mCallbackArgs))
 {
 
 }
@@ -50,6 +47,7 @@ TLSClient& TLSClient::operator=(TLSClient&& rhs) noexcept
     {
         mTLS = Take(rhs.mTLS);
         mConfig = Take(rhs.mConfig);
+		mCallbackArgs = Take(rhs.mCallbackArgs);
     }
 
     return (*this);
@@ -71,61 +69,50 @@ TLSClient::~TLSClient()
 
 Result<size_t, Socket::Error> TLSClient::Read(uint8_t* data, size_t len) const
 {
-    size_t bytesRead = 0;
-    do
-    {
-        auto error = tls_read(mTLS, reinterpret_cast<void*>(data + bytesRead), len - bytesRead);
-        if (error < 0)
-        {
-#if !NDEBUG
-            std::cout << tls_error(mTLS) << std::endl;
-            return Result<size_t, Socket::Error>::Err(Socket::Error::Unknown);
-#endif // !NDEBUG
-        }
-        else
-        {
-            bytesRead += error;
-        }
-    }
-    while (bytesRead < len);
-    return Result<size_t, Socket::Error>::Ok(static_cast<size_t>(bytesRead));
+	tls_read(mTLS, data, len);
+	Assert(std::get<1>(*mCallbackArgs).HasValue());
+	return *std::get<1>(*mCallbackArgs);
 }
 
 
 
 Result<size_t, Socket::Error> TLSClient::Write(const uint8_t* data, size_t len) const
 {
-    size_t bytesWritten = 0;
-    do
-    {
-        auto error = tls_write(mTLS, reinterpret_cast<const void*>(data + bytesWritten), len - bytesWritten);
-        if (error < 0)
-        {
-#if !NDEBUG
-            std::cout << tls_error(mTLS) << std::endl;
-            return Result<size_t, Socket::Error>::Err(Socket::Error::Unknown);
-#endif // !NDEBUG
-        }
-        else
-        {
-            bytesWritten += error;
-        }
-    }
-    while (bytesWritten < len);
-
-    return Result<size_t, Socket::Error>::Ok(static_cast<size_t>(bytesWritten));
+    tls_write(mTLS, data, len);
+	Assert(std::get<1>(*mCallbackArgs).HasValue());
+	return *std::get<1>(*mCallbackArgs);
 }
 
 
 
 bool TLSClient::IsBlocking()
 {
-	UNREACHABLE;
+	return std::get<TCPClient>(*mCallbackArgs).IsBlocking();
 }
 
 
 
 void TLSClient::SetBlocking(bool blocking)
 {
-	UNREACHABLE;
+	std::get<TCPClient>(*mCallbackArgs).SetBlocking(blocking);
+}
+
+
+
+ssize_t TLSClient::SendData(tls* tls, const void* data, size_t len, void* _args)
+{
+	auto args = reinterpret_cast<CallbackArg*>(_args);
+	auto result = std::get<0>(*args).Write(static_cast<const uint8_t*>(data), len);
+	std::get<1>(*args) = result;
+	return result.UnwrapOr(-1);
+}
+
+
+
+ssize_t TLSClient::RecvData(tls* tls, void* data, size_t len, void* _args)
+{
+	auto args = reinterpret_cast<CallbackArg*>(_args);
+	auto result = std::get<0>(*args).Read(static_cast<uint8_t*>(data), len);
+	std::get<1>(*args) = result;
+	return result.UnwrapOr(-1);
 }

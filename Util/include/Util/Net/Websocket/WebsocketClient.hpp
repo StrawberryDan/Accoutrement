@@ -74,10 +74,6 @@ private:
 
 
 
-	void ReceiverFunction();
-	void TransmitterFunction();
-
-
 private:
     using MessageBuffer = Mutex<std::vector<WebsocketMessage>>;
 
@@ -86,10 +82,6 @@ private:
 
     std::future<void> mReceiver;
     std::future<void> mTransmitter;
-
-    Mutex<bool>       mRunning;
-    MessageBuffer     mRecvMessageBuffer;
-    MessageBuffer     mSendMessageBuffer;
 };
 
 

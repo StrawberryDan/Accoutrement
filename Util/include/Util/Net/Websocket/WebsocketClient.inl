@@ -13,42 +13,6 @@
 
 
 
-template <SocketImpl S, uint16_t PORT>
-void WebsocketClientImpl<S, PORT>::ReceiverFunction()
-{
-	while (*mRunning.Lock())
-	{
-		auto msg = ReceiveFrame();
-		if (msg)
-		{
-			mRecvMessageBuffer.Lock()->push_back(msg.Unwrap());
-		}
-	}
-}
-
-
-
-template <SocketImpl S, uint16_t PORT>
-void WebsocketClientImpl<S, PORT>::TransmitterFunction()
-{
-	while (*mRunning.Lock())
-	{
-		{
-			auto buffer = mSendMessageBuffer.Lock();
-			if (!buffer->empty())
-			{
-
-				auto msg = std::move(*buffer->rbegin());
-				buffer->pop_back();
-				TransmitFrame(msg).Unwrap();
-			}
-		}
-		std::this_thread::yield();
-	}
-}
-
-
-
 template<SocketImpl S, uint16_t PORT>
 Result<WebsocketClientImpl<S, PORT>, typename WebsocketClientImpl<S, PORT>::Error>
 WebsocketClientImpl<S, PORT>::Connect(const std::string& host, const std::string& resource)
@@ -70,11 +34,6 @@ WebsocketClientImpl<S, PORT>::Connect(const std::string& host, const std::string
 
 	WebsocketClientImpl client;
 	client.mSocket  = handshaker.TakeSocket();
-	client.mSocket->SetBlocking(false);
-	client.mRunning = true;
-
-	client.mReceiver    = std::async(std::launch::async, [&client]() {    client.ReceiverFunction(); });
-	client.mTransmitter = std::async(std::launch::async, [&client]() { client.TransmitterFunction(); });
 
 	return Result<WebsocketClientImpl, Error>::Ok(std::move(client));
 }
@@ -86,20 +45,8 @@ WebsocketClientImpl<S, PORT>::WebsocketClientImpl(WebsocketClientImpl<S, PORT>&&
 {
 	if (this != &rhs)
 	{
-		(*rhs.mRunning.Lock()) = false;
-		rhs.mReceiver.wait();
-		rhs.mTransmitter.wait();
-
 		mSocket = Take(rhs.mSocket);
 		mError = Take(rhs.mError);
-		mRecvMessageBuffer = Take(rhs.mRecvMessageBuffer);
-		mSendMessageBuffer = Take(rhs.mSendMessageBuffer);
-
-		(*mRunning.Lock()) = true;
-		mReceiver = std::async(std::launch::async, [this]()
-		{ ReceiverFunction(); });
-		mTransmitter = std::async(std::launch::async, [this]()
-		{ TransmitterFunction(); });
 	}
 }
 
@@ -110,23 +57,8 @@ WebsocketClientImpl<S, PORT>& WebsocketClientImpl<S, PORT>::operator=(WebsocketC
 {
 	if (this != &rhs)
 	{
-		(*mRunning.Lock()) = false;
-		(*rhs.mRunning.Lock()) = false;
-		mReceiver.wait();
-		mTransmitter.wait();
-		rhs.mReceiver.wait();
-		rhs.mTransmitter.wait();
-
 		mSocket = Take(rhs.mSocket);
 		mError = Take(rhs.mError);
-		mRecvMessageBuffer = Take(rhs.mRecvMessageBuffer);
-		mSendMessageBuffer = Take(rhs.mSendMessageBuffer);
-
-		(*mRunning.Lock()) = true;
-		mReceiver = std::async(std::launch::async, [this]()
-		{ ReceiverFunction(); });
-		mTransmitter = std::async(std::launch::async, [this]()
-		{ TransmitterFunction(); });
 	}
 
 	return (*this);
@@ -149,9 +81,6 @@ WebsocketClientImpl<S, PORT>::~WebsocketClientImpl()
 			}
 		}
 
-		*mRunning.Lock() = false;
-		mReceiver.wait();
-		mTransmitter.wait();
 		mSocket.Reset();
 	}
 }
@@ -161,8 +90,7 @@ WebsocketClientImpl<S, PORT>::~WebsocketClientImpl()
 template<SocketImpl S, uint16_t PORT>
 void WebsocketClientImpl<S, PORT>::SendMessage(const WebsocketMessage& message)
 {
-	auto buffer = mSendMessageBuffer.Lock();
-	buffer->push_back(message);
+	TransmitFrame(message).Unwrap();
 }
 
 
@@ -170,17 +98,7 @@ void WebsocketClientImpl<S, PORT>::SendMessage(const WebsocketMessage& message)
 template<SocketImpl S, uint16_t PORT>
 Result<WebsocketMessage, typename WebsocketClientImpl<S, PORT>::Error> WebsocketClientImpl<S, PORT>::ReadMessage()
 {
-	auto buffer = mRecvMessageBuffer.Lock();
-	if (buffer->empty())
-	{
-		return Result<WebsocketMessage, Error>::Err(Error::NoMessage);
-	}
-	else
-	{
-		auto message = std::move((*buffer)[0]);
-		buffer->erase(buffer->begin());
-		return Result<WebsocketMessage, Error>::Ok(message);
-	}
+	return ReceiveFrame();
 }
 
 
@@ -294,6 +212,8 @@ typename WebsocketClientImpl<S, PORT>::Error WebsocketClientImpl<S, PORT>::Error
     {
         case Socket::Error::Closed:
             return Error::Closed;
+		case Socket::Error::WouldBlock:
+			return Error::NoMessage;
         default:
             UNREACHABLE;
     }
@@ -395,6 +315,8 @@ WebsocketClientImpl<S, PORT>::ReceiveFragment()
 {
     using Opcode = WebsocketMessage::Opcode;
 
+	mSocket->SetBlocking(false);
+
     bool final;
     Opcode opcode;
     if (auto byte = mSocket->template ReadType<uint8_t>())
@@ -414,6 +336,7 @@ WebsocketClientImpl<S, PORT>::ReceiveFragment()
         return Result<Fragment, Error>::Err(ErrorFromSocketError(byte.Err()));
     }
 
+	mSocket->SetBlocking(true);
 
     bool   masked;
     size_t size;
@@ -441,6 +364,11 @@ WebsocketClientImpl<S, PORT>::ReceiveFragment()
     }
 
 
-    auto payload = mSocket->template ReadVector<uint8_t>(size).Unwrap();
+	std::vector<uint8_t> payload;
+	if (size > 0)
+	{
+		payload = mSocket->template ReadVector<uint8_t>(size).Unwrap();
+	}
+
     return Result<Fragment, Error>::Ok(final, WebsocketMessage(opcode, payload));
 }

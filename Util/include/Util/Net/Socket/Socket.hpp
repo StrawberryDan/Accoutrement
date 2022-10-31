@@ -48,7 +48,7 @@ public:
 
 
 
-	virtual bool IsBlocking() = 0;
+	virtual bool IsBlocking() const = 0;
 	virtual void SetBlocking(bool blocking) = 0;
 };
 

@@ -1,3 +1,4 @@
+
 #include "Util/Net/Socket/UDPClient.hpp"
 
 
@@ -96,7 +97,7 @@ Result<size_t, Socket::Error> UDPClient::Read(uint8_t* data, size_t len) const
         return Result<size_t, Socket::Error>::Ok(static_cast<size_t>(bytesRead));
     }
 #elif __APPLE__ || __linux__
-	auto bytesRead = recv(mSocket, data, len, MSG_WAITALL);
+	auto bytesRead = recv(mSocket, data, len, IsBlocking() ? MSG_WAITALL : MSG_DONTWAIT);
 	if (bytesRead >= 0)
 	{
 		return bytesRead;
@@ -149,7 +150,7 @@ Result<size_t, Socket::Error> UDPClient::Write(const uint8_t* data, size_t len) 
 
 
 
-bool UDPClient::IsBlocking()
+bool UDPClient::IsBlocking() const
 {
 #if _WIN32
 

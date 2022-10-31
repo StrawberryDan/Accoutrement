@@ -26,7 +26,7 @@ public:
     Result<size_t, Error> Write(const uint8_t* data, size_t len) const override;
 
 
-	bool IsBlocking() override;
+	bool IsBlocking() const override;
 	void SetBlocking(bool blocking) override;
 
 

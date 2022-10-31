@@ -89,7 +89,7 @@ Result<size_t, Socket::Error> TLSClient::Write(const uint8_t* data, size_t len) 
 
 
 
-bool TLSClient::IsBlocking()
+bool TLSClient::IsBlocking() const
 {
 	return std::get<TCPClient>(*mCallbackArgs).IsBlocking();
 }

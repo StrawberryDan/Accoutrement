@@ -33,7 +33,7 @@ public:
 
 
 
-	bool IsBlocking() override;
+	bool IsBlocking() const override;
 	void SetBlocking(bool blocking) override;
 
 

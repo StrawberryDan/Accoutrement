@@ -1,11 +1,13 @@
 #include <utility>
 
 #include "Bot/Bot.hpp"
+#include "Bot/Events/GuildCreateEvent.hpp"
 
 
 
 Bot::Bot(Token token, Intent intents)
-    : mToken(std::move(token))
+	: mRunning(true)
+    , mToken(std::move(token))
     , mIntents(intents)
     , mHTTPS("discord.com")
     , mGateway(GetGatewayEndpoint(), mToken, mIntents)
@@ -17,26 +19,65 @@ Bot::Bot(Token token, Intent intents)
 
 void Bot::Run()
 {
-    while (true)
+	mRunning = true;
+    while (mRunning)
     {
-        auto msg = mGateway->Receive();
-        if (msg)
-        {
-            auto json = msg->AsJSON();
-            if (json)
-            {
-                std::cout << std::setw(4) << json.Unwrap() << std::endl;
-            }
-            else if (msg->GetOpcode() == WebsocketMessage::Opcode::Close)
-            {
-                std::cout << "Closing: " << msg->GetCloseStatusCode() << std::endl;
-            }
-            else
-            {
-                std::cout << reinterpret_cast<const char*>(msg->AsString().c_str()) << std::endl;
-            }
-        }
-    }
+		auto gatewayMessage = mGateway->Receive();
+		if (gatewayMessage)
+		{
+			OnGatewayMessage(gatewayMessage.Unwrap());
+		}
+		else
+		{
+			continue;
+			UNREACHABLE;
+		}
+	}
+}
+
+
+
+void Bot::SetBehaviour(std::unique_ptr<Behaviour> behaviour)
+{
+	mBehaviour = std::move(behaviour);
+}
+
+
+
+void Bot::OnGatewayMessage(WebsocketMessage message)
+{
+	auto json = message.AsJSON().UnwrapOr({});
+	if (json.is_null())
+	{
+		return;
+	}
+
+	switch (static_cast<int>(json["op"]))
+	{
+		case 0: // Update Event
+		{
+			const std::string type = json["t"];
+			if (type == "READY")
+			{
+				ReadyEvent event;
+				if (mBehaviour) mBehaviour->OnReady(event);
+			}
+			else if (json["t"] == "GUILD_CREATE")
+			{
+				auto event = GuildCreateEvent::Parse(json).Unwrap();
+				if (mBehaviour) mBehaviour->OnGuildCreate(event);
+			}
+
+			break;
+		}
+
+		case 11: // Heartbeat Acknowledge
+			break;
+
+		default:
+			std::cout << std::setw(4) << json << std::endl;
+			break;
+	}
 }
 
 

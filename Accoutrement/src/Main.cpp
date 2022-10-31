@@ -10,7 +10,7 @@ class Accoutrement : public wxApp
 public:
     bool OnInit() override
     {
-
+		return true;
     }
 };
 

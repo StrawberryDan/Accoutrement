@@ -328,6 +328,7 @@ WebsocketClientImpl<S, PORT>::ReceiveFragment()
 		}
 		else
 	    {
+			std::cout << "Invalid Opcode Bytes: " << *byte << std::endl;
 			return Error::Unknown;
 		}
     }

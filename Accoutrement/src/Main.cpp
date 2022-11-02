@@ -1,6 +1,6 @@
 #include "wx/wx.h"
 #include "wx/sizer.h"
-#include "MainWindow.hpp"
+#include "UI/MainWindow.hpp"
 
 
 

@@ -1,0 +1,3 @@
+[submodule "Standard"]
+	path = Standard
+	url = https://github.com/StrawberryDan/Standard.git

@@ -31,7 +31,7 @@ endif()
 
 
 # MODULES
-add_subdirectory(Util)
+add_subdirectory(Standard)
 add_subdirectory(Codec)
-add_subdirectory(Bot)
+add_subdirectory(Discord)
 add_subdirectory(Accoutrement)

@@ -16,20 +16,23 @@ extern "C"
 
 
 
-class Resampler
+namespace Strawberry::Codec
 {
-public:
-    Resampler();
-    explicit Resampler(const AVCodecParameters* codecParameters);
-    Resampler(const Resampler& other) = delete;
-    Resampler& operator=(const Resampler& other) = delete;
-    Resampler(Resampler&& other) noexcept ;
-    Resampler& operator=(Resampler&& other) noexcept ;
-    ~Resampler();
+	class Resampler
+	{
+	public:
+	    Resampler();
+	    explicit Resampler(const AVCodecParameters* codecParameters);
+	    Resampler(const Resampler& other) = delete;
+	    Resampler& operator=(const Resampler& other) = delete;
+	    Resampler(Resampler&& other) noexcept ;
+	    Resampler& operator=(Resampler&& other) noexcept ;
+	    ~Resampler();
 
-    Frame Resample(const Frame& input);
-    std::vector<Frame> Resample(const std::vector<Frame>& input);
+	    Frame Resample(const Frame& input);
+	    std::vector<Frame> Resample(const std::vector<Frame>& input);
 
-private:
-    SwrContext* mSwrContext;
-};
+	private:
+	    SwrContext* mSwrContext;
+	};
+}

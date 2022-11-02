@@ -15,35 +15,39 @@ extern "C"
 }
 
 
-class Muxer
+
+namespace Strawberry::Codec
 {
-public:
-    explicit Muxer(const std::string& file);
-    Muxer(const Muxer&) = delete;
-    Muxer& operator=(const Muxer&) = delete;
-    Muxer(Muxer&& other) noexcept ;
-    Muxer& operator=(Muxer&& other) noexcept ;
-    ~Muxer();
+	class Muxer
+	{
+	public:
+	    explicit Muxer(const std::string& file);
+	    Muxer(const Muxer&) = delete;
+	    Muxer& operator=(const Muxer&) = delete;
+	    Muxer(Muxer&& other) noexcept ;
+	    Muxer& operator=(Muxer&& other) noexcept ;
+	    ~Muxer();
 
-    void OpenStream(AVCodecParameters* codecParameters);
-    void WriteHeader();
-    void WritePacket(Packet& packet);
-    void WriteTrailer();
-    void Flush();
+	    void OpenStream(AVCodecParameters* codecParameters);
+	    void WriteHeader();
+	    void WritePacket(Packet& packet);
+	    void WriteTrailer();
+	    void Flush();
 
-private:
+	private:
 
-    enum WritingStage
-    {
-        Unopened,
-        Opened,
-        HeaderWritten,
-        WritingPackets,
-        TrailerWritten,
-        Finished,
-    };
+	    enum WritingStage
+	    {
+	        Unopened,
+	        Opened,
+	        HeaderWritten,
+	        WritingPackets,
+	        TrailerWritten,
+	        Finished,
+	    };
 
-    AVFormatContext* mAVFormatContext;
-    std::vector<AVStream*> mStreams;
-    WritingStage mStage;
-};
+	    AVFormatContext* mAVFormatContext;
+	    std::vector<AVStream*> mStreams;
+	    WritingStage mStage;
+	};
+}

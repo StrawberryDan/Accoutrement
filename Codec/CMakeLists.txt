@@ -18,7 +18,7 @@ add_library(Codec STATIC
         src/SodiumEncrypter.cpp
         include/Codec/SodiumEncrypter.hpp)
 target_include_directories(Codec PUBLIC include)
-target_link_libraries(Codec PUBLIC FFMPEG sodium Util)
+target_link_libraries(Codec PUBLIC FFMPEG sodium Standard)
 
 add_executable(Codec_Test test/Main.cpp)
 target_include_directories(Codec_Test PRIVATE Codec)

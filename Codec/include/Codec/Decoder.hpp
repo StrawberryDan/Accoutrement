@@ -14,24 +14,28 @@ extern "C"
 }
 
 
-class Decoder
+
+namespace Strawberry::Codec
 {
-public:
-    Decoder();
-    Decoder(const AVCodec* codec, const AVCodecParameters* parameters);
-    Decoder(const Decoder& other) = delete;
-    Decoder& operator=(const Decoder& other) = delete;
-    Decoder(Decoder&& other) noexcept ;
-    Decoder& operator=(Decoder&& other) noexcept ;
-    ~Decoder();
+	class Decoder
+	{
+	public:
+	    Decoder();
+	    Decoder(const AVCodec* codec, const AVCodecParameters* parameters);
+	    Decoder(const Decoder& other) = delete;
+	    Decoder& operator=(const Decoder& other) = delete;
+	    Decoder(Decoder&& other) noexcept ;
+	    Decoder& operator=(Decoder&& other) noexcept ;
+	    ~Decoder();
 
 
-    std::vector<Frame> DecodePacket(const Packet& packet);
+	    std::vector<Frame> DecodePacket(const Packet& packet);
 
 
-    [[nodiscard]] inline const AVCodecParameters* Parameters() const { return mParameters; }
+	    [[nodiscard]] inline const AVCodecParameters* Parameters() const { return mParameters; }
 
-private:
-    AVCodecContext* mCodecContext;
-    const AVCodecParameters* mParameters;
-};
+	private:
+	    AVCodecContext* mCodecContext;
+	    const AVCodecParameters* mParameters;
+	};
+}

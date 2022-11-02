@@ -17,25 +17,28 @@ extern "C"
 
 
 
-class OpusEncoder
+namespace Strawberry::Codec
 {
-public:
-    OpusEncoder();
-    ~OpusEncoder();
+	class OpusEncoder
+	{
+	public:
+	    OpusEncoder();
+	    ~OpusEncoder();
 
-    std::vector<Packet> Encode(const Samples& samples);
-    std::vector<Packet> Finish();
+	    std::vector<Packet> Encode(const Samples& samples);
+	    std::vector<Packet> Finish();
 
-    inline       AVCodecContext* operator*()        { return mContext; }
-    inline const AVCodecContext* operator*()  const { return mContext; }
-    inline       AVCodecContext* operator->()       { return mContext; }
-    inline const AVCodecContext* operator->() const { return mContext; }
+	    inline       AVCodecContext* operator*()        { return mContext; }
+	    inline const AVCodecContext* operator*()  const { return mContext; }
+	    inline       AVCodecContext* operator->()       { return mContext; }
+	    inline const AVCodecContext* operator->() const { return mContext; }
 
-    [[nodiscard]] AVCodecParameters* Parameters() const;
+	    [[nodiscard]] AVCodecParameters* Parameters() const;
 
-private:
-    AVCodecContext* mContext;
-    AVCodecParameters *mParameters;
-    int64_t mPTS;
-    Samples mSampleBuffer;
-};
+	private:
+	    AVCodecContext* mContext;
+	    AVCodecParameters *mParameters;
+	    int64_t mPTS;
+	    Samples mSampleBuffer;
+	};
+}

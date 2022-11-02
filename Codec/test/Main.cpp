@@ -6,6 +6,10 @@
 
 
 
+using namespace Strawberry::Codec;
+
+
+
 int main()
 {
     av_log_set_level(AV_LOG_DEBUG);
@@ -31,9 +35,9 @@ int main()
     }
 
 
-    Key key;
+    SodiumEncrypter::Key key;
     crypto_secretbox_keygen(key.data());
-    std::vector<EncryptedPacket> encrypted;
+    std::vector<SodiumEncrypter::EncryptedPacket> encrypted;
     SodiumEncrypter encrypter(key);
     for (const auto& packet : packets)
     {

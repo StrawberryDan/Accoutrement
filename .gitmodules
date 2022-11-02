@@ -1,3 +1,9 @@
 [submodule "Standard"]
 	path = Standard
 	url = https://github.com/StrawberryDan/Standard.git
+[submodule "Discord"]
+	path = Discord
+	url = https://github.com/StrawberryDan/Discord.git
+[submodule "Codec"]
+	path = Codec
+	url = https://github.com/StrawberryDan/Codec.git

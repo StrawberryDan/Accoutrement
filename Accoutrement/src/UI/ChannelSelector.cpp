@@ -14,6 +14,7 @@
 
 wxBEGIN_EVENT_TABLE(ChannelSelector, wxPanel)
 	EVT_BUTTON(ID(CONNECT), ChannelSelector::OnConnect)
+	EVT_CHOICE(ID(SERVER),  ChannelSelector::OnSelectServer)
 wxEND_EVENT_TABLE()
 
 
@@ -52,18 +53,22 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::Base& event
 		auto guild = (*guildCreate)->GetGuild();
 		auto& channels = guild.GetChannels();
 
-		wxChoice* serverChoice  = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
-		wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
+		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
 
-		serverChoice->Append(guild.GetName());
+		mChannelMap.insert({guild.GetId(), {}});
 
 		for (const auto& channel : channels)
 		{
 			if (channel.GetType() == Channel::Type::GUILD_VOICE)
 			{
-				channelChoice->Append(channel.GetName());
+				mChannelMap.at(guild.GetId()).push_back(channel.GetId());
 			}
 		}
+
+
+
+		serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId()));
+
 
 
 		Update();
@@ -76,4 +81,18 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::Base& event
 void ChannelSelector::OnConnect(wxCommandEvent& event)
 {
 
+}
+
+
+
+void ChannelSelector::OnSelectServer(wxCommandEvent& event)
+{
+	auto guildId = static_cast<SnowflakeClientData*>(event.GetClientObject())->Get();
+	wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
+
+	channelChoice->Clear();
+	for (const auto& channel : mChannelMap.at(guildId))
+	{
+		channelChoice->Append(Bot::Get().GetChannelById(channel)->GetName(), new SnowflakeClientData(channel));
+	}
 }

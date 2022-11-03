@@ -2,13 +2,25 @@
 
 
 
+#include <vector>
+#include <map>
+
+
+
 #include "wx/panel.h"
 #include "wx/choice.h"
 #include "wx/sizer.h"
 #include "Discord/EventListener.hpp"
+#include "Discord/Snowflake.hpp"
+#include "Discord/Entity/Channel.hpp"
 
 
 
+namespace
+{
+	using Strawberry::Discord::Snowflake;
+	using Strawberry::Discord::Entity::Channel;
+}
 
 
 
@@ -31,6 +43,7 @@ private:
 
 private:
 	void OnConnect(wxCommandEvent& event);
+	void OnSelectServer(wxCommandEvent& event);
 
 
 
@@ -40,7 +53,28 @@ private:
 
 
 private:
+	std::unordered_map<Snowflake, std::vector<Snowflake>> mChannelMap;
+
+
+
+private:
 	enum class Id;
+	class SnowflakeClientData;
+
+
+
+};
+
+
+
+class ChannelSelector::SnowflakeClientData : public wxClientData
+{
+public:
+	SnowflakeClientData(Snowflake data) : mData(data) {}
+
+	Snowflake Get() const { return mData; }
+private:
+	Snowflake mData;
 };
 
 

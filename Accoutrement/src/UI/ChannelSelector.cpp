@@ -80,7 +80,21 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::Base& event
 
 void ChannelSelector::OnConnect(wxCommandEvent& event)
 {
+	wxChoice* serverChoice  = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
+	wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
 
+
+	int serverSelectionIndex  = serverChoice->GetSelection();
+	int channelSelectionIndex = channelChoice->GetSelection();
+	if (serverSelectionIndex == wxNOT_FOUND || channelSelectionIndex == wxNOT_FOUND)
+	{
+		return;
+	}
+
+	auto guildId   = static_cast<SnowflakeClientData*>(serverChoice->GetClientObject(serverSelectionIndex))->Get();
+	auto channelId = static_cast<SnowflakeClientData*>(channelChoice->GetClientObject(channelSelectionIndex))->Get();
+
+	Bot::Get().ConnectToVoice(guildId, channelId);
 }
 
 

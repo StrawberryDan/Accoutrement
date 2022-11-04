@@ -16,14 +16,6 @@
 
 
 
-namespace
-{
-	using Strawberry::Discord::Snowflake;
-	using Strawberry::Discord::Entity::Channel;
-}
-
-
-
 class ChannelSelector
 	: public wxPanel
 	, public Strawberry::Discord::EventListener
@@ -53,7 +45,7 @@ private:
 
 
 private:
-	std::unordered_map<Snowflake, std::vector<Snowflake>> mChannelMap;
+	std::unordered_map<Strawberry::Discord::Snowflake, std::vector<Strawberry::Discord::Snowflake>> mChannelMap;
 
 
 
@@ -70,11 +62,11 @@ private:
 class ChannelSelector::SnowflakeClientData : public wxClientData
 {
 public:
-	SnowflakeClientData(Snowflake data) : mData(data) {}
+	SnowflakeClientData(Strawberry::Discord::Snowflake data) : mData(data) {}
 
-	Snowflake Get() const { return mData; }
+	Strawberry::Discord::Snowflake Get() const { return mData; }
 private:
-	Snowflake mData;
+	Strawberry::Discord::Snowflake mData;
 };
 
 

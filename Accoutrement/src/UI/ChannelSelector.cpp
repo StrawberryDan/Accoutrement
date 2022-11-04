@@ -52,9 +52,6 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::Base& event
 	{
 		auto guild = (*guildCreate)->GetGuild();
 		auto& channels = guild.GetChannels();
-
-		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
-
 		mChannelMap.insert({guild.GetId(), {}});
 
 		for (const auto& channel : channels)
@@ -65,14 +62,8 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::Base& event
 			}
 		}
 
-
-
+		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
 		serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId()));
-
-
-
-		Update();
-		Refresh();
 	}
 }
 

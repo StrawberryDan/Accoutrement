@@ -15,4 +15,4 @@ add_executable(
         src/Config.hpp
 )
 target_include_directories(Accoutrement PRIVATE ${wxWidgets_INCLUDE_DIRS})
-target_link_libraries(Accoutrement PRIVATE Discord Codec Standard ${wxWidgets_LIBRARIES})
+target_link_libraries(Accoutrement PRIVATE Strawberry_Discord Strawberry_Codec Strawberry_Core ${wxWidgets_LIBRARIES})

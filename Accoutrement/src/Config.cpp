@@ -8,12 +8,12 @@
 
 
 
-#include "Standard/Assert.hpp"
+#include "Core/Assert.hpp"
 #include "nlohmann/json.hpp"
 
 
 
-using Strawberry::Standard::Assert;
+using Strawberry::Core::Assert;
 
 
 

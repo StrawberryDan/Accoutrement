@@ -7,12 +7,12 @@
 
 
 #include <thread>
-#include "Standard/Assert.hpp"
+#include "Core/Assert.hpp"
 #include "../Config.hpp"
 
 
 
-using Strawberry::Standard::Assert;
+using Strawberry::Core::Assert;
 using Strawberry::Discord::Intent;
 
 

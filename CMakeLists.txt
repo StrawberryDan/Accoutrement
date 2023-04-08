@@ -3,6 +3,12 @@ project(Accoutrement)
 set(CMAKE_CXX_STANDARD 23)
 
 
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    add_compile_options(-fno-omit-frame-pointer -fsanitize=thread -fsanitize=undefined)
+    add_link_options(-fno-omit-frame-pointer -fsanitize=thread -fsanitize=undefined)
+endif()
+
+
 # MODULES
 add_subdirectory(../Core    ${CMAKE_CURRENT_BINARY_DIR}/Core)
 add_subdirectory(../Codec   ${CMAKE_CURRENT_BINARY_DIR}/Codec)

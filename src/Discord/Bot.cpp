@@ -32,7 +32,10 @@ void Bot::Initialise()
 
 void Bot::Run()
 {
-	gRun = std::async(std::launch::async, []() { gBot->Strawberry::Discord::Bot::Run(); });
+	gRun = std::async(std::launch::async, []()
+	{
+		gBot->Strawberry::Discord::Bot::Run();
+	});
 }
 
 

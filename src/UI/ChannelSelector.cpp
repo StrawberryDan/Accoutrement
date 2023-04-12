@@ -2,9 +2,11 @@
 
 
 
-#include "wx/stattext.h"
-#include "wx/button.h"
 #include "../Discord/Bot.hpp"
+#include "Core/Assert.hpp"
+#include "wx/button.h"
+#include "wx/stattext.h"
+
 
 
 
@@ -63,7 +65,27 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::EventBase& 
 		}
 
 		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
-		serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId()));
+		// Check if the server is already in the list
+		bool alreadyContains = false;
+		for (int i = 0; i < serverChoice->GetCount(); i++)
+		{
+			auto clientData = dynamic_cast<SnowflakeClientData*>(serverChoice->GetClientObject(i));
+			Strawberry::Core::Assert(clientData);
+
+			if (clientData->Get() == guild.GetId())
+			{
+				alreadyContains = true;
+				// Update name just in case it's changed.
+				serverChoice->SetString(i, guild.GetName());
+				break;
+			}
+		}
+
+		// Add new servers to the list
+		if (!alreadyContains)
+		{
+			serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId()));
+		}
 	}
 }
 

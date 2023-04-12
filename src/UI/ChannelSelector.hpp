@@ -29,7 +29,7 @@ public:
 
 
 private:
-	void ProcessEvent(const Strawberry::Discord::Event::Base& event) override;
+	void ProcessEvent(const Strawberry::Discord::Event::EventBase& event) override;
 
 
 

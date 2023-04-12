@@ -43,7 +43,7 @@ bool ChannelSelector::Destroy()
 
 
 
-void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::Base& event)
+void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::EventBase& event)
 {
 	using Strawberry::Discord::Entity::Channel;
 	using Strawberry::Discord::Event::GuildCreate;

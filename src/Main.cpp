@@ -13,11 +13,12 @@ public:
     {
 		Config::Initialise();
 		Bot::Initialise();
+		Bot::Run();
 
 		mMainWindow = new MainWindow();
 	    SetTopWindow(mMainWindow);
 		mMainWindow->Show();
-		Bot::Run();
+
 		return true;
     }
 

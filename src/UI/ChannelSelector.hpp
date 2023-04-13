@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include <mutex>
 
 
 
@@ -40,12 +41,8 @@ private:
 
 
 private:
+	std::mutex mMutex;
 	wxDECLARE_EVENT_TABLE();
-
-
-
-private:
-	std::unordered_map<Strawberry::Discord::Snowflake, std::vector<Strawberry::Discord::Snowflake>> mChannelMap;
 
 
 

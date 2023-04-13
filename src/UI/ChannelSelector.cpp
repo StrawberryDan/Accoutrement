@@ -24,6 +24,8 @@ wxEND_EVENT_TABLE()
 ChannelSelector::ChannelSelector(wxWindow* parent)
 	: wxPanel(parent, wxID_ANY)
 {
+	std::unique_lock lk(mMutex);
+
 	auto sizer = new wxBoxSizer(wxHORIZONTAL);
 	sizer->Add(new wxStaticText(this, wxID_ANY, "Server:"), 0, wxALL, 10);
 	sizer->Add(new wxChoice(this, ID(SERVER)), 1, wxALL, 10);
@@ -33,12 +35,20 @@ ChannelSelector::ChannelSelector(wxWindow* parent)
 	SetSizerAndFit(sizer);
 
 	Bot::Get().RegisterEventListener(this);
+
+	wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
+	for (auto snowflake : Bot::Get().FetchGuilds())
+	{
+		auto guild = Bot::Get().FetchGuild(snowflake);
+		serverChoice->Append(guild->GetName(), new SnowflakeClientData(guild->GetId()));
+	}
 }
 
 
 
 bool ChannelSelector::Destroy()
 {
+	std::unique_lock lk(mMutex);
 	Bot::Get().DeregisterEventListener(this);
 	return wxWindowBase::Destroy();
 }
@@ -50,19 +60,10 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::EventBase& 
 	using Strawberry::Discord::Entity::Channel;
 	using Strawberry::Discord::Event::GuildCreate;
 
+	std::unique_lock lk(mMutex);
 	if (auto guildCreate = event.Cast<GuildCreate>())
 	{
 		auto guild = (*guildCreate)->GetGuild();
-		auto& channels = guild.GetChannels();
-		mChannelMap.insert({guild.GetId(), {}});
-
-		for (const auto& channel : channels)
-		{
-			if (channel.GetType() == Channel::Type::GUILD_VOICE)
-			{
-				mChannelMap.at(guild.GetId()).push_back(channel.GetId());
-			}
-		}
 
 		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
 		// Check if the server is already in the list
@@ -93,6 +94,8 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::EventBase& 
 
 void ChannelSelector::OnConnect(wxCommandEvent& event)
 {
+	std::unique_lock lk(mMutex);
+
 	wxChoice* serverChoice  = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
 	wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
 
@@ -114,12 +117,9 @@ void ChannelSelector::OnConnect(wxCommandEvent& event)
 
 void ChannelSelector::OnSelectServer(wxCommandEvent& event)
 {
+	std::unique_lock lk(mMutex);
+
 	auto guildId = static_cast<SnowflakeClientData*>(event.GetClientObject())->Get();
 	wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
-
 	channelChoice->Clear();
-	for (const auto& channel : mChannelMap.at(guildId))
-	{
-		channelChoice->Append(Bot::Get().GetChannelById(channel)->GetName(), new SnowflakeClientData(channel));
-	}
 }

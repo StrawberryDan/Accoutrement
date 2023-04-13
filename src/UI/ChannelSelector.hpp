@@ -36,6 +36,7 @@ private:
 
 private:
 	void AddGuild(const Strawberry::Discord::Entity::Guild& guild);
+	void AddChannel(const Strawberry::Discord::Entity::Channel& channel);
 	void OnConnect(wxCommandEvent& event);
 	void OnSelectServer(wxCommandEvent& event);
 

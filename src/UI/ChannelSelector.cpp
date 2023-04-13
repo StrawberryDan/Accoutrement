@@ -98,6 +98,34 @@ void ChannelSelector::AddGuild(const Strawberry::Discord::Entity::Guild& guild)
 
 
 
+void ChannelSelector::AddChannel(const Strawberry::Discord::Entity::Channel& channel)
+{
+	wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
+	// Check if the server is already in the list
+	bool alreadyContains = false;
+	for (int i = 0; i < channelChoice->GetCount(); i++)
+	{
+		auto clientData = dynamic_cast<SnowflakeClientData*>(channelChoice->GetClientObject(i));
+		Strawberry::Core::Assert(clientData);
+
+		if (clientData->Get() == channel.GetId())
+		{
+			alreadyContains = true;
+			// Update name just in case it's changed.
+			channelChoice->SetString(i, channel.GetName());
+			break;
+		}
+	}
+
+	// Add new servers to the list
+	if (!alreadyContains)
+	{
+		channelChoice->Append(channel.GetName(), new SnowflakeClientData(channel.GetId()));
+	}
+}
+
+
+
 void ChannelSelector::OnConnect(wxCommandEvent& event)
 {
 	std::unique_lock lk(mMutex);
@@ -123,9 +151,29 @@ void ChannelSelector::OnConnect(wxCommandEvent& event)
 
 void ChannelSelector::OnSelectServer(wxCommandEvent& event)
 {
+	using namespace Strawberry::Discord::Entity;
+
 	std::unique_lock lk(mMutex);
 
 	auto guildId = static_cast<SnowflakeClientData*>(event.GetClientObject())->Get();
+	const auto* guild = Bot::Get().FetchGuild(guildId);
 	wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
+
 	channelChoice->Clear();
+
+	std::vector<Channel> channels;
+	for (auto channelId : Bot::Get().FetchChannels(guild->GetId()))
+	{
+		auto* channel = Bot::Get().GetChannel(channelId);
+		if (channel->GetType() == Channel::Type::GUILD_VOICE)
+		{
+			channels.push_back(*channel);
+		}
+	}
+
+	std::sort(channels.begin(), channels.end(), [](const auto& a, const auto& b) { return a.GetName() < b.GetName(); });
+	for (const auto& channel : channels)
+	{
+		AddChannel(channel);
+	}
 }

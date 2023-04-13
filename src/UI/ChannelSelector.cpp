@@ -40,7 +40,7 @@ ChannelSelector::ChannelSelector(wxWindow* parent)
 	for (auto snowflake : Bot::Get().FetchGuilds())
 	{
 		auto guild = Bot::Get().FetchGuild(snowflake);
-		serverChoice->Append(guild->GetName(), new SnowflakeClientData(guild->GetId()));
+		AddGuild(*guild);
 	}
 }
 
@@ -64,29 +64,35 @@ void ChannelSelector::ProcessEvent(const Strawberry::Discord::Event::EventBase& 
 	if (auto guildCreate = event.Cast<GuildCreate>())
 	{
 		auto guild = (*guildCreate)->GetGuild();
+		AddGuild(guild);
+	}
+}
 
-		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
-		// Check if the server is already in the list
-		bool alreadyContains = false;
-		for (int i = 0; i < serverChoice->GetCount(); i++)
+
+
+void ChannelSelector::AddGuild(const Strawberry::Discord::Entity::Guild& guild)
+{
+	wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
+	// Check if the server is already in the list
+	bool alreadyContains = false;
+	for (int i = 0; i < serverChoice->GetCount(); i++)
+	{
+		auto clientData = dynamic_cast<SnowflakeClientData*>(serverChoice->GetClientObject(i));
+		Strawberry::Core::Assert(clientData);
+
+		if (clientData->Get() == guild.GetId())
 		{
-			auto clientData = dynamic_cast<SnowflakeClientData*>(serverChoice->GetClientObject(i));
-			Strawberry::Core::Assert(clientData);
-
-			if (clientData->Get() == guild.GetId())
-			{
-				alreadyContains = true;
-				// Update name just in case it's changed.
-				serverChoice->SetString(i, guild.GetName());
-				break;
-			}
+			alreadyContains = true;
+			// Update name just in case it's changed.
+			serverChoice->SetString(i, guild.GetName());
+			break;
 		}
+	}
 
-		// Add new servers to the list
-		if (!alreadyContains)
-		{
-			serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId()));
-		}
+	// Add new servers to the list
+	if (!alreadyContains)
+	{
+		serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId()));
 	}
 }
 
@@ -96,8 +102,8 @@ void ChannelSelector::OnConnect(wxCommandEvent& event)
 {
 	std::unique_lock lk(mMutex);
 
-	wxChoice* serverChoice  = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
-	wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
+	auto* serverChoice  = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
+	auto* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
 
 
 	int serverSelectionIndex  = serverChoice->GetSelection();

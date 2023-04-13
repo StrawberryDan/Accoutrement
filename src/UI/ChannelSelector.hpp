@@ -2,18 +2,18 @@
 
 
 
-#include <vector>
 #include <map>
 #include <mutex>
+#include <vector>
 
-
-
-#include "wx/panel.h"
-#include "wx/choice.h"
-#include "wx/sizer.h"
+#include "Discord/Entity/Channel.hpp"
+#include "Discord/Entity/Guild.hpp"
 #include "Discord/EventListener.hpp"
 #include "Discord/Snowflake.hpp"
-#include "Discord/Entity/Channel.hpp"
+
+#include "wx/choice.h"
+#include "wx/panel.h"
+#include "wx/sizer.h"
 
 
 
@@ -35,6 +35,7 @@ private:
 
 
 private:
+	void AddGuild(const Strawberry::Discord::Entity::Guild& guild);
 	void OnConnect(wxCommandEvent& event);
 	void OnSelectServer(wxCommandEvent& event);
 

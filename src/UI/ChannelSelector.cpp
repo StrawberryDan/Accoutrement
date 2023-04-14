@@ -165,6 +165,7 @@ void ChannelSelector::OnSelectServer(wxCommandEvent& event)
 {
 	using namespace Strawberry::Discord::Entity;
 
+	wxBusyCursor busyCursor;
 	std::unique_lock lk(mMutex);
 
 	auto guildId = static_cast<SnowflakeClientData*>(event.GetClientObject())->Get();

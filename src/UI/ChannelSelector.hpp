@@ -17,66 +17,73 @@
 
 
 
-class ChannelSelector
-	: public wxPanel
-	, public Strawberry::Discord::EventListener
+namespace Strawberry::Accoutrement
 {
-public:
-	ChannelSelector(wxWindow* parent);
+	class ChannelSelector
+			: public wxPanel, public Strawberry::Discord::EventListener
+	{
+	public:
+		ChannelSelector(wxWindow* parent);
 
 
-	bool Destroy() override;
-
-
-
-private:
-	void ProcessEvent(const Strawberry::Discord::Event::EventBase& event) override;
-
-
-
-private:
-	void AddGuild(const Strawberry::Discord::Entity::Guild& guild);
-	void AddChannel(const Strawberry::Discord::Entity::Channel& channel);
-	void OnConnect(wxCommandEvent& event);
-	void OnDisconnect(wxCommandEvent& event);
-	void OnSelectServer(wxCommandEvent& event);
+		bool Destroy() override;
 
 
 
-private:
-	std::mutex mMutex;
+	private:
+		void ProcessEvent(const Strawberry::Discord::Event::EventBase& event) override;
+
+
+
+	private:
+		void AddGuild(const Strawberry::Discord::Entity::Guild& guild);
+		void AddChannel(const Strawberry::Discord::Entity::Channel& channel);
+		void OnConnect(wxCommandEvent& event);
+		void OnDisconnect(wxCommandEvent& event);
+		void OnSelectServer(wxCommandEvent& event);
+
+
+
+	private:
+		std::mutex mMutex;
 	wxDECLARE_EVENT_TABLE();
 
 
 
-private:
-	enum class Id;
-	class SnowflakeClientData;
+	private:
+		enum class Id;
 
 
 
-};
+		class SnowflakeClientData;
+	};
 
 
 
-class ChannelSelector::SnowflakeClientData : public wxClientData
-{
-public:
-	SnowflakeClientData(Strawberry::Discord::Snowflake data) : mData(data) {}
-
-	Strawberry::Discord::Snowflake Get() const { return mData; }
-private:
-	Strawberry::Discord::Snowflake mData;
-};
+	class ChannelSelector::SnowflakeClientData : public wxClientData
+	{
+	public:
+		SnowflakeClientData(Strawberry::Discord::Snowflake data) : mData(data)
+		{}
 
 
 
-enum class ChannelSelector::Id : wxWindowID
-{
-	CONNECT = wxID_HIGHEST + 1,
-	DISCONNECT,
-	SERVER,
-	CHANNEL,
-};
+		Strawberry::Discord::Snowflake Get() const
+		{ return mData; }
 
 
+
+	private:
+		Strawberry::Discord::Snowflake mData;
+	};
+
+
+
+	enum class ChannelSelector::Id : wxWindowID
+	{
+		CONNECT = wxID_HIGHEST + 1,
+		DISCONNECT,
+		SERVER,
+		CHANNEL,
+	};
+}

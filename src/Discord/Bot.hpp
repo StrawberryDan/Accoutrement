@@ -6,20 +6,23 @@
 
 
 
-class Bot
-	: public Strawberry::Discord::Bot
+namespace Strawberry::Accoutrement
 {
-public:
-	static void Initialise();
+	class Bot
+			: public Strawberry::Discord::Bot
+	{
+	public:
+		static void Initialise();
 
-	static void Run();
+		static void Run();
 
-	static void Stop();
+		static void Stop();
 
-	static Bot& Get();
+		static Bot& Get();
 
 
 
-public:
-	Bot();
-};
+	public:
+		Bot();
+	};
+}

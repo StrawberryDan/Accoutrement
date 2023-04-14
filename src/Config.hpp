@@ -2,28 +2,31 @@
 
 
 
-#include "../../../../../../Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/string"
+#include <string>
 
 
 
-class Config
+namespace Strawberry::Accoutrement
 {
-public:
-	static void Initialise();
+	class Config
+	{
+	public:
+		static void Initialise();
 
-	static Config& Get();
+		static Config& Get();
 
-	static Config Read();
+		static Config Read();
 
-	static void Dump();
-
-
-
-public:
-	const std::string& GetToken() const;
+		static void Dump();
 
 
 
-private:
-	std::string mToken;
-};
+	public:
+		const std::string& GetToken() const;
+
+
+
+	private:
+		std::string mToken;
+	};
+}

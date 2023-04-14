@@ -6,37 +6,40 @@
 
 
 
-class Accoutrement : public wxApp
+namespace Strawberry::Accoutrement
 {
-public:
-    bool OnInit() override
-    {
-		Config::Initialise();
-		Bot::Initialise();
-		Bot::Run();
-
-		mMainWindow = new MainWindow();
-	    SetTopWindow(mMainWindow);
-		mMainWindow->Show();
-
-		return true;
-    }
-
-
-
-	int OnExit() override
+	class Application : public wxApp
 	{
-		Bot::Stop();
-		Config::Dump();
-		return wxAppBase::OnExit();
-	}
+	public:
+		bool OnInit() override
+		{
+			Config::Initialise();
+			Bot::Initialise();
+			Bot::Run();
+
+			mMainWindow = new MainWindow();
+			SetTopWindow(mMainWindow);
+			mMainWindow->Show();
+
+			return true;
+		}
 
 
 
-private:
-	MainWindow* mMainWindow;
-};
+		int OnExit() override
+		{
+			Bot::Stop();
+			Config::Dump();
+			return wxAppBase::OnExit();
+		}
 
 
 
-wxIMPLEMENT_APP(Accoutrement);
+	private:
+		MainWindow* mMainWindow;
+	};
+}
+
+
+
+wxIMPLEMENT_APP(Strawberry::Accoutrement::Application);

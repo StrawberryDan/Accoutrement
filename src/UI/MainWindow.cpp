@@ -7,14 +7,17 @@
 
 
 
-MainWindow::MainWindow()
-	: wxFrame(nullptr, wxID_ANY, "Accoutrement")
+namespace Strawberry::Accoutrement
 {
-	wxFrame::SetMenuBar(new wxMenuBar());
-	wxFrame::CreateToolBar();
-	wxFrame::CreateStatusBar();
+	MainWindow::MainWindow()
+			: wxFrame(nullptr, wxID_ANY, "Accoutrement")
+	{
+		wxFrame::SetMenuBar(new wxMenuBar());
+		wxFrame::CreateToolBar();
+		wxFrame::CreateStatusBar();
 
-	auto sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(new ChannelSelector(this), 0, wxALL | wxGROW, 10);
-	SetSizerAndFit(sizer);
+		auto sizer = new wxBoxSizer(wxVERTICAL);
+		sizer->Add(new ChannelSelector(this), 0, wxALL | wxGROW, 10);
+		SetSizerAndFit(sizer);
+	}
 }

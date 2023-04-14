@@ -17,48 +17,49 @@ using Strawberry::Discord::Intent;
 
 
 
-static std::unique_ptr<Bot> gBot = nullptr;
-static std::future<void>    gRun = {};
-
-
-
-void Bot::Initialise()
+namespace Strawberry::Accoutrement
 {
-	Assert(!gBot);
-	gBot = std::make_unique<Bot>();
-}
+	static std::unique_ptr<Bot> gBot = nullptr;
+	static std::future<void>    gRun = {};
 
 
 
-void Bot::Run()
-{
-	gRun = std::async(std::launch::async, []()
+	void Bot::Initialise()
 	{
-		gBot->Strawberry::Discord::Bot::Run();
-	});
-}
+		Assert(!gBot);
+		gBot = std::make_unique<Bot>();
+	}
 
 
 
-void Bot::Stop()
-{
-	gBot->Strawberry::Discord::Bot::Stop();
-	gRun.wait();
-	gRun = {};
-}
+	void Bot::Run()
+	{
+		gRun = std::async(std::launch::async, []()
+		{
+			gBot->Strawberry::Discord::Bot::Run();
+		});
+	}
 
 
 
-Bot& Bot::Get()
-{
-	Assert(gBot != nullptr);
-	return *gBot;
-}
+	void Bot::Stop()
+	{
+		gBot->Strawberry::Discord::Bot::Stop();
+		gRun.wait();
+		gRun = {};
+	}
 
 
 
-Bot::Bot()
-	: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
-{
+	Bot& Bot::Get()
+	{
+		Assert(gBot != nullptr);
+		return *gBot;
+	}
 
+
+
+	Bot::Bot()
+			: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
+	{}
 }

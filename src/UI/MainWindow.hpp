@@ -8,9 +8,12 @@
 
 
 
-class MainWindow
-	: public wxFrame
+namespace Strawberry::Accoutrement
 {
-public:
-	MainWindow();
-};
+	class MainWindow
+			: public wxFrame
+	{
+	public:
+		MainWindow();
+	};
+}

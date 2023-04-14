@@ -156,7 +156,7 @@ void ChannelSelector::OnConnect(wxCommandEvent& event)
 
 void ChannelSelector::OnDisconnect(wxCommandEvent& event)
 {
-		Bot::Get().DisconnectFromVoice();
+	Bot::Get().DisconnectFromVoice();
 }
 
 

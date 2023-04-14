@@ -183,7 +183,7 @@ void ChannelSelector::OnSelectServer(wxCommandEvent& event)
 		}
 	}
 
-	std::sort(channels.begin(), channels.end(), [](const auto& a, const auto& b) { return a.GetName() < b.GetName(); });
+	std::sort(channels.begin(), channels.end(), [](const auto& a, const auto& b) { return a.GetPosition() < b.GetPosition(); });
 	for (const auto& channel : channels)
 	{
 		AddChannel(channel);

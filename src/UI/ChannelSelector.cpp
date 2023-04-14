@@ -16,6 +16,7 @@
 
 wxBEGIN_EVENT_TABLE(ChannelSelector, wxPanel)
 	EVT_BUTTON(ID(CONNECT), ChannelSelector::OnConnect)
+	EVT_BUTTON(ID(DISCONNECT), ChannelSelector::OnDisconnect)
 	EVT_CHOICE(ID(SERVER),  ChannelSelector::OnSelectServer)
 wxEND_EVENT_TABLE()
 
@@ -26,12 +27,16 @@ ChannelSelector::ChannelSelector(wxWindow* parent)
 {
 	std::unique_lock lk(mMutex);
 
+	auto buttons = new wxBoxSizer(wxVERTICAL);
+	buttons->Add(new wxButton(this, ID(CONNECT), "Connect"), 1, wxALL | wxEXPAND, 5);
+	buttons->Add(new wxButton(this, ID(DISCONNECT), "Disconnect"), 1, wxALL | wxEXPAND, 5);
+
 	auto sizer = new wxBoxSizer(wxHORIZONTAL);
-	sizer->Add(new wxStaticText(this, wxID_ANY, "Server:"), 0, wxALL, 10);
-	sizer->Add(new wxChoice(this, ID(SERVER)), 1, wxALL, 10);
-	sizer->Add(new wxStaticText(this, wxID_ANY, "Channel:"), 0, wxALL, 10);
-	sizer->Add(new wxChoice(this, ID(CHANNEL)), 1, wxALL, 10);
-	sizer->Add(new wxButton(this, ID(CONNECT), "Connect"), 0, wxALL, 10);
+	sizer->Add(new wxStaticText(this, wxID_ANY, "Server:"), 0, wxALL | wxALIGN_CENTER, 10);
+	sizer->Add(new wxChoice(this, ID(SERVER)), 1, wxALL | wxALIGN_CENTER, 10);
+	sizer->Add(new wxStaticText(this, wxID_ANY, "Channel:"), 0, wxALL | wxALIGN_CENTER, 10);
+	sizer->Add(new wxChoice(this, ID(CHANNEL)), 1, wxALL | wxALIGN_CENTER, 10);
+	sizer->Add(buttons, 0, wxALL | wxALIGN_CENTER, 10);
 	SetSizerAndFit(sizer);
 
 	Bot::Get().RegisterEventListener(this);
@@ -145,6 +150,13 @@ void ChannelSelector::OnConnect(wxCommandEvent& event)
 	auto channelId = static_cast<SnowflakeClientData*>(channelChoice->GetClientObject(channelSelectionIndex))->Get();
 
 	Bot::Get().ConnectToVoice(guildId, channelId);
+}
+
+
+
+void ChannelSelector::OnDisconnect(wxCommandEvent& event)
+{
+		Bot::Get().DisconnectFromVoice();
 }
 
 

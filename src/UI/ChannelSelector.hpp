@@ -38,6 +38,7 @@ private:
 	void AddGuild(const Strawberry::Discord::Entity::Guild& guild);
 	void AddChannel(const Strawberry::Discord::Entity::Channel& channel);
 	void OnConnect(wxCommandEvent& event);
+	void OnDisconnect(wxCommandEvent& event);
 	void OnSelectServer(wxCommandEvent& event);
 
 
@@ -73,6 +74,7 @@ private:
 enum class ChannelSelector::Id : wxWindowID
 {
 	CONNECT = wxID_HIGHEST + 1,
+	DISCONNECT,
 	SERVER,
 	CHANNEL,
 };

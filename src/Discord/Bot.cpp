@@ -7,7 +7,7 @@
 
 
 #include <thread>
-#include "Core/Assert.hpp"
+#include "Strawberry/Core/Assert.hpp"
 #include "../Config.hpp"
 
 

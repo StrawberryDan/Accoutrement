@@ -3,7 +3,7 @@
 
 
 #include "../Discord/Bot.hpp"
-#include "Core/Assert.hpp"
+#include "Strawberry/Core/Assert.hpp"
 #include "wx/button.h"
 #include "wx/stattext.h"
 

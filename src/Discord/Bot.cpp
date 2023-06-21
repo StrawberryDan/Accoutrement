@@ -47,6 +47,7 @@ namespace Strawberry::Accoutrement
 		gBot->Strawberry::Discord::Bot::Stop();
 		gRun.wait();
 		gRun = {};
+		gBot.reset();
 	}
 
 

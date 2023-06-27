@@ -27,7 +27,7 @@ namespace Strawberry::Accoutrement
 	void Bot::Initialise()
 	{
 		Assert(!gBot);
-		gBot = std::make_unique<Bot>();
+		gBot = std::unique_ptr<Bot>(new Bot());
 	}
 
 

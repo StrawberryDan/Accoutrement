@@ -22,7 +22,7 @@ namespace Strawberry::Accoutrement
 
 
 
-	public:
+	private:
 		Bot();
 	};
 }

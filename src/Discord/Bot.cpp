@@ -61,6 +61,6 @@ namespace Strawberry::Accoutrement
 
 
 	Bot::Bot()
-			: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
+		: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
 	{}
 }

@@ -36,6 +36,7 @@ namespace Strawberry::Accoutrement
 		{
 			gConfig = std::make_unique<Config>();
 			Config::Dump();
+			std::exit(-1);
 		}
 	}
 

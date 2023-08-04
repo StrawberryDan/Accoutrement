@@ -28,6 +28,8 @@ add_executable(
 		src/UI/Events/GuildCreated.hpp
 		src/UI/MusicPanel.cpp
 		src/UI/MusicPanel.hpp
+		src/UI/Events/ConnectedToVoice.cpp
+		src/UI/Events/ConnectedToVoice.hpp
 )
 target_include_directories(Accoutrement PRIVATE ${wxWidgets_INCLUDE_DIRS})
 target_link_libraries(Accoutrement PRIVATE StrawberryDiscord StrawberryCodec StrawberryCore ${wxWidgets_LIBRARIES})

@@ -213,7 +213,7 @@ namespace Strawberry::Accoutrement
 //				{
 //					channel->EnqueueFrame(std::move(frame));
 //				}
-			}
+//			}
 		}
 		else if (alreadyConnected && Bot::Get().GetVoiceConnection())
 		{

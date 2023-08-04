@@ -39,7 +39,7 @@ namespace Strawberry::Accoutrement
 
 
 	ChannelSelector::ChannelSelector(wxWindow* parent)
-			: wxPanel(parent, wxID_ANY)
+			: wxPanel(parent)
 	{
 		auto buttons = new wxBoxSizer(wxVERTICAL);
 		buttons->Add(new wxButton(this, CONNECT, "Connect"), 1, wxALL | wxEXPAND, 5);

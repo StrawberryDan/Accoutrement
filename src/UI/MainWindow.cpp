@@ -15,7 +15,8 @@ namespace Strawberry::Accoutrement
 	{
 		wxFrame::SetMenuBar(new wxMenuBar());
 		wxFrame::CreateToolBar();
-		wxFrame::CreateStatusBar();
+		auto statusBar = wxFrame::CreateStatusBar();
+		statusBar->SetStatusText("Not Connected");
 
 		auto sizer = new wxFlexGridSizer(2, 1, 5, 5);
 		sizer->AddGrowableCol(0);

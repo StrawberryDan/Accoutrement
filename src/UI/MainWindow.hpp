@@ -3,8 +3,6 @@
 
 
 #include "wx/frame.h"
-#include "wx/gbsizer.h"
-#include "ChannelSelector.hpp"
 
 
 

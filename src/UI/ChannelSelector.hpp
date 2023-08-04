@@ -14,7 +14,7 @@
 #include "wx/choice.h"
 #include "wx/panel.h"
 #include "wx/sizer.h"
-
+#include "Events/GuildCreated.hpp"
 
 
 namespace Strawberry::Accoutrement
@@ -22,6 +22,9 @@ namespace Strawberry::Accoutrement
 	class ChannelSelector
 			: public wxPanel, public Strawberry::Discord::EventListener
 	{
+		wxDECLARE_EVENT_TABLE();
+
+
 	public:
 		ChannelSelector(wxWindow* parent);
 
@@ -29,9 +32,9 @@ namespace Strawberry::Accoutrement
 		bool Destroy() override;
 
 
-
 	private:
 		void ProcessEvent(const Strawberry::Discord::Event::EventBase& event) override;
+		void OnGuildCreated(wxEvent& event) { AddGuild(static_cast<GuildCreated*>(&event)->GetGuild()); }
 
 
 
@@ -43,18 +46,7 @@ namespace Strawberry::Accoutrement
 		void OnSelectServer(wxCommandEvent& event);
 
 
-
 	private:
-		std::mutex mMutex;
-	wxDECLARE_EVENT_TABLE();
-
-
-
-	private:
-		enum class Id;
-
-
-
 		class SnowflakeClientData;
 	};
 
@@ -67,23 +59,10 @@ namespace Strawberry::Accoutrement
 		{}
 
 
-
-		Strawberry::Discord::Snowflake Get() const
-		{ return mData; }
-
+		Strawberry::Discord::Snowflake Get() const { return mData; }
 
 
 	private:
 		Strawberry::Discord::Snowflake mData;
-	};
-
-
-
-	enum class ChannelSelector::Id : wxWindowID
-	{
-		CONNECT = wxID_HIGHEST + 1,
-		DISCONNECT,
-		SERVER,
-		CHANNEL,
 	};
 }

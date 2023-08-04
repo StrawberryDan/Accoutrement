@@ -1,25 +1,39 @@
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
 #include "ChannelSelector.hpp"
-
-
-
+// This Project
 #include "../Discord/Bot.hpp"
+#include "Events/GuildCreated.hpp"
+// Core
 #include "Strawberry/Core/Assert.hpp"
 #include "wx/button.h"
 #include "wx/stattext.h"
 
 
-
-
 namespace Strawberry::Accoutrement
 {
-#define ID(v) std::to_underlying(Id::v)
+	enum CommandEvents : wxEventType
+	{
+		AddGuild,
+	};
+
+
+	enum ComponentId : wxWindowID
+	{
+		CONNECT = wxID_HIGHEST + 1,
+		DISCONNECT,
+		SERVER,
+		CHANNEL,
+	};
 
 
 
 	wxBEGIN_EVENT_TABLE(ChannelSelector, wxPanel)
-					EVT_BUTTON(ID(CONNECT), ChannelSelector::OnConnect)
-					EVT_BUTTON(ID(DISCONNECT), ChannelSelector::OnDisconnect)
-					EVT_CHOICE(ID(SERVER), ChannelSelector::OnSelectServer)
+					EVT_BUTTON(CONNECT,    ChannelSelector::OnConnect)
+					EVT_BUTTON(DISCONNECT, ChannelSelector::OnDisconnect)
+					EVT_CHOICE(SERVER,     ChannelSelector::OnSelectServer)
+					EVT_GUILD_CREATED(wxID_ANY, ChannelSelector::OnGuildCreated)
 	wxEND_EVENT_TABLE()
 
 
@@ -27,23 +41,21 @@ namespace Strawberry::Accoutrement
 	ChannelSelector::ChannelSelector(wxWindow* parent)
 			: wxPanel(parent, wxID_ANY)
 	{
-		std::unique_lock lk(mMutex);
-
 		auto buttons = new wxBoxSizer(wxVERTICAL);
-		buttons->Add(new wxButton(this, ID(CONNECT), "Connect"), 1, wxALL | wxEXPAND, 5);
-		buttons->Add(new wxButton(this, ID(DISCONNECT), "Disconnect"), 1, wxALL | wxEXPAND, 5);
+		buttons->Add(new wxButton(this, CONNECT, "Connect"), 1, wxALL | wxEXPAND, 5);
+		buttons->Add(new wxButton(this, DISCONNECT, "Disconnect"), 1, wxALL | wxEXPAND, 5);
 
 		auto sizer = new wxBoxSizer(wxHORIZONTAL);
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Server:"), 0, wxALL | wxALIGN_CENTER, 10);
-		sizer->Add(new wxChoice(this, ID(SERVER)), 1, wxALL | wxALIGN_CENTER, 10);
+		sizer->Add(new wxChoice(this, SERVER), 1, wxALL | wxALIGN_CENTER, 10);
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Channel:"), 0, wxALL | wxALIGN_CENTER, 10);
-		sizer->Add(new wxChoice(this, ID(CHANNEL)), 1, wxALL | wxALIGN_CENTER, 10);
+		sizer->Add(new wxChoice(this, CHANNEL), 1, wxALL | wxALIGN_CENTER, 10);
 		sizer->Add(buttons, 0, wxALL | wxALIGN_CENTER, 10);
 		SetSizerAndFit(sizer);
 
 		Bot::Get().RegisterEventListener(this);
 
-		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
+		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(SERVER));
 		for (auto snowflake: Bot::Get().FetchGuilds())
 		{
 			auto guild = Bot::Get().FetchGuild(snowflake);
@@ -55,7 +67,6 @@ namespace Strawberry::Accoutrement
 
 	bool ChannelSelector::Destroy()
 	{
-		std::unique_lock lk(mMutex);
 		Bot::Get().DeregisterEventListener(this);
 		return wxWindowBase::Destroy();
 	}
@@ -67,11 +78,10 @@ namespace Strawberry::Accoutrement
 		using Strawberry::Discord::Entity::Channel;
 		using Strawberry::Discord::Event::GuildCreate;
 
-		std::unique_lock lk(mMutex);
+
 		if (auto guildCreate = event.Cast<GuildCreate>())
 		{
-			auto guild = (*guildCreate)->GetGuild();
-			AddGuild(guild);
+			QueueEvent(new GuildCreated(guildCreate->GetGuild()));
 		}
 	}
 
@@ -79,7 +89,7 @@ namespace Strawberry::Accoutrement
 
 	void ChannelSelector::AddGuild(const Strawberry::Discord::Entity::Guild& guild)
 	{
-		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
+		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(SERVER));
 		// Check if the server is already in the list
 		bool alreadyContains = false;
 		for (int i = 0; i < serverChoice->GetCount(); i++)
@@ -107,7 +117,7 @@ namespace Strawberry::Accoutrement
 
 	void ChannelSelector::AddChannel(const Strawberry::Discord::Entity::Channel& channel)
 	{
-		wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
+		wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(CHANNEL));
 		// Check if the server is already in the list
 		bool alreadyContains = false;
 		for (int i = 0; i < channelChoice->GetCount(); i++)
@@ -135,10 +145,8 @@ namespace Strawberry::Accoutrement
 
 	void ChannelSelector::OnConnect(wxCommandEvent& event)
 	{
-		std::unique_lock lk(mMutex);
-
-		auto* serverChoice = static_cast<wxChoice*>(FindWindowById(ID(SERVER)));
-		auto* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
+		auto* serverChoice = static_cast<wxChoice*>(FindWindowById(SERVER));
+		auto* channelChoice = static_cast<wxChoice*>(FindWindowById(CHANNEL));
 
 
 		int serverSelectionIndex = serverChoice->GetSelection();
@@ -169,11 +177,11 @@ namespace Strawberry::Accoutrement
 		using namespace Strawberry::Discord::Entity;
 
 		wxBusyCursor busyCursor;
-		std::unique_lock lk(mMutex);
+
 
 		auto guildId = static_cast<SnowflakeClientData*>(event.GetClientObject())->Get();
 		const auto* guild = Bot::Get().FetchGuild(guildId);
-		wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(ID(CHANNEL)));
+		wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(CHANNEL));
 
 		channelChoice->Clear();
 

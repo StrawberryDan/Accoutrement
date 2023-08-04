@@ -7,6 +7,9 @@
 #include "Events/GuildCreated.hpp"
 // Core
 #include "Strawberry/Core/Assert.hpp"
+// Codec
+#include "Codec/MediaFile.hpp"
+// Wx Widgets
 #include "wx/button.h"
 #include "wx/stattext.h"
 #include "wx/gbsizer.h"
@@ -32,10 +35,6 @@ namespace Strawberry::Accoutrement
 
 
 	wxBEGIN_EVENT_TABLE(ChannelSelector, wxPanel)
-					EVT_BUTTON(CONNECT,    ChannelSelector::OnConnect)
-					EVT_BUTTON(DISCONNECT, ChannelSelector::OnDisconnect)
-					EVT_CHOICE(SERVER,     ChannelSelector::OnSelectServer)
-					EVT_GUILD_CREATED(wxID_ANY, ChannelSelector::OnGuildCreated)
 			EVT_BUTTON(CONNECT, ChannelSelector::OnConnect)
 			EVT_BUTTON(DISCONNECT, ChannelSelector::OnDisconnect)
 			EVT_CHOICE(SERVER, ChannelSelector::OnSelectServer)
@@ -47,6 +46,8 @@ namespace Strawberry::Accoutrement
 	ChannelSelector::ChannelSelector(wxWindow* parent)
 		: wxPanel(parent)
 	{
+		SetWindowStyle(wxSUNKEN_BORDER);
+
 		auto sizer = new wxGridBagSizer(5, 5);
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Server:"), {0, 0}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 		sizer->Add(new wxChoice(this, SERVER), {0, 1}, {1, 1}, wxALL | wxEXPAND, 5);
@@ -176,7 +177,53 @@ namespace Strawberry::Accoutrement
 			if (!selection) return;
 			auto [guildId, channelId] = selection.Unwrap();
 
-		Bot::Get().ConnectToVoice(guildId, channelId);
+			Bot::Get().ConnectToVoice(guildId, channelId);
+			mConnectButton->Disable();
+
+
+			std::vector<Codec::MediaFile> files;
+			files.push_back(Codec::MediaFile::Open("data/cotn.flac").Unwrap());
+//			files.push_back(Codec::MediaFile::Open("data/pd.wav").Unwrap());
+//			files.push_back(Codec::MediaFile::Open("data/girigiri.mp3").Unwrap());
+//			files.push_back(Codec::MediaFile::Open("data/dcl.wav").Unwrap());
+
+
+			for (auto& file: files)
+			{
+				auto stream = file.GetBestStream(Codec::MediaType::Audio).Unwrap();
+				std::vector<Codec::Packet> packets;
+				while (auto packet = stream->Read())
+				{
+					packets.push_back(packet.Unwrap());
+				}
+
+
+				std::vector<Codec::Audio::Frame> frames;
+				Codec::Audio::Decoder decoder = stream->GetDecoder();
+				for (const auto& packet: packets)
+				{
+					for (auto& frame: decoder.DecodePacket(packet))
+					{
+						frames.push_back(std::move(frame));
+					}
+				}
+
+				auto channel = Bot::Get().GetVoiceConnection()->CreateInputChannel();
+				for (auto& frame: frames)
+				{
+					channel->EnqueueFrame(std::move(frame));
+				}
+			}
+		}
+		else if (alreadyConnected && Bot::Get().GetVoiceConnection())
+		{
+			Bot::Get().DisconnectFromVoice();
+			mConnectButton->Enable();
+		}
+		else
+		{
+			Core::Unreachable();
+		}
 	}
 
 

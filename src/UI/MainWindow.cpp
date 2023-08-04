@@ -21,9 +21,9 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(0);
 		sizer->AddGrowableRow(1);
 
-		sizer->Add(new ChannelSelector(this), 0, wxEXPAND | wxALIGN_TOP, 10);
+		sizer->Add(new ChannelSelector(this), 0, wxALL | wxEXPAND | wxALIGN_TOP, 10);
 		auto musicSizer = new wxBoxSizer(wxHORIZONTAL);
-		musicSizer->Add(new MusicPanel(this), 1, wxALL | wxEXPAND, 10);
+		musicSizer->Add(new MusicPanel(this), 1, wxEXPAND);
 		sizer->Add(musicSizer, 0, wxALL | wxEXPAND, 10);
 		SetSizerAndFit(sizer);
 	}

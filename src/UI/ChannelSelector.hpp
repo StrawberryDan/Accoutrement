@@ -33,8 +33,16 @@ namespace Strawberry::Accoutrement
 
 
 	private:
+		wxButton* mConnectButton = nullptr;
+
+
+	private:
 		void ProcessEvent(const Strawberry::Discord::Event::EventBase& event) override;
 		void OnGuildCreated(wxEvent& event) { AddGuild(static_cast<GuildCreated*>(&event)->GetGuild()); }
+		Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>>
+			GetSelectedChannel() const;
+		void UpdateConnectButton();
+		bool IsConnectedToSelectedChannel() const;
 
 
 
@@ -44,6 +52,7 @@ namespace Strawberry::Accoutrement
 		void OnConnect(wxCommandEvent& event);
 		void OnDisconnect(wxCommandEvent& event);
 		void OnSelectServer(wxCommandEvent& event);
+		void OnSelectChannel(wxCommandEvent& event);
 
 
 	private:

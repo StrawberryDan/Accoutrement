@@ -1,8 +1,12 @@
 #pragma once
 
-
-
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
+// Discord
 #include "Discord/Bot.hpp"
+// Codec
+#include "Codec/Audio/Playlist.hpp"
 
 
 
@@ -24,5 +28,9 @@ namespace Strawberry::Accoutrement
 
 	private:
 		Bot();
+
+
+	private:
+		Codec::Audio::Playlist mPlaylist;
 	};
 }

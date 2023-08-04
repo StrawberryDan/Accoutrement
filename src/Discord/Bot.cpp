@@ -62,5 +62,6 @@ namespace Strawberry::Accoutrement
 
 	Bot::Bot()
 		: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
+		, mPlaylist({48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO}, 960)
 	{}
 }

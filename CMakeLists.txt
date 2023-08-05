@@ -30,6 +30,8 @@ add_executable(
 		src/UI/MusicPanel.hpp
 		src/UI/Events/ConnectedToVoice.cpp
 		src/UI/Events/ConnectedToVoice.hpp
+		src/UI/Events/DisconnectedFromVoice.cpp
+		src/UI/Events/DisconnectedFromVoice.hpp
 )
 target_include_directories(Accoutrement PRIVATE ${wxWidgets_INCLUDE_DIRS})
 target_link_libraries(Accoutrement PRIVATE StrawberryDiscord StrawberryCodec StrawberryCore ${wxWidgets_LIBRARIES})

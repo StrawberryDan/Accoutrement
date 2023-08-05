@@ -6,6 +6,8 @@
 //----------------------------------------------------------------------------------------------------------------------
 // wxWidgets
 #include "wx/panel.h"
+#include "wx/button.h"
+#include "wx/stattext.h"
 
 
 //======================================================================================================================
@@ -21,5 +23,9 @@ namespace Strawberry::Accoutrement
 
 
 	private:
+		wxStaticText* mSongTitle;
+		wxButton*     mPlayPauseButton;
+		wxButton*     mPrevSongButton;
+		wxButton*     mNextSongButton;
 	};
 }

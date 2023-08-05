@@ -21,18 +21,19 @@ namespace Strawberry::Accoutrement
 
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Sound Effects"), {0, 0}, {1, 2}, wxALL | wxALIGN_CENTER, 5);
 
-		mSoundEffectsList = new wxDataViewTreeCtrl(this, wxID_ANY);
-		sizer->Add(mSoundEffectsList, {1, 0}, {1, 2}, wxALL | wxEXPAND, 5);
+			mSoundEffectsList = new wxDataViewTreeCtrl(this, wxID_ANY);
+		sizer->Add(mSoundEffectsList, {1, 0}, {1, 3}, wxALL | wxEXPAND, 5);
 
-		mPlayButton = new wxButton(this, wxID_ANY, "Play");
+		mPlayButton = new wxButton(this, wxID_ANY, "Play Once");
 		sizer->Add(mPlayButton, {2, 0}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
-		mStopButton = new wxButton(this, wxID_ANY, "Stop");
-		sizer->Add(mStopButton, {2, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
+		mPlayButton = new wxButton(this, wxID_ANY, "Play Repeat");
+		sizer->Add(mPlayButton, {2, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
 		sizer->AddGrowableRow(1, 1);
 		sizer->AddGrowableCol(0, 1);
 		sizer->AddGrowableCol(1, 1);
+		sizer->AddGrowableCol(2, 1);
 		SetSizerAndFit(sizer);
 	}
 }

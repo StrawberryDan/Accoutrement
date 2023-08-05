@@ -10,6 +10,12 @@
 
 namespace Strawberry::Accoutrement
 {
+	wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
+
+	wxEND_EVENT_TABLE()
+
+
+
 	MainWindow::MainWindow()
 			: wxFrame(nullptr, wxID_ANY, "Accoutrement")
 	{

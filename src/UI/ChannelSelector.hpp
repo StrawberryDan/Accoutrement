@@ -20,7 +20,8 @@
 namespace Strawberry::Accoutrement
 {
 	class ChannelSelector
-			: public wxPanel, public Strawberry::Discord::EventListener
+		: public wxPanel
+		, public Strawberry::Discord::EventListener
 	{
 		wxDECLARE_EVENT_TABLE();
 
@@ -38,7 +39,7 @@ namespace Strawberry::Accoutrement
 
 	private:
 		void ProcessEvent(const Strawberry::Discord::Event::EventBase& event) override;
-		void OnGuildCreated(GuildCreated& event) { AddGuild(event.GetGuild()); }
+		void OnGuildCreated(wxCommandEvent& event) { event.Skip(); 	AddGuild(static_cast<GuildCreated&>(event).GetGuild()); }
 		Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>>
 			GetSelectedChannel() const;
 		void UpdateConnectButton();

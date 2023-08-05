@@ -14,7 +14,7 @@
 namespace Strawberry::Accoutrement
 {
 	class ConnectedToVoice
-		: public wxEvent
+		: public wxCommandEvent
 	{
 	public:
 		ConnectedToVoice(Discord::Entity::Guild guild, Discord::Entity::Channel channel);
@@ -33,8 +33,8 @@ namespace Strawberry::Accoutrement
 	};
 
 
-	wxDEFINE_EVENT(EVT_CONNECTED_TO_VOICE, ConnectedToVoice);
+	wxDECLARE_EVENT(EVT_TYPE_CONNECTED_TO_VOICE, wxCommandEvent);
 
-#define EVT_CONNECTED_TO_VOICE(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(EVT_CONNECTED_TO_VOICE, id, wxID_ANY, wxEventHandler(fn), nullptr),
+//#define EVT_CONNECTED_TO_VOICE(id, fn) \
+//	DECLARE_EVENT_TABLE_ENTRY(EVT_CONNECTED_TO_VOICE, id, wxID_ANY, wxEventHandler(fn), nullptr),
 }

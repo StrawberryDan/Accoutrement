@@ -7,8 +7,12 @@
 
 namespace Strawberry::Accoutrement
 {
+	wxDEFINE_EVENT(EVT_TYPE_CONNECTED_TO_VOICE, wxCommandEvent);
+
+
 	ConnectedToVoice::ConnectedToVoice(Discord::Entity::Guild guild, Discord::Entity::Channel channel)
-		: mGuild(std::move(guild))
+		: wxCommandEvent(EVT_TYPE_CONNECTED_TO_VOICE, GetId())
+		, mGuild(std::move(guild))
 		, mChannel(std::move(channel))
 	{}
 

@@ -5,6 +5,7 @@
 // This Project
 #include "../Discord/Bot.hpp"
 #include "Events/GuildCreated.hpp"
+#include "Events/ConnectedToVoice.hpp"
 // Core
 #include "Strawberry/Core/Assert.hpp"
 // Codec
@@ -39,7 +40,7 @@ namespace Strawberry::Accoutrement
 			EVT_BUTTON(DISCONNECT, ChannelSelector::OnDisconnect)
 			EVT_CHOICE(SERVER, ChannelSelector::OnSelectServer)
 			EVT_CHOICE(CHANNEL, ChannelSelector::OnSelectChannel)
-			EVT_GUILD_CREATED(wxID_ANY, ChannelSelector::OnGuildCreated)
+			EVT_COMMAND(wxID_ANY, EVT_TYPE_GUILD_CREATED, ChannelSelector::OnGuildCreated)
 	wxEND_EVENT_TABLE()
 
 
@@ -67,7 +68,7 @@ namespace Strawberry::Accoutrement
 		for (auto snowflake: Bot::Get().FetchGuilds())
 		{
 			auto guild = Bot::Get().FetchGuild(snowflake);
-			AddGuild(*guild);
+			QueueEvent(new GuildCreated(*guild));
 		}
 	}
 
@@ -179,6 +180,10 @@ namespace Strawberry::Accoutrement
 
 			Bot::Get().ConnectToVoice(guildId, channelId);
 			mConnectButton->Disable();
+			QueueEvent(new ConnectedToVoice(
+				*Bot::Get().GetGuild(guildId),
+				*Bot::Get().GetChannel(channelId)
+			));
 
 
 //			std::vector<Codec::MediaFile> files;

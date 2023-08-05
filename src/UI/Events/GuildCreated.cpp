@@ -6,11 +6,12 @@
 
 namespace Strawberry::Accoutrement
 {
-	wxDEFINE_EVENT(EVT_TYPE_GUILD_CREATED, GuildCreated);
+	wxDEFINE_EVENT(EVT_TYPE_GUILD_CREATED, wxCommandEvent);
 
 
 	GuildCreated::GuildCreated(Discord::Entity::Guild guild)
-			: mGuild(std::move(guild)) {}
+		: wxCommandEvent(EVT_TYPE_GUILD_CREATED, GetId())
+		, mGuild(std::move(guild)) {}
 
 
 	const Discord::Entity::Guild& GuildCreated::GetGuild()

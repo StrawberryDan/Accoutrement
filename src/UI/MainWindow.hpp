@@ -5,7 +5,6 @@
 #include "wx/frame.h"
 
 
-
 namespace Strawberry::Accoutrement
 {
 	class MainWindow
@@ -14,5 +13,8 @@ namespace Strawberry::Accoutrement
 		wxDECLARE_EVENT_TABLE();
 	public:
 		MainWindow();
+
+
+		void OnVoiceConnect(wxCommandEvent& event);
 	};
 }

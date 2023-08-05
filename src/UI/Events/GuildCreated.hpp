@@ -13,7 +13,7 @@
 namespace Strawberry::Accoutrement
 {
 	class GuildCreated
-			: public wxEvent
+			: public wxCommandEvent
 	{
 	public:
 		GuildCreated(Discord::Entity::Guild guild);
@@ -30,8 +30,9 @@ namespace Strawberry::Accoutrement
 	};
 
 
-	wxDECLARE_EVENT(EVT_TYPE_GUILD_CREATED, GuildCreated);
+	wxDECLARE_EVENT(EVT_TYPE_GUILD_CREATED, wxCommandEvent);
 
-#define EVT_GUILD_CREATED(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_GUILD_CREATED, id, wxID_ANY, (&fn), nullptr),
+
+//#define EVT_GUILD_CREATED(id, fn) \
+//	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_GUILD_CREATED, id, wxID_ANY, wxCommandEventHandler(fn), nullptr),
 }

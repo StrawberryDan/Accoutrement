@@ -40,7 +40,7 @@ namespace Strawberry::Accoutrement
 			EVT_BUTTON(DISCONNECT, ChannelSelector::OnDisconnect)
 			EVT_CHOICE(SERVER, ChannelSelector::OnSelectServer)
 			EVT_CHOICE(CHANNEL, ChannelSelector::OnSelectChannel)
-			EVT_COMMAND(wxID_ANY, EVT_TYPE_GUILD_CREATED, ChannelSelector::OnGuildCreated)
+			EVT_GUILD_CREATED(wxID_ANY, ChannelSelector::OnGuildCreated)
 	wxEND_EVENT_TABLE()
 
 

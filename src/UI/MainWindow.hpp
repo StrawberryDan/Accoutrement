@@ -1,20 +1,20 @@
 #pragma once
 
 
-
 #include "wx/frame.h"
+#include "Events/ConnectedToVoice.hpp"
 
 
 namespace Strawberry::Accoutrement
 {
 	class MainWindow
-			: public wxFrame
+		: public wxFrame
 	{
-		wxDECLARE_EVENT_TABLE();
+	wxDECLARE_EVENT_TABLE();
 	public:
 		MainWindow();
 
 
-		void OnVoiceConnect(wxCommandEvent& event);
+		void OnVoiceConnect(ConnectedToVoice& event);
 	};
 }

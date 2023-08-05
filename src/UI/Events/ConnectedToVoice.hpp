@@ -33,8 +33,8 @@ namespace Strawberry::Accoutrement
 	};
 
 
-	wxDECLARE_EVENT(EVT_TYPE_CONNECTED_TO_VOICE, wxCommandEvent);
+	wxDECLARE_EVENT(EVT_TYPE_CONNECTED_TO_VOICE, ConnectedToVoice);
 
-//#define EVT_CONNECTED_TO_VOICE(id, fn) \
-//	DECLARE_EVENT_TABLE_ENTRY(EVT_CONNECTED_TO_VOICE, id, wxID_ANY, wxEventHandler(fn), nullptr),
+#define EVT_CONNECTED_TO_VOICE(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_CONNECTED_TO_VOICE, id, wxID_ANY, (&fn), nullptr),
 }

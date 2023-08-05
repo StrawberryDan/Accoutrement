@@ -6,7 +6,7 @@
 
 namespace Strawberry::Accoutrement
 {
-	wxDEFINE_EVENT(EVT_TYPE_GUILD_CREATED, wxCommandEvent);
+	wxDEFINE_EVENT(EVT_TYPE_GUILD_CREATED, GuildCreated);
 
 
 	GuildCreated::GuildCreated(Discord::Entity::Guild guild)

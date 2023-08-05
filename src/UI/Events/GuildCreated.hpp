@@ -30,9 +30,9 @@ namespace Strawberry::Accoutrement
 	};
 
 
-	wxDECLARE_EVENT(EVT_TYPE_GUILD_CREATED, wxCommandEvent);
+	wxDECLARE_EVENT(EVT_TYPE_GUILD_CREATED, GuildCreated);
 
 
-//#define EVT_GUILD_CREATED(id, fn) \
-//	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_GUILD_CREATED, id, wxID_ANY, wxCommandEventHandler(fn), nullptr),
+#define EVT_GUILD_CREATED(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_GUILD_CREATED, id, wxID_ANY, (&fn), nullptr),
 }

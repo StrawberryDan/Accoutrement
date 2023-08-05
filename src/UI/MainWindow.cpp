@@ -11,7 +11,7 @@
 namespace Strawberry::Accoutrement
 {
 	wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
-			EVT_COMMAND(wxID_ANY, EVT_TYPE_CONNECTED_TO_VOICE, MainWindow::OnVoiceConnect)
+		EVT_CONNECTED_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
 	wxEND_EVENT_TABLE()
 
 
@@ -36,7 +36,7 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void MainWindow::OnVoiceConnect(wxCommandEvent& event)
+	void MainWindow::OnVoiceConnect(ConnectedToVoice& event)
 	{
 		auto& e = static_cast<ConnectedToVoice&>(event);
 		GetStatusBar()->SetStatusText(

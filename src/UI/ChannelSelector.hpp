@@ -39,7 +39,7 @@ namespace Strawberry::Accoutrement
 
 	private:
 		void ProcessEvent(const Strawberry::Discord::Event::EventBase& event) override;
-		void OnGuildCreated(wxCommandEvent& event) { event.Skip(); 	AddGuild(static_cast<GuildCreated&>(event).GetGuild()); }
+		void OnGuildCreated(GuildCreated& event) { event.Skip(); 	AddGuild(static_cast<GuildCreated&>(event).GetGuild()); }
 		Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>>
 			GetSelectedChannel() const;
 		void UpdateConnectButton();

@@ -1,12 +1,20 @@
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
 #include "MainWindow.hpp"
-
-
-#include "wx/menu.h"
+// This Project
 #include "Panels/ChannelSelector.hpp"
 #include "Panels/MusicPanel.hpp"
+#include "Panels/NowPlayingPanel.hpp"
+// wxWidgets
+#include "wx/menu.h"
+// Format
 #include "fmt/format.h"
 
 
+//======================================================================================================================
+//  Class Definitions
+//----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
 	wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)

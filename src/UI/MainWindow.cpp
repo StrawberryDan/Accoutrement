@@ -2,8 +2,8 @@
 
 
 #include "wx/menu.h"
-#include "ChannelSelector.hpp"
-#include "MusicPanel.hpp"
+#include "Panels/ChannelSelector.hpp"
+#include "Panels/MusicPanel.hpp"
 #include "fmt/format.h"
 
 

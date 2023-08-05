@@ -18,16 +18,16 @@ add_executable(
         src/Main.cpp
         src/UI/MainWindow.cpp
         src/UI/MainWindow.hpp
-        src/UI/ChannelSelector.cpp
-        src/UI/ChannelSelector.hpp
+		src/UI/Panels/ChannelSelector.cpp
+		src/UI/Panels/ChannelSelector.hpp
         src/Discord/Bot.hpp
         src/Discord/Bot.cpp
         src/Config.cpp
         src/Config.hpp
 		src/UI/Events/GuildCreated.cpp
 		src/UI/Events/GuildCreated.hpp
-		src/UI/MusicPanel.cpp
-		src/UI/MusicPanel.hpp
+		src/UI/Panels/MusicPanel.cpp
+		src/UI/Panels/MusicPanel.hpp
 		src/UI/Events/ConnectToVoice.cpp
 		src/UI/Events/ConnectToVoice.hpp
 		src/UI/Events/DisconnectFromVoice.cpp

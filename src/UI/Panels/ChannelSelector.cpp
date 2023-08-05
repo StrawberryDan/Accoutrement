@@ -3,7 +3,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include "ChannelSelector.hpp"
 // This Project
-#include "../Discord/Bot.hpp"
+#include "../../Discord/Bot.hpp"
 // Core
 #include "Strawberry/Core/Assert.hpp"
 // Codec

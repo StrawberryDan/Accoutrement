@@ -38,10 +38,9 @@ namespace Strawberry::Accoutrement
 
 	void MainWindow::OnVoiceConnect(ConnectedToVoice& event)
 	{
-		auto& e = static_cast<ConnectedToVoice&>(event);
 		GetStatusBar()->SetStatusText(
 			fmt::format("Connected to [{}] --> [{}]",
-						e.GetGuild().GetName(),
-						e.GetChannel().GetName()));
+						event.GetGuild().GetName(),
+						event.GetChannel().GetName()));
 	}
 }

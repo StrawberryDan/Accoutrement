@@ -59,6 +59,7 @@ namespace Strawberry::Accoutrement
 		void OnConnect(wxCommandEvent& event);
 		void OnDisconnect(wxCommandEvent& event);
 		void OnSelectServer(wxCommandEvent& event);
+		void OnSelectServer(const Discord::Snowflake& guildId);
 		void OnSelectChannel(wxCommandEvent& event);
 
 

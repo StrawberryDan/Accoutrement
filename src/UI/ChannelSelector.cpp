@@ -136,6 +136,12 @@ namespace Strawberry::Accoutrement
 		{
 			serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId()));
 		}
+
+		// Select this guild now if it's the first in.
+		if (serverChoice->GetCount() == 1)
+		{
+			OnSelectServer(guild.GetId());
+		}
 	}
 
 
@@ -194,12 +200,17 @@ namespace Strawberry::Accoutrement
 
 	void ChannelSelector::OnSelectServer(wxCommandEvent& event)
 	{
+		auto guildId = static_cast<SnowflakeClientData*>(event.GetClientObject())->Get();
+		OnSelectServer(guildId);
+	}
+
+
+	void ChannelSelector::OnSelectServer(const Discord::Snowflake& guildId)
+	{
 		using namespace Strawberry::Discord::Entity;
 
 		wxBusyCursor busyCursor;
 
-
-		auto guildId = static_cast<SnowflakeClientData*>(event.GetClientObject())->Get();
 		const auto* guild = Bot::Get().FetchGuild(guildId);
 		wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(CHANNEL));
 		channelChoice->Clear();

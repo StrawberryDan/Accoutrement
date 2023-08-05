@@ -31,7 +31,7 @@ namespace Strawberry::Accoutrement
 		auto statusBar = wxFrame::CreateStatusBar();
 		statusBar->SetStatusText("Not Connected");
 
-		auto sizer = new wxFlexGridSizer(2, 1, 5, 5);
+		auto sizer = new wxFlexGridSizer(3, 1, 5, 5);
 		sizer->AddGrowableCol(0);
 		sizer->AddGrowableRow(1);
 
@@ -40,6 +40,8 @@ namespace Strawberry::Accoutrement
 		auto musicSizer = new wxBoxSizer(wxHORIZONTAL);
 		musicSizer->Add(new MusicPanel(this), 1, wxEXPAND);
 		sizer->Add(musicSizer, 0, wxALL | wxEXPAND, 10);
+		auto nowPlayer = new NowPlayingPanel(this);
+		sizer->Add(nowPlayer, 0, wxALL | wxALIGN_CENTER, 10);
 		SetSizerAndFit(sizer);
 	}
 

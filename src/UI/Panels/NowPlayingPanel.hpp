@@ -11,11 +11,15 @@
 //======================================================================================================================
 //  Class Declaration
 //----------------------------------------------------------------------------------------------------------------------
-class NowPlayingPanel
-	: public wxPanel
+namespace Strawberry::Accoutrement
 {
-public:
+	class NowPlayingPanel
+		: public wxPanel
+	{
+	public:
+		NowPlayingPanel(wxWindow* parent);
 
 
-private:
-};
+	private:
+	};
+}

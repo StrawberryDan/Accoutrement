@@ -9,5 +9,9 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
+	NowPlayingPanel::NowPlayingPanel(wxWindow* parent)
+		: wxPanel(parent)
+	{
 
+	}
 }

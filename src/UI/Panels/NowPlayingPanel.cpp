@@ -22,14 +22,17 @@ namespace Strawberry::Accoutrement
 		sizer->Add(mSongTitle, {0, 0}, {1, 3}, wxALL | wxALIGN_CENTER, 5);
 
 		mPrevSongButton = new wxButton(this, wxID_ANY, "Previous Song");
-		sizer->Add(mPrevSongButton, {1, 0}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
+		sizer->Add(mPrevSongButton, {1, 0}, {1, 1}, wxALL | wxEXPAND, 5);
 
 		mPlayPauseButton = new wxButton(this, wxID_ANY, "Play");
-		sizer->Add(mPlayPauseButton, {1, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
+		sizer->Add(mPlayPauseButton, {1, 1}, {1, 1}, wxALL | wxEXPAND, 5);
 
 		mNextSongButton = new wxButton(this, wxID_ANY, "Next Song");
-		sizer->Add(mNextSongButton, {1, 2}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
+		sizer->Add(mNextSongButton, {1, 2}, {1, 1}, wxALL | wxEXPAND, 5);
 
+		sizer->AddGrowableCol(0, 1);
+		sizer->AddGrowableCol(1, 1);
+		sizer->AddGrowableCol(2, 1);
 		SetSizerAndFit(sizer);
 	}
 }

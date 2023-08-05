@@ -21,7 +21,7 @@ namespace Strawberry::Accoutrement
 
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Sound Effects"), {0, 0}, {1, 2}, wxALL | wxALIGN_CENTER, 5);
 
-			mSoundEffectsList = new wxDataViewTreeCtrl(this, wxID_ANY);
+		mSoundEffectsList = new wxDataViewTreeCtrl(this, wxID_ANY);
 		sizer->Add(mSoundEffectsList, {1, 0}, {1, 3}, wxALL | wxEXPAND, 5);
 
 		mPlayButton = new wxButton(this, wxID_ANY, "Play Once");

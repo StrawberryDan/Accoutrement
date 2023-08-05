@@ -8,6 +8,7 @@
 #include "Panels/NowPlayingPanel.hpp"
 #include "Panels/SoundEffectsPanel.hpp"
 // wxWidgets
+#include "wx/gbsizer.h"
 #include "wx/menu.h"
 // Format
 #include "fmt/format.h"
@@ -39,13 +40,15 @@ namespace Strawberry::Accoutrement
 		auto channelSelector = new ChannelSelector(this);
 		sizer->Add(channelSelector, 0, wxALL | wxEXPAND | wxALIGN_TOP, 10);
 
-		auto musicSizer = new wxBoxSizer(wxHORIZONTAL);
-		musicSizer->Add(new MusicPanel(this), 2, wxEXPAND);
-		musicSizer->Add(new SoundEffectsPanel(this), 1, wxEXPAND);
-		sizer->Add(musicSizer, 0, wxALL | wxEXPAND, 10);
-
+		auto musicSizer = new wxGridBagSizer(5, 5);
+		musicSizer->Add(new MusicPanel(this), {0, 0}, {1, 1}, wxALL | wxEXPAND, 5);
+		musicSizer->Add(new SoundEffectsPanel(this), {0, 1}, {1, 1}, wxALL | wxEXPAND, 5);
 		auto nowPlayer = new NowPlayingPanel(this);
-		sizer->Add(nowPlayer, 0, wxALL | wxALIGN_CENTER, 10);
+		musicSizer->Add(nowPlayer, {1, 0}, {1, 1}, wxALL | wxEXPAND, 5);
+		musicSizer->AddGrowableRow(0, 1);
+		musicSizer->AddGrowableCol(0, 2);
+		musicSizer->AddGrowableCol(1, 1);
+		sizer->Add(musicSizer, 0, wxALL | wxEXPAND, 5);
 
 		SetSizerAndFit(sizer);
 	}

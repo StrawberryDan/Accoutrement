@@ -4,9 +4,6 @@
 #include "ChannelSelector.hpp"
 // This Project
 #include "../Discord/Bot.hpp"
-#include "Events/GuildCreated.hpp"
-#include "Events/ConnectedToVoice.hpp"
-#include "Events/DisconnectedFromVoice.hpp"
 // Core
 #include "Strawberry/Core/Assert.hpp"
 // Codec

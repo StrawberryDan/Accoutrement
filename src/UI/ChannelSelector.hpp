@@ -1,20 +1,26 @@
 #pragma once
 
 
-
-#include <map>
-#include <mutex>
-#include <vector>
-
+//======================================================================================================================
+//  Includes
+//----------------------------------------------------------------------------------------------------------------------
+// This Project
+#include "Events/GuildCreated.hpp"
+#include "Events/ConnectedToVoice.hpp"
+#include "Events/DisconnectedFromVoice.hpp"
+// wxWidgets
+#include "wx/choice.h"
+#include "wx/panel.h"
+#include "wx/sizer.h"
+// Discord
 #include "Discord/Entity/Channel.hpp"
 #include "Discord/Entity/Guild.hpp"
 #include "Discord/EventListener.hpp"
 #include "Discord/Snowflake.hpp"
-
-#include "wx/choice.h"
-#include "wx/panel.h"
-#include "wx/sizer.h"
-#include "Events/GuildCreated.hpp"
+// Standard Library
+#include <map>
+#include <mutex>
+#include <vector>
 
 
 namespace Strawberry::Accoutrement

@@ -44,13 +44,26 @@ namespace Strawberry::Accoutrement
 		}
 
 
+		void OnVoiceConnect(ConnectedToVoice& event)
+		{
+			Bot::Get().ConnectToVoice(event.GetGuild().GetId(), event.GetChannel().GetId());
+		}
+
+
+		void OnVoiceDisconnect(DisconnectedFromVoice& event)
+		{
+			Bot::Get().DisconnectFromVoice();
+		}
+
+
 	private:
 		MainWindow* mMainWindow;
 	};
 
 
 	wxBEGIN_EVENT_TABLE(Application, wxApp)
-
+		EVT_CONNECTED_TO_VOICE(wxID_ANY, Application::OnVoiceConnect)
+		EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, Application::OnVoiceDisconnect)
 	wxEND_EVENT_TABLE()
 }
 

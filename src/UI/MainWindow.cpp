@@ -42,11 +42,13 @@ namespace Strawberry::Accoutrement
 			fmt::format("Connected to [{}] --> [{}]",
 						event.GetGuild().GetName(),
 						event.GetChannel().GetName()));
+		event.Skip();
 	}
 
 
 	void MainWindow::OnVoiceDisconnect(DisconnectedFromVoice& event)
 	{
 		GetStatusBar()->SetStatusText("Not Connected");
+		event.Skip();
 	}
 }

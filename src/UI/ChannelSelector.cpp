@@ -176,63 +176,17 @@ namespace Strawberry::Accoutrement
 			if (!selection) return;
 			auto [guildId, channelId] = selection.Unwrap();
 
-			Bot::Get().ConnectToVoice(guildId, channelId);
 			mConnectButton->Disable();
 			QueueEvent(new ConnectedToVoice(
 				*Bot::Get().GetGuild(guildId),
 				*Bot::Get().GetChannel(channelId)
 			));
-
-
-//			std::vector<Codec::MediaFile> files;
-//			files.push_back(Codec::MediaFile::Open("data/cotn.flac").Unwrap());
-//			files.push_back(Codec::MediaFile::Open("data/pd.wav").Unwrap());
-//			files.push_back(Codec::MediaFile::Open("data/girigiri.mp3").Unwrap());
-//			files.push_back(Codec::MediaFile::Open("data/dcl.wav").Unwrap());
-//
-//
-//			for (auto& file: files)
-//			{
-//				auto stream = file.GetBestStream(Codec::MediaType::Audio).Unwrap();
-//				std::vector<Codec::Packet> packets;
-//				while (auto packet = stream->Read())
-//				{
-//					packets.push_back(packet.Unwrap());
-//				}
-//
-//
-//				std::vector<Codec::Audio::Frame> frames;
-//				Codec::Audio::Decoder decoder = stream->GetDecoder();
-//				for (const auto& packet: packets)
-//				{
-//					for (auto& frame: decoder.DecodePacket(packet))
-//					{
-//						frames.push_back(std::move(frame));
-//					}
-//				}
-//
-//				auto channel = Bot::Get().GetVoiceConnection()->CreateInputChannel();
-//				for (auto& frame: frames)
-//				{
-//					channel->EnqueueFrame(std::move(frame));
-//				}
-//			}
-		}
-		else if (alreadyConnected && Bot::Get().GetVoiceConnection())
-		{
-			Bot::Get().DisconnectFromVoice();
-			mConnectButton->Enable();
-		}
-		else
-		{
-			Core::Unreachable();
 		}
 	}
 
 
 	void ChannelSelector::OnDisconnect(wxCommandEvent& event)
 	{
-		Bot::Get().DisconnectFromVoice();
 		mConnectButton->Enable();
 		QueueEvent(new DisconnectedFromVoice());
 	}

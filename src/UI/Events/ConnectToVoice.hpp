@@ -13,11 +13,11 @@
 
 namespace Strawberry::Accoutrement
 {
-	class ConnectedToVoice
+	class ConnectToVoice
 		: public wxCommandEvent
 	{
 	public:
-		ConnectedToVoice(Discord::Entity::Guild guild, Discord::Entity::Channel channel);
+		ConnectToVoice(Discord::Entity::Guild guild, Discord::Entity::Channel channel);
 
 
 		wxEvent* Clone() const override;
@@ -33,8 +33,8 @@ namespace Strawberry::Accoutrement
 	};
 
 
-	wxDECLARE_EVENT(EVT_TYPE_CONNECTED_TO_VOICE, ConnectedToVoice);
+	wxDECLARE_EVENT(EVT_TYPE_CONNECT_TO_VOICE, ConnectToVoice);
 
-#define EVT_CONNECTED_TO_VOICE(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_CONNECTED_TO_VOICE, id, wxID_ANY, (&fn), nullptr),
+#define EVT_CONNECT_TO_VOICE(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_CONNECT_TO_VOICE, id, wxID_ANY, (&fn), nullptr),
 }

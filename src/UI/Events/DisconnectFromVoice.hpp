@@ -10,11 +10,11 @@
 
 namespace Strawberry::Accoutrement
 {
-	class DisconnectedFromVoice
+	class DisconnectFromVoice
 		: public wxCommandEvent
 	{
 	public:
-		DisconnectedFromVoice();
+		DisconnectFromVoice();
 
 
 	private:
@@ -22,9 +22,9 @@ namespace Strawberry::Accoutrement
 	};
 
 
-	wxDECLARE_EVENT(EVT_TYPE_DISCONNECTED_FROM_VOICE, DisconnectedFromVoice);
+	wxDECLARE_EVENT(EVT_TYPE_DISCONNECT_FROM_VOICE, DisconnectFromVoice);
 
 
 #define EVT_DISCONNECTED_FROM_VOICE(id, fn) \
-    DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_DISCONNECTED_FROM_VOICE, id, wxID_ANY, (&fn), nullptr),
+    DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_DISCONNECT_FROM_VOICE, id, wxID_ANY, (&fn), nullptr),
 }

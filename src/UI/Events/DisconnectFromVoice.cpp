@@ -1,23 +1,23 @@
 //======================================================================================================================
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
-#include "DisconnectedFromVoice.hpp"
+#include "DisconnectFromVoice.hpp"
 
 
 namespace Strawberry::Accoutrement
 {
-	wxDEFINE_EVENT(EVT_TYPE_DISCONNECTED_FROM_VOICE, DisconnectedFromVoice);
+	wxDEFINE_EVENT(EVT_TYPE_DISCONNECT_FROM_VOICE, DisconnectFromVoice);
 
 
-	DisconnectedFromVoice::DisconnectedFromVoice()
-		: wxCommandEvent(EVT_TYPE_DISCONNECTED_FROM_VOICE, GetId())
+	DisconnectFromVoice::DisconnectFromVoice()
+		: wxCommandEvent(EVT_TYPE_DISCONNECT_FROM_VOICE, GetId())
 	{
 
 	}
 
 
-	wxEvent* DisconnectedFromVoice::Clone() const
+	wxEvent* DisconnectFromVoice::Clone() const
 	{
-		return new DisconnectedFromVoice();
+		return new DisconnectFromVoice();
 	}
 }

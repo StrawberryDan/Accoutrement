@@ -6,8 +6,8 @@
 //----------------------------------------------------------------------------------------------------------------------
 // This Project
 #include "Events/GuildCreated.hpp"
-#include "Events/ConnectedToVoice.hpp"
-#include "Events/DisconnectedFromVoice.hpp"
+#include "Events/ConnectToVoice.hpp"
+#include "Events/DisconnectFromVoice.hpp"
 // wxWidgets
 #include "wx/choice.h"
 #include "wx/panel.h"

@@ -10,7 +10,7 @@
 namespace Strawberry::Accoutrement
 {
 	wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
-		EVT_CONNECTED_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
+		EVT_CONNECT_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
 		EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, MainWindow::OnVoiceDisconnect)
 	wxEND_EVENT_TABLE()
 
@@ -36,7 +36,7 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void MainWindow::OnVoiceConnect(ConnectedToVoice& event)
+	void MainWindow::OnVoiceConnect(ConnectToVoice& event)
 	{
 		GetStatusBar()->SetStatusText(
 			fmt::format("Connected to [{}] --> [{}]",
@@ -46,7 +46,7 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void MainWindow::OnVoiceDisconnect(DisconnectedFromVoice& event)
+	void MainWindow::OnVoiceDisconnect(DisconnectFromVoice& event)
 	{
 		GetStatusBar()->SetStatusText("Not Connected");
 		event.Skip();

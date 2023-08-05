@@ -177,7 +177,7 @@ namespace Strawberry::Accoutrement
 			auto [guildId, channelId] = selection.Unwrap();
 
 			mConnectButton->Disable();
-			QueueEvent(new ConnectedToVoice(
+			QueueEvent(new ConnectToVoice(
 				*Bot::Get().GetGuild(guildId),
 				*Bot::Get().GetChannel(channelId)
 			));
@@ -188,7 +188,7 @@ namespace Strawberry::Accoutrement
 	void ChannelSelector::OnDisconnect(wxCommandEvent& event)
 	{
 		mConnectButton->Enable();
-		QueueEvent(new DisconnectedFromVoice());
+		QueueEvent(new DisconnectFromVoice());
 	}
 
 

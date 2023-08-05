@@ -5,8 +5,8 @@
 //  Include
 //----------------------------------------------------------------------------------------------------------------------
 #include "wx/frame.h"
-#include "Events/ConnectedToVoice.hpp"
-#include "Events/DisconnectedFromVoice.hpp"
+#include "Events/ConnectToVoice.hpp"
+#include "Events/DisconnectFromVoice.hpp"
 
 
 //======================================================================================================================
@@ -22,7 +22,7 @@ namespace Strawberry::Accoutrement
 		MainWindow();
 
 
-		void OnVoiceConnect(ConnectedToVoice& event);
-		void OnVoiceDisconnect(DisconnectedFromVoice& event);
+		void OnVoiceConnect(ConnectToVoice& event);
+		void OnVoiceDisconnect(DisconnectFromVoice& event);
 	};
 }

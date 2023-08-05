@@ -6,6 +6,7 @@
 #include "Panels/ChannelSelector.hpp"
 #include "Panels/MusicPanel.hpp"
 #include "Panels/NowPlayingPanel.hpp"
+#include "Panels/SoundControlPanel.hpp"
 #include "Panels/SoundEffectsPanel.hpp"
 // wxWidgets
 #include "wx/gbsizer.h"
@@ -34,22 +35,30 @@ namespace Strawberry::Accoutrement
 		statusBar->SetStatusText("Not Connected");
 
 		auto sizer = new wxFlexGridSizer(3, 1, 5, 5);
-		sizer->AddGrowableCol(0);
-		sizer->AddGrowableRow(1);
 
 		auto channelSelector = new ChannelSelector(this);
 		sizer->Add(channelSelector, 0, wxALL | wxEXPAND | wxALIGN_TOP, 10);
 
 		auto musicSizer = new wxGridBagSizer(5, 5);
+
 		musicSizer->Add(new MusicPanel(this), {0, 0}, {1, 1}, wxALL | wxEXPAND, 5);
+
 		musicSizer->Add(new SoundEffectsPanel(this), {0, 1}, {1, 1}, wxALL | wxEXPAND, 5);
+
 		auto nowPlayer = new NowPlayingPanel(this);
 		musicSizer->Add(nowPlayer, {1, 0}, {1, 1}, wxALL | wxEXPAND, 5);
-		musicSizer->AddGrowableRow(0, 1);
+
+		auto soundControlPanel = new SoundControlPanel(this);
+		musicSizer->Add(soundControlPanel, {1, 1}, {1, 2}, wxALL | wxEXPAND, 5);
+
+		musicSizer->AddGrowableRow(0, 4);
+		musicSizer->AddGrowableRow(1, 1);
 		musicSizer->AddGrowableCol(0, 2);
 		musicSizer->AddGrowableCol(1, 1);
 		sizer->Add(musicSizer, 0, wxALL | wxEXPAND, 5);
 
+		sizer->AddGrowableCol(0);
+		sizer->AddGrowableRow(1);
 		SetSizerAndFit(sizer);
 	}
 

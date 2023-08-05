@@ -6,6 +6,7 @@
 #include "Panels/ChannelSelector.hpp"
 #include "Panels/MusicPanel.hpp"
 #include "Panels/NowPlayingPanel.hpp"
+#include "Panels/SoundEffectsPanel.hpp"
 // wxWidgets
 #include "wx/menu.h"
 // Format
@@ -37,11 +38,15 @@ namespace Strawberry::Accoutrement
 
 		auto channelSelector = new ChannelSelector(this);
 		sizer->Add(channelSelector, 0, wxALL | wxEXPAND | wxALIGN_TOP, 10);
+
 		auto musicSizer = new wxBoxSizer(wxHORIZONTAL);
-		musicSizer->Add(new MusicPanel(this), 1, wxEXPAND);
+		musicSizer->Add(new MusicPanel(this), 2, wxEXPAND);
+		musicSizer->Add(new SoundEffectsPanel(this), 1, wxEXPAND);
 		sizer->Add(musicSizer, 0, wxALL | wxEXPAND, 10);
+
 		auto nowPlayer = new NowPlayingPanel(this);
 		sizer->Add(nowPlayer, 0, wxALL | wxALIGN_CENTER, 10);
+
 		SetSizerAndFit(sizer);
 	}
 

@@ -1,10 +1,17 @@
 #pragma once
 
 
+//======================================================================================================================
+//  Include
+//----------------------------------------------------------------------------------------------------------------------
 #include "wx/frame.h"
 #include "Events/ConnectedToVoice.hpp"
+#include "Events/DisconnectedFromVoice.hpp"
 
 
+//======================================================================================================================
+//  Class Declaration
+//----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
 	class MainWindow
@@ -16,5 +23,6 @@ namespace Strawberry::Accoutrement
 
 
 		void OnVoiceConnect(ConnectedToVoice& event);
+		void OnVoiceDisconnect(DisconnectedFromVoice& event);
 	};
 }

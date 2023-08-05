@@ -6,6 +6,7 @@
 #include "../Discord/Bot.hpp"
 #include "Events/GuildCreated.hpp"
 #include "Events/ConnectedToVoice.hpp"
+#include "Events/DisconnectedFromVoice.hpp"
 // Core
 #include "Strawberry/Core/Assert.hpp"
 // Codec
@@ -236,6 +237,7 @@ namespace Strawberry::Accoutrement
 	{
 		Bot::Get().DisconnectFromVoice();
 		mConnectButton->Enable();
+		QueueEvent(new DisconnectedFromVoice());
 	}
 
 

@@ -5,13 +5,13 @@
 #include "ChannelSelector.hpp"
 #include "MusicPanel.hpp"
 #include "fmt/format.h"
-#include "Events/ConnectedToVoice.hpp"
 
 
 namespace Strawberry::Accoutrement
 {
 	wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 		EVT_CONNECTED_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
+		EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, MainWindow::OnVoiceDisconnect)
 	wxEND_EVENT_TABLE()
 
 
@@ -42,5 +42,11 @@ namespace Strawberry::Accoutrement
 			fmt::format("Connected to [{}] --> [{}]",
 						event.GetGuild().GetName(),
 						event.GetChannel().GetName()));
+	}
+
+
+	void MainWindow::OnVoiceDisconnect(DisconnectedFromVoice& event)
+	{
+		GetStatusBar()->SetStatusText("Not Connected");
 	}
 }

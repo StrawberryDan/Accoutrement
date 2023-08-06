@@ -32,6 +32,10 @@ namespace Strawberry::Accoutrement
 		const std::filesystem::path&     GetPath() const;
 
 
+		bool operator==(const Song& rhs) const { return mPath == rhs.mPath; }
+		bool operator!=(const Song& rhs) const { return mPath != rhs.mPath; }
+
+
 	private:
 		Song() = default;
 

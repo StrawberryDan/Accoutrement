@@ -5,7 +5,7 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // WxWidgets
-#include "wx/listbox.h"
+#include "wx/listctrl.h"
 #include "wx/panel.h"
 
 
@@ -33,7 +33,7 @@ namespace Strawberry::Accoutrement
 
 
 	protected:
-		wxListBox* mSongDatabaseList;
+		wxListCtrl* mSongDatabaseList;
 
 
 	};

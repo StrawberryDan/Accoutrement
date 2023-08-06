@@ -21,6 +21,30 @@
 
 namespace Strawberry::Accoutrement
 {
+	class SongClientData
+		: public wxClientData
+	{
+	public:
+		SongClientData(Song song)
+			: mSong(std::move(song))
+		{}
+
+		~SongClientData()
+		{
+			Core::DebugBreak();
+		}
+
+
+		Song GetSong() const { return mSong; }
+
+
+	private:
+		const Song mSong;
+
+
+	};
+
+
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
 		EVT_BUTTON(Component::AddSongButton, MusicPanel::OnAddSong)
 	wxEND_EVENT_TABLE()
@@ -36,10 +60,11 @@ namespace Strawberry::Accoutrement
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Available Songs"), {0, 0}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Playlist"), {0, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
-		mSongDatabaseList = new wxListBox(this, wxID_ANY);
+		mSongDatabaseList = new wxListCtrl(this, wxID_ANY);
+		mSongDatabaseList->SetWindowStyleFlag(wxLC_LIST);
 		for (int i = 0; i < SongDatabase::Get().GetNumSongs(); i++)
 		{
-			mSongDatabaseList->Insert(SongDatabase::Get().GetSong(i).GetTitle(), mSongDatabaseList->GetCount());
+			mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), SongDatabase::Get().GetSong(i).GetTitle());
 		}
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
 		sizer->Add(new wxListBox(this, wxID_ANY), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
@@ -88,7 +113,7 @@ namespace Strawberry::Accoutrement
 
 				SongDatabase::Get().AddSong(song.Value());
 				std::string title = song.Value().GetTitle();
-				mSongDatabaseList->Insert(title, mSongDatabaseList->GetCount());
+				auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), title);
 			}
 		}
 	}

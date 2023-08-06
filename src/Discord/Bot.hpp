@@ -7,6 +7,7 @@
 #include "Discord/Bot.hpp"
 // Codec
 #include "Codec/Audio/Playlist.hpp"
+#include "Codec/Audio/Mixer.hpp"
 
 
 
@@ -24,6 +25,11 @@ namespace Strawberry::Accoutrement
 
 		static Bot& Get();
 
+		static Core::Option<Bot*> TryGet();
+
+
+		auto& GetPlaylist() { return mPlaylist; }
+
 
 
 	private:
@@ -31,6 +37,8 @@ namespace Strawberry::Accoutrement
 
 
 	private:
-		Codec::Audio::Playlist mPlaylist;
+		Codec::Audio::Playlist                             mPlaylist;
+		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mAudioChannel;
+		Core::Option<Core::LoopingThread>                  mAudioSendingThread;
 	};
 }

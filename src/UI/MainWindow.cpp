@@ -53,8 +53,8 @@ namespace Strawberry::Accoutrement
 
 		musicSizer->AddGrowableRow(0, 6);
 		musicSizer->AddGrowableRow(1, 1);
-		musicSizer->AddGrowableCol(0, 2);
-		musicSizer->AddGrowableCol(1, 1);
+		musicSizer->AddGrowableCol(0, 4);
+		musicSizer->AddGrowableCol(1, 3);
 		sizer->Add(musicSizer, 0, wxALL | wxEXPAND, 5);
 
 		sizer->AddGrowableCol(0);

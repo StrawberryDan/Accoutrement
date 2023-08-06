@@ -38,6 +38,10 @@ add_executable(
 		src/UI/Panels/SoundEffectsPanel.hpp
 		src/UI/Panels/SoundControlPanel.cpp
 		src/UI/Panels/SoundControlPanel.hpp
+		src/UI/Model/SongDatabase.cpp
+		src/UI/Model/SongDatabase.hpp
+		src/UI/Model/Song.cpp
+		src/UI/Model/Song.hpp
 )
 target_include_directories(Accoutrement PRIVATE ${wxWidgets_INCLUDE_DIRS})
 target_link_libraries(Accoutrement PRIVATE StrawberryDiscord StrawberryCodec StrawberryCore ${wxWidgets_LIBRARIES})

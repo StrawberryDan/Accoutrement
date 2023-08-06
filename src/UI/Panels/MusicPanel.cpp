@@ -2,6 +2,9 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 #include "MusicPanel.hpp"
+// This Project
+#include "../Model/Song.hpp"
+#include "../Model/SongDatabase.hpp"
 // Wx Widgets
 #include "wx/button.h"
 #include "wx/listbox.h"
@@ -9,12 +12,20 @@
 #include "wx/stattext.h"
 #include "wx/textctrl.h"
 #include "wx/gbsizer.h"
+#include "wx/filedlg.h"
+// Standard Library
+#include <filesystem>
 
 
 
 
 namespace Strawberry::Accoutrement
 {
+	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
+		EVT_BUTTON(Component::AddSongButton, MusicPanel::OnAddSong)
+	wxEND_EVENT_TABLE()
+
+
 	MusicPanel::MusicPanel(wxWindow* parent)
 		: wxPanel(parent)
 	{
@@ -25,12 +36,18 @@ namespace Strawberry::Accoutrement
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Available Songs"), {0, 0}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Playlist"), {0, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
-		sizer->Add(new wxListBox(this, wxID_ANY), {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
+		mSongDatabaseList = new wxListBox(this, wxID_ANY);
+		for (int i = 0; i < SongDatabase::Get().GetNumSongs(); i++)
+		{
+			mSongDatabaseList->Insert(SongDatabase::Get().GetSong(i).GetTitle(), mSongDatabaseList->GetCount());
+		}
+		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
 		sizer->Add(new wxListBox(this, wxID_ANY), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 
 		sizer->Add(new wxTextCtrl(this, wxID_ANY), {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
 
 		auto songListButtons = new wxBoxSizer(wxHORIZONTAL);
+		songListButtons->Add(new wxButton(this, Component::AddSongButton, "Add Song"), 0, wxALL, 5);
 		songListButtons->Add(new wxButton(this, wxID_ANY, "Enqueue"), 0,  wxALL, 5);
 		sizer->Add(songListButtons, {3, 0}, {1, 1}, wxALIGN_CENTER_HORIZONTAL, 5);
 
@@ -47,5 +64,27 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(1, 1);
 
 		SetSizerAndFit(sizer);
+	}
+
+
+	void MusicPanel::OnAddSong(wxCommandEvent& event)
+	{
+		wxFileDialog fileDialog(this, "Choose a song file...");
+		fileDialog.SetWildcard(wxALL_FILES_PATTERN);
+		auto dialogResult = fileDialog.ShowModal();
+		if (dialogResult == wxID_CANCEL)
+		{
+			return;
+		}
+		else if (dialogResult == wxID_OK)
+		{
+			auto path = std::filesystem::absolute(std::string(fileDialog.GetPath()));
+			auto song = Song::FromFile(path);
+			if (!song) return;
+
+			SongDatabase::Get().AddSong(song.Value());
+			std::string title = song.Value().GetTitle();
+			mSongDatabaseList->Insert(title, mSongDatabaseList->GetCount());
+		}
 	}
 }

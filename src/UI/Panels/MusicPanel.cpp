@@ -70,7 +70,7 @@ namespace Strawberry::Accoutrement
 	void MusicPanel::OnAddSong(wxCommandEvent& event)
 	{
 		wxFileDialog fileDialog(this, "Choose a song file...");
-		fileDialog.SetWildcard(wxALL_FILES_PATTERN);
+		fileDialog.SetWindowStyle(wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST);
 		auto dialogResult = fileDialog.ShowModal();
 		if (dialogResult == wxID_CANCEL)
 		{
@@ -78,13 +78,18 @@ namespace Strawberry::Accoutrement
 		}
 		else if (dialogResult == wxID_OK)
 		{
-			auto path = std::filesystem::absolute(std::string(fileDialog.GetPath()));
-			auto song = Song::FromFile(path);
-			if (!song) return;
+			wxArrayString paths;
+			fileDialog.GetPaths(paths);
+			for (const auto& path : paths)
+			{
+				auto fullPath = std::filesystem::absolute(std::string(path));
+				auto song = Song::FromFile(fullPath);
+				if (!song) return;
 
-			SongDatabase::Get().AddSong(song.Value());
-			std::string title = song.Value().GetTitle();
-			mSongDatabaseList->Insert(title, mSongDatabaseList->GetCount());
+				SongDatabase::Get().AddSong(song.Value());
+				std::string title = song.Value().GetTitle();
+				mSongDatabaseList->Insert(title, mSongDatabaseList->GetCount());
+			}
 		}
 	}
 }

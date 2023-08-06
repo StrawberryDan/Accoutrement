@@ -39,6 +39,6 @@ namespace Strawberry::Accoutrement
 	private:
 		Codec::Audio::Playlist                             mPlaylist;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mAudioChannel;
-		Core::Option<Core::LoopingThread>                  mAudioSendingThread;
+		Core::Option<Core::RepeatingTask>                  mAudioSendingThread;
 	};
 }

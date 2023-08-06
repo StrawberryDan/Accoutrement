@@ -73,20 +73,21 @@ namespace Strawberry::Accoutrement
 		mAudioSendingThread.Emplace([
 			this,
 			clock = Core::Metronome(0.02, 0.50)
-		](Core::LoopingThread* thread) mutable	{
-			if (auto connection = Bot::TryGet().AndThen([](auto x) { return x->GetVoiceConnection().AsPtr(); });
-			    connection && !mAudioChannel)
-			{
-				mAudioChannel = connection->CreateInputChannel();
-			}
-			else if (!connection && mAudioChannel)
-			{
-				mAudioChannel.reset();
-			}
-
+		](Core::RepeatingTask* thread) mutable	{
 			if (clock)
 			{
 				clock.Tick();
+				if (auto connection = Bot::TryGet().AndThen([](auto x) { return x->GetVoiceConnection().AsPtr(); });
+					connection && !mAudioChannel)
+				{
+					mAudioChannel = connection->CreateInputChannel();
+				}
+				else if (!connection && mAudioChannel)
+				{
+					mAudioChannel.reset();
+				}
+
+
 				auto frame = mPlaylist.ReadFrame();
 				if (frame && mAudioChannel)
 				{

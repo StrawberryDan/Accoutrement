@@ -35,9 +35,21 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void SongDatabase::AddSong(Song song)
+	size_t SongDatabase::AddSong(Song song)
 	{
 		mSongs.emplace_back(std::move(song));
+		return mSongs.size() - 1;
+	}
+
+
+	Core::Option<size_t> SongDatabase::GetSongIndex(const Song& song)
+	{
+		for (int i = 0; i < mSongs.size(); i++)
+		{
+			if (song == mSongs[i]) return i;
+		}
+
+		return Core::NullOpt;
 	}
 
 

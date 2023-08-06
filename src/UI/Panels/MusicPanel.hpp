@@ -21,6 +21,7 @@ namespace Strawberry::Accoutrement
 		enum Component
 		{
 			AddSongButton = wxID_HIGHEST + 1,
+			EnqueueSongButton,
 		};
 
 
@@ -30,6 +31,7 @@ namespace Strawberry::Accoutrement
 
 	protected:
 		void OnAddSong(wxCommandEvent& event);
+		void OnEnqueueSong(wxCommandEvent& event);
 
 
 	protected:

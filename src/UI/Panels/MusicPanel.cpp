@@ -5,6 +5,7 @@
 // This Project
 #include "../Model/Song.hpp"
 #include "../Model/SongDatabase.hpp"
+#include "../../Discord/Bot.hpp"
 // Wx Widgets
 #include "wx/button.h"
 #include "wx/listbox.h"
@@ -21,32 +22,9 @@
 
 namespace Strawberry::Accoutrement
 {
-	class SongClientData
-		: public wxClientData
-	{
-	public:
-		SongClientData(Song song)
-			: mSong(std::move(song))
-		{}
-
-		~SongClientData()
-		{
-			Core::DebugBreak();
-		}
-
-
-		Song GetSong() const { return mSong; }
-
-
-	private:
-		const Song mSong;
-
-
-	};
-
-
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
-		EVT_BUTTON(Component::AddSongButton, MusicPanel::OnAddSong)
+		EVT_BUTTON(Component::AddSongButton,     MusicPanel::OnAddSong)
+		EVT_BUTTON(Component::EnqueueSongButton, MusicPanel::OnEnqueueSong)
 	wxEND_EVENT_TABLE()
 
 
@@ -74,7 +52,7 @@ namespace Strawberry::Accoutrement
 
 		auto songListButtons = new wxBoxSizer(wxHORIZONTAL);
 		songListButtons->Add(new wxButton(this, Component::AddSongButton, "Add Song"), 0, wxALL, 5);
-		songListButtons->Add(new wxButton(this, wxID_ANY, "Enqueue"), 0,  wxALL, 5);
+		songListButtons->Add(new wxButton(this, Component::EnqueueSongButton, "Enqueue"), 0,  wxALL, 5);
 		sizer->Add(songListButtons, {3, 0}, {1, 1}, wxALIGN_CENTER_HORIZONTAL, 5);
 
 		auto playlistButtons = new wxGridBagSizer(5, 5);
@@ -118,5 +96,24 @@ namespace Strawberry::Accoutrement
 				mSongDatabaseList->SetItemPtrData(index, songIndex);
 			}
 		}
+	}
+
+
+	void MusicPanel::OnEnqueueSong(wxCommandEvent& event)
+	{
+		size_t selectedSongIndex = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (selectedSongIndex == -1)
+			return;
+
+		wxListItem selectedSongItem;
+		selectedSongItem.SetId(selectedSongIndex);
+		if (!mSongDatabaseList->GetItem(selectedSongItem))
+			return;
+
+		selectedSongIndex = selectedSongItem.GetData();
+
+		auto& playlist = Bot::Get().GetPlaylist();
+		auto song = SongDatabase::Get().GetSong(selectedSongIndex);
+		playlist.EnqueueFile(song.GetPath());
 	}
 }

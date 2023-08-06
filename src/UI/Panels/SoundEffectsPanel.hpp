@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 // wxWidgets
 #include "wx/button.h"
-#include "wx/dataview.h"
+#include "wx/listctrl.h"
 #include "wx/panel.h"
 
 
@@ -23,8 +23,8 @@ namespace Strawberry::Accoutrement
 
 
 	private:
-		wxDataViewTreeCtrl* mSoundEffectsList = nullptr;
-		wxButton*           mPlayButton       = nullptr;
-		wxButton*           mStopButton       = nullptr;
+		wxListCtrl* mSoundEffectsList = nullptr;
+		wxButton*   mPlayButton       = nullptr;
+		wxButton*   mStopButton       = nullptr;
 	};
 }

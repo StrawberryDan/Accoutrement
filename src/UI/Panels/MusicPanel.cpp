@@ -61,13 +61,13 @@ namespace Strawberry::Accoutrement
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Playlist"), {0, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
 		mSongDatabaseList = new wxListCtrl(this, wxID_ANY);
-		mSongDatabaseList->SetWindowStyleFlag(wxLC_LIST);
 		for (int i = 0; i < SongDatabase::Get().GetNumSongs(); i++)
 		{
 			mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), SongDatabase::Get().GetSong(i).GetTitle());
 		}
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
-		sizer->Add(new wxListBox(this, wxID_ANY), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
+
+		sizer->Add(new wxListCtrl(this, wxID_ANY), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 
 		sizer->Add(new wxTextCtrl(this, wxID_ANY), {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
 

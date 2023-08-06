@@ -51,7 +51,7 @@ namespace Strawberry::Accoutrement
 		auto soundControlPanel = new SoundControlPanel(this);
 		musicSizer->Add(soundControlPanel, {1, 1}, {1, 2}, wxALL | wxEXPAND, 5);
 
-		musicSizer->AddGrowableRow(0, 4);
+		musicSizer->AddGrowableRow(0, 6);
 		musicSizer->AddGrowableRow(1, 1);
 		musicSizer->AddGrowableCol(0, 2);
 		musicSizer->AddGrowableCol(1, 1);

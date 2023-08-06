@@ -39,6 +39,7 @@ namespace Strawberry::Accoutrement
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Playlist"), {0, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
 		mSongDatabaseList = new wxListCtrl(this, wxID_ANY);
+		mSongDatabaseList->SetWindowStyle(wxLC_LIST);
 		for (int i = 0; i < SongDatabase::Get().GetNumSongs(); i++)
 		{
 			auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), SongDatabase::Get().GetSong(i).GetTitle());

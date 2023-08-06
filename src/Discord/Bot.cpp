@@ -72,7 +72,7 @@ namespace Strawberry::Accoutrement
 	{
 		mAudioSendingThread.Emplace([
 			this,
-			clock = Core::Metronome(0.0, 2.0)
+			clock = Core::Metronome(0.02, 0.06)
 		](Core::LoopingThread* thread) mutable	{
 			if (auto connection = Bot::TryGet().AndThen([](auto x) { return x->GetVoiceConnection().AsPtr(); });
 			    connection && !mAudioChannel)
@@ -97,6 +97,7 @@ namespace Strawberry::Accoutrement
 				{
 					clock.SetAllowedSecondsAhead(frame->GetDuration());
 				}
+				std::this_thread::yield();
 			}
 		});
 	}

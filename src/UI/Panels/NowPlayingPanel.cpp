@@ -33,6 +33,7 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(0, 1);
 		sizer->AddGrowableCol(1, 1);
 		sizer->AddGrowableCol(2, 1);
+		sizer->AddGrowableRow(0, 1);
 		SetSizerAndFit(sizer);
 	}
 }

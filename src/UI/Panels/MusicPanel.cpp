@@ -63,7 +63,8 @@ namespace Strawberry::Accoutrement
 		mSongDatabaseList = new wxListCtrl(this, wxID_ANY);
 		for (int i = 0; i < SongDatabase::Get().GetNumSongs(); i++)
 		{
-			mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), SongDatabase::Get().GetSong(i).GetTitle());
+			auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), SongDatabase::Get().GetSong(i).GetTitle());
+			mSongDatabaseList->SetItemPtrData(index, i);
 		}
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
 
@@ -111,9 +112,10 @@ namespace Strawberry::Accoutrement
 				auto song = Song::FromFile(fullPath);
 				if (!song) return;
 
-				SongDatabase::Get().AddSong(song.Value());
+				auto songIndex = SongDatabase::Get().AddSong(song.Value());
 				std::string title = song.Value().GetTitle();
 				auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), title);
+				mSongDatabaseList->SetItemPtrData(index, songIndex);
 			}
 		}
 	}

@@ -18,8 +18,15 @@ namespace Strawberry::Accoutrement
 	class NowPlayingPanel
 		: public wxPanel
 	{
+		wxDECLARE_EVENT_TABLE();
 	public:
 		NowPlayingPanel(wxWindow* parent);
+
+
+
+	protected:
+		void NextSong(wxCommandEvent& event);
+		void PrevSong(wxCommandEvent& event);
 
 
 	private:

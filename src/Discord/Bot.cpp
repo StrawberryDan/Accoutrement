@@ -72,7 +72,7 @@ namespace Strawberry::Accoutrement
 	{
 		mAudioSendingThread.Emplace([
 			this,
-			clock = Core::Metronome(0.02, 0.50)
+			clock = Core::Metronome(0.02, 0.6)
 		](Core::RepeatingTask* thread) mutable	{
 			if (clock)
 			{

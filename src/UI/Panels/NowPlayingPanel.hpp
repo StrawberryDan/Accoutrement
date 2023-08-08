@@ -5,6 +5,8 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // wxWidgets
+#include <Strawberry/Core/IO/ChannelReceiver.hpp>
+#include <Codec/Audio/Playlist.hpp>
 #include "wx/panel.h"
 #include "wx/button.h"
 #include "wx/stattext.h"
@@ -25,6 +27,7 @@ namespace Strawberry::Accoutrement
 
 
 	protected:
+		void Update(wxUpdateUIEvent& event);
 		void NextSong(wxCommandEvent& event);
 		void PrevSong(wxCommandEvent& event);
 
@@ -34,5 +37,8 @@ namespace Strawberry::Accoutrement
 		wxButton*     mPlayPauseButton;
 		wxButton*     mPrevSongButton;
 		wxButton*     mNextSongButton;
+
+
+		std::shared_ptr<Core::IO::ChannelReceiver<Codec::Audio::Playlist::Event>> mEventReceiver;
 	};
 }

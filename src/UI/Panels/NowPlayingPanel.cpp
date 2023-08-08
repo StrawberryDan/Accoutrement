@@ -20,6 +20,7 @@ namespace Strawberry::Accoutrement
 
 
 	wxBEGIN_EVENT_TABLE(NowPlayingPanel, wxPanel)
+		EVT_UPDATE_UI(wxID_ANY, NowPlayingPanel::Update)
 		EVT_BUTTON(Component::NextSongButton, NowPlayingPanel::NextSong)
 		EVT_BUTTON(Component::PrevSongButton, NowPlayingPanel::PrevSong)
 	wxEND_EVENT_TABLE()
@@ -27,6 +28,7 @@ namespace Strawberry::Accoutrement
 
 	NowPlayingPanel::NowPlayingPanel(wxWindow* parent)
 		: wxPanel(parent)
+		, mEventReceiver(Bot::Get().GetPlaylist().CreateEventReceiver())
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
@@ -49,6 +51,21 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(2, 1);
 		sizer->AddGrowableRow(0, 1);
 		SetSizerAndFit(sizer);
+	}
+
+
+	void NowPlayingPanel::Update(wxUpdateUIEvent& event)
+	{
+		while (true)
+		{
+			auto mMessage = mEventReceiver->Read();
+			if (!mMessage) return;
+
+			if (auto songChanged = mMessage->Value<Codec::Audio::Playlist::SongChangedEvent>())
+			{
+				mSongTitle->SetLabelText(songChanged->newSongTitle.ValueOr(songChanged->newSongPath));
+			}
+		}
 	}
 
 

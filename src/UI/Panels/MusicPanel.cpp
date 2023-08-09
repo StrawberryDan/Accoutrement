@@ -23,6 +23,7 @@
 namespace Strawberry::Accoutrement
 {
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
+		EVT_UPDATE_UI(wxID_ANY,                  MusicPanel::OnUpdate)
 		EVT_BUTTON(Component::AddSongButton,     MusicPanel::OnAddSong)
 		EVT_BUTTON(Component::EnqueueSongButton, MusicPanel::OnEnqueueSong)
 	wxEND_EVENT_TABLE()
@@ -30,6 +31,7 @@ namespace Strawberry::Accoutrement
 
 	MusicPanel::MusicPanel(wxWindow* parent)
 		: wxPanel(parent)
+		, mEventReceiver(Bot::Get().GetPlaylist().CreateEventReceiver())
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
@@ -47,7 +49,9 @@ namespace Strawberry::Accoutrement
 		}
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
 
-		sizer->Add(new wxListCtrl(this, wxID_ANY), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
+		mPlaylistView = new wxListCtrl(this, wxID_ANY);
+		mPlaylistView->SetWindowStyleFlag(wxLC_LIST);
+		sizer->Add(mPlaylistView, {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 
 		sizer->Add(new wxTextCtrl(this, wxID_ANY), {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
 
@@ -69,6 +73,18 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(1, 1);
 
 		SetSizerAndFit(sizer);
+	}
+
+
+	void MusicPanel::OnUpdate(wxUpdateUIEvent& event)
+	{
+		auto playlistMessage = mEventReceiver->Read();
+		if (!playlistMessage) return;
+
+		if (auto songAdded = playlistMessage->Value<Codec::Audio::Playlist::SongAddedEvent>())
+		{
+			mPlaylistView->InsertItem(songAdded->index, songAdded->title.ValueOr(songAdded->path));
+		}
 	}
 
 

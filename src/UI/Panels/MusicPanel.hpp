@@ -7,6 +7,8 @@
 // WxWidgets
 #include "wx/listctrl.h"
 #include "wx/panel.h"
+// Codec
+#include "Codec/Audio/Playlist.hpp"
 
 
 namespace Strawberry::Accoutrement
@@ -30,13 +32,14 @@ namespace Strawberry::Accoutrement
 
 
 	protected:
+		void OnUpdate(wxUpdateUIEvent& event);
 		void OnAddSong(wxCommandEvent& event);
 		void OnEnqueueSong(wxCommandEvent& event);
 
 
 	protected:
-		wxListCtrl* mSongDatabaseList;
-
-
+		wxListCtrl*                           mSongDatabaseList;
+		wxListCtrl*                           mPlaylistView;
+		Codec::Audio::Playlist::EventReceiver mEventReceiver;
 	};
 }

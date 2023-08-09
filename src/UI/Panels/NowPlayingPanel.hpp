@@ -39,6 +39,6 @@ namespace Strawberry::Accoutrement
 		wxButton*     mNextSongButton;
 
 
-		std::shared_ptr<Core::IO::ChannelReceiver<Codec::Audio::Playlist::Event>> mEventReceiver;
+		Codec::Audio::Playlist::EventReceiver mEventReceiver;
 	};
 }

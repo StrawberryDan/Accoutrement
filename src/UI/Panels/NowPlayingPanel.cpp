@@ -35,6 +35,7 @@ namespace Strawberry::Accoutrement
 		auto sizer = new wxGridBagSizer(5, 5);
 
 		mSongTitle = new wxStaticText(this, wxID_ANY, "No Song Playing");
+		mSongTitle->SetWindowStyle(wxALIGN_CENTRE_HORIZONTAL);
 		sizer->Add(mSongTitle, {0, 0}, {1, 3}, wxALL | wxALIGN_CENTER, 5);
 
 		mPrevSongButton = new wxButton(this, Component::PrevSongButton, "Previous Song");
@@ -64,6 +65,7 @@ namespace Strawberry::Accoutrement
 			if (auto songChanged = mMessage->Value<Codec::Audio::Playlist::SongChangedEvent>())
 			{
 				mSongTitle->SetLabelText(songChanged->newSongTitle.ValueOr(songChanged->newSongPath));
+				Layout();
 			}
 		}
 	}

@@ -64,7 +64,7 @@ namespace Strawberry::Accoutrement
 
 			if (auto songChanged = mMessage->Value<Codec::Audio::Playlist::SongChangedEvent>())
 			{
-				mSongTitle->SetLabelText(songChanged->newSongTitle.ValueOr(songChanged->newSongPath));
+				mSongTitle->SetLabelText(songChanged->title.ValueOr(songChanged->path));
 				Layout();
 			}
 		}

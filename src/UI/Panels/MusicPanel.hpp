@@ -24,6 +24,7 @@ namespace Strawberry::Accoutrement
 		{
 			AddSongButton = wxID_HIGHEST + 1,
 			EnqueueSongButton,
+			RemoveSongButton,
 		};
 
 
@@ -35,6 +36,7 @@ namespace Strawberry::Accoutrement
 		void OnUpdate(wxUpdateUIEvent& event);
 		void OnAddSong(wxCommandEvent& event);
 		void OnEnqueueSong(wxCommandEvent& event);
+		void OnRemoveSong(wxCommandEvent& event);
 
 
 	protected:

@@ -18,20 +18,19 @@
 #include <filesystem>
 
 
-
-
 namespace Strawberry::Accoutrement
 {
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
-		EVT_UPDATE_UI(wxID_ANY,                  MusicPanel::OnUpdate)
-		EVT_BUTTON(Component::AddSongButton,     MusicPanel::OnAddSong)
-		EVT_BUTTON(Component::EnqueueSongButton, MusicPanel::OnEnqueueSong)
+			EVT_UPDATE_UI(wxID_ANY, MusicPanel::OnUpdate)
+			EVT_BUTTON(Component::AddSongButton, MusicPanel::OnAddSong)
+			EVT_BUTTON(Component::EnqueueSongButton, MusicPanel::OnEnqueueSong)
+			EVT_BUTTON(Component::RemoveSongButton, MusicPanel::OnRemoveSong)
 	wxEND_EVENT_TABLE()
 
 
 	MusicPanel::MusicPanel(wxWindow* parent)
 		: wxPanel(parent)
-		, mEventReceiver(Bot::Get().GetPlaylist().CreateEventReceiver())
+		  , mEventReceiver(Bot::Get().GetPlaylist().CreateEventReceiver())
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
@@ -44,7 +43,8 @@ namespace Strawberry::Accoutrement
 		mSongDatabaseList->SetWindowStyle(wxLC_LIST);
 		for (int i = 0; i < SongDatabase::Get().GetNumSongs(); i++)
 		{
-			auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), SongDatabase::Get().GetSong(i).GetTitle());
+			auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(),
+													   SongDatabase::Get().GetSong(i).GetTitle());
 			mSongDatabaseList->SetItemPtrData(index, i);
 		}
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
@@ -57,15 +57,16 @@ namespace Strawberry::Accoutrement
 
 		auto songListButtons = new wxBoxSizer(wxHORIZONTAL);
 		songListButtons->Add(new wxButton(this, Component::AddSongButton, "Add Song"), 0, wxALL, 5);
-		songListButtons->Add(new wxButton(this, Component::EnqueueSongButton, "Enqueue"), 0,  wxALL, 5);
+		songListButtons->Add(new wxButton(this, Component::EnqueueSongButton, "Enqueue"), 0, wxALL, 5);
 		sizer->Add(songListButtons, {3, 0}, {1, 1}, wxALIGN_CENTER_HORIZONTAL, 5);
 
 		auto playlistButtons = new wxGridBagSizer(5, 5);
-		playlistButtons->Add(new wxButton(this, wxID_ANY, "Remove"), {0, 0}, {1, 1},  wxEXPAND | wxALL, 5);
-		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Up"), {0, 1}, {1, 1},  wxEXPAND | wxALL, 5);
-		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Down"), {1, 1}, {1, 1},  wxEXPAND | wxALL, 5);
-		playlistButtons->Add(new wxButton(this, wxID_ANY, "Shuffle"), {0, 2}, {1, 1},  wxEXPAND | wxALL, 5);
-		playlistButtons->Add(new wxButton(this, wxID_ANY, "Repeat"), {1, 2}, {1, 1},  wxEXPAND | wxALL, 5);
+		playlistButtons->Add(new wxButton(this, Component::RemoveSongButton, "Remove"), {0, 0}, {1, 1},
+							 wxEXPAND | wxALL, 5);
+		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Up"), {0, 1}, {1, 1}, wxEXPAND | wxALL, 5);
+		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Down"), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
+		playlistButtons->Add(new wxButton(this, wxID_ANY, "Shuffle"), {0, 2}, {1, 1}, wxEXPAND | wxALL, 5);
+		playlistButtons->Add(new wxButton(this, wxID_ANY, "Repeat"), {1, 2}, {1, 1}, wxEXPAND | wxALL, 5);
 		sizer->Add(playlistButtons, {2, 1}, {2, 1}, wxALIGN_CENTER, 5);
 
 		sizer->AddGrowableRow(1, 1);
@@ -85,6 +86,11 @@ namespace Strawberry::Accoutrement
 		{
 			mPlaylistView->InsertItem(songAdded->index, songAdded->title.ValueOr(songAdded->path));
 		}
+		else if (auto songRemoved = playlistMessage->Value<Codec::Audio::Playlist::SongRemovedEvent>())
+		{
+			Core::Assert(songRemoved->index < mPlaylistView->GetItemCount());
+			mPlaylistView->DeleteItem(songRemoved->index);
+		}
 	}
 
 
@@ -101,7 +107,7 @@ namespace Strawberry::Accoutrement
 		{
 			wxArrayString paths;
 			fileDialog.GetPaths(paths);
-			for (const auto& path : paths)
+			for (const auto& path: paths)
 			{
 				auto fullPath = std::filesystem::absolute(std::string(path));
 				auto song = Song::FromFile(fullPath);
@@ -132,5 +138,15 @@ namespace Strawberry::Accoutrement
 		auto& playlist = Bot::Get().GetPlaylist();
 		auto song = SongDatabase::Get().GetSong(selectedSongIndex);
 		playlist.EnqueueFile(song.GetPath());
+	}
+
+
+	void MusicPanel::OnRemoveSong(wxCommandEvent& event)
+	{
+		auto index = mPlaylistView->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (index != -1)
+		{
+			Bot::Get().GetPlaylist().RemoveTrack(index);
+		}
 	}
 }

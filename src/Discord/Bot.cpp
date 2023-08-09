@@ -72,8 +72,8 @@ namespace Strawberry::Accoutrement
 	{
 		mAudioSendingThread.Emplace([
 			this,
-			clock = Core::Metronome(0.02, 0.06)
-		](Core::RepeatingTask* thread) mutable	{
+			clock = Core::Metronome(0.02, 0.01)
+		] (Core::RepeatingTask* thread) mutable	{
 			if (clock)
 			{
 				clock.Tick();
@@ -89,16 +89,15 @@ namespace Strawberry::Accoutrement
 
 
 				auto frame = mPlaylist.ReadFrame();
-				if (frame && mAudioChannel)
+				if (frame)
 				{
 					clock.SetAllowedSecondsAhead(frame->GetDuration());
+				}
+
+				if (mAudioChannel && frame)
+				{
 					mAudioChannel->EnqueueFrame(frame.Unwrap());
 				}
-				else if (frame && !mAudioChannel)
-				{
-					clock.SetAllowedSecondsAhead(frame->GetDuration());
-				}
-				std::this_thread::yield();
 			}
 		});
 	}

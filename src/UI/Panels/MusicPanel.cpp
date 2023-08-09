@@ -91,6 +91,13 @@ namespace Strawberry::Accoutrement
 			Core::Assert(songRemoved->index < mPlaylistView->GetItemCount());
 			mPlaylistView->DeleteItem(songRemoved->index);
 		}
+		else if (auto songChanged = playlistMessage->Value<Codec::Audio::Playlist::SongChangedEvent>())
+		{
+			for (int i = 0; i < mPlaylistView->GetItemCount(); i++)
+			{
+				mPlaylistView->SetItemBackgroundColour(i, i == songChanged->index ? wxColor(32, 128, 32, 255) : mPlaylistView->GetBackgroundColour());
+			}
+		}
 	}
 
 

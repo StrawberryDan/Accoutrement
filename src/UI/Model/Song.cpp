@@ -63,4 +63,19 @@ namespace Strawberry::Accoutrement
 	{
 		return mPath;
 	}
+
+
+	void Song::SetTitle(const std::string& title)
+	{
+		mTitle = title;
+	}
+
+
+	nlohmann::json Song::ToJSON() const
+	{
+		nlohmann::json json;
+		json["path"]  = GetPath();
+		json["title"] = GetTitle();
+		return json;
+	}
 }

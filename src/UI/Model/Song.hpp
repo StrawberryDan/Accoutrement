@@ -32,8 +32,15 @@ namespace Strawberry::Accoutrement
 		const std::filesystem::path&     GetPath() const;
 
 
+		void                             SetTitle(const std::string& title);
+
+
 		bool operator==(const Song& rhs) const { return mPath == rhs.mPath; }
 		bool operator!=(const Song& rhs) const { return mPath != rhs.mPath; }
+
+
+		[[nodiscard]]
+		nlohmann::json                   ToJSON() const;
 
 
 	private:

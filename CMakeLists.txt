@@ -3,27 +3,39 @@ project(Accoutrement)
 set(CMAKE_CXX_STANDARD 23)
 
 
+# Get wxWidgets
+message(STATUS "Cloning wxWidgets")
+execute_process(
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/build_wx.sh ${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	COMMAND_ERROR_IS_FATAL ANY
+)
+
+
+# Configure wxWidgets
+message(STATUS "Configuring wxWidgets")
+set(wxBUILD_CXX_STANDARD 20)
+set(wxBUILD_SHARED OFF)
+set(wxBUILD_MONOLITHIC ON)
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets/source)
+
+
 # MODULES
 add_subdirectory(../Core    ${CMAKE_CURRENT_BINARY_DIR}/Core)
 add_subdirectory(../Codec   ${CMAKE_CURRENT_BINARY_DIR}/Codec)
 add_subdirectory(../Discord ${CMAKE_CURRENT_BINARY_DIR}/Discord)
 
 
-find_package(wxWidgets REQUIRED
-        COMPONENTS core base)
-include(${wxWidgets_USE_FILE})
-
-add_executable(
-        Accoutrement
-        src/Main.cpp
-        src/UI/MainWindow.cpp
-        src/UI/MainWindow.hpp
+add_executable(Accoutrement
+		src/Main.cpp
+		src/UI/MainWindow.cpp
+		src/UI/MainWindow.hpp
 		src/UI/Panels/ChannelSelector.cpp
 		src/UI/Panels/ChannelSelector.hpp
-        src/Discord/Bot.hpp
-        src/Discord/Bot.cpp
-        src/Config.cpp
-        src/Config.hpp
+		src/Discord/Bot.hpp
+		src/Discord/Bot.cpp
+		src/Config.cpp
+		src/Config.hpp
 		src/UI/Events/GuildCreated.cpp
 		src/UI/Events/GuildCreated.hpp
 		src/UI/Panels/MusicPanel.cpp
@@ -43,5 +55,6 @@ add_executable(
 		src/UI/Model/Song.cpp
 		src/UI/Model/Song.hpp
 )
-target_include_directories(Accoutrement PRIVATE ${wxWidgets_INCLUDE_DIRS})
-target_link_libraries(Accoutrement PRIVATE StrawberryDiscord StrawberryCodec StrawberryCore ${wxWidgets_LIBRARIES})
+
+
+target_link_libraries(Accoutrement PRIVATE StrawberryDiscord StrawberryCodec StrawberryCore wx::mono)

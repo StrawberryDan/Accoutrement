@@ -15,6 +15,7 @@
 #include "wx/stattext.h"
 #include "wx/textctrl.h"
 #include "wx/textdlg.h"
+#include "wx/msgdlg.h"
 // Standard Library
 #include <filesystem>
 
@@ -211,11 +212,18 @@ namespace Strawberry::Accoutrement
 
 	void MusicPanel::OnRemoveFromDatabase(wxCommandEvent& event)
 	{
-		auto index = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (index != -1)
+		wxMessageDialog* mCheckDialog = new wxMessageDialog(this, "Are you Sure?");
+		mCheckDialog->SetMessageDialogStyle(wxOK | wxCANCEL);
+
+		auto result = mCheckDialog->ShowModal();
+		if (result == wxID_OK)
 		{
-			SongDatabase::Get().RemoveSong(index);
-			mSongDatabaseList->DeleteItem(index);
+			auto index = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+			if (index != -1)
+			{
+				SongDatabase::Get().RemoveSong(index);
+				mSongDatabaseList->DeleteItem(index);
+			}
 		}
 	}
 }

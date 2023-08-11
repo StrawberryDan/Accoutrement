@@ -68,7 +68,7 @@ namespace Strawberry::Accoutrement
 
 	Bot::Bot()
 		: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
-		, mPlaylist({48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO}, 960)
+		, mPlaylist(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
 	{
 		mAudioSendingThread.Emplace([
 			this,
@@ -86,7 +86,7 @@ namespace Strawberry::Accoutrement
 					mAudioChannel.reset();
 				}
 
-				if (auto frame = mPlaylist.ReadFrame())
+				if (auto frame = mPlaylist.Lock()->ReadFrame())
 				{
 					clock.SetFrequency(frame->GetDuration());
 					clock.Tick();

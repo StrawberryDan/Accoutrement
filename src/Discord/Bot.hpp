@@ -6,8 +6,10 @@
 // Discord
 #include "Discord/Bot.hpp"
 // Codec
-#include "Codec/Audio/Playlist.hpp"
 #include "Codec/Audio/Mixer.hpp"
+#include "Codec/Audio/Playlist.hpp"
+// Core
+#include "Strawberry/Core/Sync/Mutex.hpp"
 
 
 
@@ -37,7 +39,7 @@ namespace Strawberry::Accoutrement
 
 
 	private:
-		Codec::Audio::Playlist                             mPlaylist;
+		Core::Mutex<Codec::Audio::Playlist>                mPlaylist;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mAudioChannel;
 		Core::Option<Core::RepeatingTask>                  mAudioSendingThread;
 	};

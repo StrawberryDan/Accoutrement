@@ -30,7 +30,7 @@ namespace Strawberry::Accoutrement
 
 	MusicPanel::MusicPanel(wxWindow* parent)
 		: wxPanel(parent)
-		  , mEventReceiver(Bot::Get().GetPlaylist().CreateEventReceiver())
+		  , mEventReceiver(Bot::Get().GetPlaylist().Lock()->CreateEventReceiver())
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
@@ -144,7 +144,7 @@ namespace Strawberry::Accoutrement
 
 		auto& playlist = Bot::Get().GetPlaylist();
 		auto song = SongDatabase::Get().GetSong(selectedSongIndex);
-		playlist.EnqueueFile(song.GetPath());
+		playlist.Lock()->EnqueueFile(song.GetPath());
 	}
 
 
@@ -153,7 +153,7 @@ namespace Strawberry::Accoutrement
 		auto index = mPlaylistView->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 		if (index != -1)
 		{
-			Bot::Get().GetPlaylist().RemoveTrack(index);
+			Bot::Get().GetPlaylist().Lock()->RemoveTrack(index);
 		}
 	}
 }

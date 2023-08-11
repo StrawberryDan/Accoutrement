@@ -62,9 +62,9 @@ namespace Strawberry::Accoutrement
 			auto mMessage = mEventReceiver->Read();
 			if (!mMessage) return;
 
-			if (auto songChanged = mMessage->Value<Codec::Audio::Playlist::SongChangedEvent>())
+			if (auto songBegan = mMessage->Value<Codec::Audio::Playlist::SongBeganEvent>())
 			{
-				mSongTitle->SetLabelText(songChanged->title.ValueOr(songChanged->path));
+				mSongTitle->SetLabelText(songBegan->title.ValueOr(songBegan->path));
 				Layout();
 			}
 			else if (auto playbackEnded = mMessage->Value<Codec::Audio::Playlist::PlaybackEndedEvent>())

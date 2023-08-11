@@ -2,6 +2,9 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 #include "SongDatabase.hpp"
+// Standard Library
+#include <fstream>
+#include <string>
 
 
 //======================================================================================================================
@@ -20,6 +23,20 @@ namespace Strawberry::Accoutrement
 		}
 
 		return *sGlobalInstance;
+	}
+
+
+	SongDatabase::~SongDatabase()
+	{
+		nlohmann::json json;
+		for (const auto& song : mSongs)
+		{
+			json["songs"].push_back(song.ToJSON());
+		}
+
+
+		std::ofstream file("./song_database.json");
+		file << json.dump('\t');
 	}
 
 
@@ -55,6 +72,23 @@ namespace Strawberry::Accoutrement
 
 	SongDatabase::SongDatabase()
 	{
+		std::ifstream file("./song_database.json");
 
+		if (file.is_open())
+		{
+			nlohmann::json json;
+			file >> json;
+
+			for (auto songData: json["songs"])
+			{
+				std::string title = songData["title"];
+				auto song = Song::FromFile(songData["path"]);
+				if (song)
+				{
+					song->SetTitle(title);
+					AddSong(song.Value());
+				}
+			}
+		}
 	}
 }

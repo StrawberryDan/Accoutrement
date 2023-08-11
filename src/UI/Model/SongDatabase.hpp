@@ -28,6 +28,9 @@ namespace Strawberry::Accoutrement
 
 
 	public:
+		~SongDatabase();
+
+
 		const Song& GetSong(size_t index) const;
 		size_t GetNumSongs() const;
 

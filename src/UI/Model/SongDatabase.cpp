@@ -29,7 +29,7 @@ namespace Strawberry::Accoutrement
 	SongDatabase::~SongDatabase()
 	{
 		nlohmann::json json;
-		for (const auto& song : mSongs)
+		for (const auto& [index, song] : mSongs)
 		{
 			json["songs"].push_back(song.ToJSON());
 		}
@@ -42,13 +42,13 @@ namespace Strawberry::Accoutrement
 
 	const Song& SongDatabase::GetSong(size_t index) const
 	{
-		return mSongs[index];
+		return mSongs.at(index);
 	}
 
 
 	Song& SongDatabase::GetSong(size_t index)
 	{
-		return mSongs[index];
+		return mSongs.at(index);
 	}
 
 
@@ -60,8 +60,9 @@ namespace Strawberry::Accoutrement
 
 	size_t SongDatabase::AddSong(Song song)
 	{
-		mSongs.emplace_back(std::move(song));
-		return mSongs.size() - 1;
+		auto id = mNextSongId++;
+		mSongs.emplace(id, std::move(song));
+		return id;
 	}
 
 
@@ -69,10 +70,16 @@ namespace Strawberry::Accoutrement
 	{
 		for (int i = 0; i < mSongs.size(); i++)
 		{
-			if (song == mSongs[i]) return i;
+			if (song == mSongs.at(i)) return i;
 		}
 
 		return Core::NullOpt;
+	}
+
+
+	void SongDatabase::RemoveSong(size_t index)
+	{
+		mSongs.erase(index);
 	}
 
 

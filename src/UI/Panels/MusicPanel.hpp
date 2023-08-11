@@ -29,6 +29,7 @@ namespace Strawberry::Accoutrement
 		void OnEnqueueSong(wxCommandEvent& event);
 		void OnRemoveSong(wxCommandEvent& event);
 		void OnRenameSong(wxCommandEvent& event);
+		void OnRemoveFromDatabase(wxCommandEvent& event);
 
 
 	protected:

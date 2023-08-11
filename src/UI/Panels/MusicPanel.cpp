@@ -23,19 +23,22 @@ namespace Strawberry::Accoutrement
 {
 	enum Component
 	{
-		AddSongButton = wxID_HIGHEST + 1,
-		EnqueueSongButton,
-		RemoveSongButton,
-		RenameSongButton
+		AddSongToDatabaseButton      = wxID_HIGHEST + 1,
+		RenameSongButton,
+		RemoveSongFromDatabaseButton,
+
+		EnqueueSongToPlaylistButton,
+		RemoveSongFromPlaylistButton,
 	};
 
 
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
-			EVT_UPDATE_UI(wxID_ANY, MusicPanel::OnUpdate)
-			EVT_BUTTON(Component::AddSongButton, MusicPanel::OnAddSong)
-			EVT_BUTTON(Component::EnqueueSongButton, MusicPanel::OnEnqueueSong)
-			EVT_BUTTON(Component::RemoveSongButton, MusicPanel::OnRemoveSong)
-			EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
+			EVT_BUTTON(Component::AddSongToDatabaseButton     , MusicPanel::OnAddSong)
+			EVT_BUTTON(Component::EnqueueSongToPlaylistButton , MusicPanel::OnEnqueueSong)
+			EVT_BUTTON(Component::RemoveSongFromDatabaseButton, MusicPanel::OnRemoveFromDatabase)
+			EVT_BUTTON(Component::RemoveSongFromPlaylistButton, MusicPanel::OnRemoveSong)
+			EVT_BUTTON(Component::RenameSongButton            , MusicPanel::OnRenameSong)
+			EVT_UPDATE_UI(wxID_ANY                            , MusicPanel::OnUpdate)
 	wxEND_EVENT_TABLE()
 
 
@@ -67,13 +70,14 @@ namespace Strawberry::Accoutrement
 		sizer->Add(new wxTextCtrl(this, wxID_ANY), {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
 
 		auto songListButtons = new wxBoxSizer(wxHORIZONTAL);
-		songListButtons->Add(new wxButton(this, Component::AddSongButton, "Add Song"), 0, wxALL, 5);
-		songListButtons->Add(new wxButton(this, Component::EnqueueSongButton, "Enqueue"), 0, wxALL, 5);
+		songListButtons->Add(new wxButton(this, Component::AddSongToDatabaseButton, "Add Song"), 0, wxALL, 5);
+		songListButtons->Add(new wxButton(this, Component::EnqueueSongToPlaylistButton, "Enqueue"), 0, wxALL, 5);
 		songListButtons->Add(new wxButton(this, Component::RenameSongButton, "Rename"), 0, wxALL, 5);
+		songListButtons->Add(new wxButton(this, Component::RemoveSongFromDatabaseButton, "Remove"), 0, wxALL, 5);
 		sizer->Add(songListButtons, {3, 0}, {1, 1}, wxALIGN_CENTER_HORIZONTAL, 5);
 
 		auto playlistButtons = new wxGridBagSizer(5, 5);
-		playlistButtons->Add(new wxButton(this, Component::RemoveSongButton, "Remove"), {0, 0}, {1, 1},
+		playlistButtons->Add(new wxButton(this, Component::RemoveSongFromPlaylistButton, "Remove"), {0, 0}, {1, 1},
 							 wxEXPAND | wxALL, 5);
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Up"), {0, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Down"), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
@@ -200,6 +204,17 @@ namespace Strawberry::Accoutrement
 
 				Layout();
 			}
+		}
+	}
+
+
+	void MusicPanel::OnRemoveFromDatabase(wxCommandEvent& event)
+	{
+		auto index = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (index != -1)
+		{
+			SongDatabase::Get().RemoveSong(index);
+			mSongDatabaseList->DeleteItem(index);
 		}
 	}
 }

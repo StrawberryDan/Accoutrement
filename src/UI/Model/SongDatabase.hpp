@@ -7,8 +7,8 @@
 // This Project
 #include "Song.hpp"
 // Standard Library
-#include <vector>
 #include <cstdint>
+#include <map>
 #include <memory>
 
 
@@ -37,10 +37,12 @@ namespace Strawberry::Accoutrement
 
 		size_t               AddSong(Song song);
 		Core::Option<size_t> GetSongIndex(const Song& song);
+		void                 RemoveSong(size_t index);
 
 
 	private:
-		std::vector<Song> mSongs;
+		size_t                 mNextSongId = 0;
+		std::map<size_t, Song> mSongs;
 
 
 	private:

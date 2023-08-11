@@ -180,13 +180,14 @@ namespace Strawberry::Accoutrement
 		long item = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 		if (item != -1)
 		{
+			auto songID = mSongDatabaseList->GetItemData(item);
+			auto& song = SongDatabase::Get().GetSong(songID);
 			auto strDialog = new wxTextEntryDialog(this, "Choose a new name:");
+			strDialog->SetValue(song.GetTitle());
 			if (strDialog->ShowModal() == wxID_OK)
 			{
 				std::string title(strDialog->GetValue());
 
-				auto songID = mSongDatabaseList->GetItemData(item);
-				auto& song = SongDatabase::Get().GetSong(songID);
 				song.SetTitle(title);
 				mSongDatabaseList->SetItem(item, 0, title);
 

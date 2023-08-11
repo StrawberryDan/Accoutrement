@@ -20,15 +20,6 @@ namespace Strawberry::Accoutrement
 
 
 	public:
-		enum Component
-		{
-			AddSongButton = wxID_HIGHEST + 1,
-			EnqueueSongButton,
-			RemoveSongButton,
-		};
-
-
-	public:
 		MusicPanel(wxWindow* parent);
 
 
@@ -37,6 +28,7 @@ namespace Strawberry::Accoutrement
 		void OnAddSong(wxCommandEvent& event);
 		void OnEnqueueSong(wxCommandEvent& event);
 		void OnRemoveSong(wxCommandEvent& event);
+		void OnRenameSong(wxCommandEvent& event);
 
 
 	protected:

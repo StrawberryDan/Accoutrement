@@ -8,23 +8,34 @@
 #include "../../Discord/Bot.hpp"
 // Wx Widgets
 #include "wx/button.h"
+#include "wx/filedlg.h"
+#include "wx/gbsizer.h"
 #include "wx/listbox.h"
 #include "wx/sizer.h"
 #include "wx/stattext.h"
 #include "wx/textctrl.h"
-#include "wx/gbsizer.h"
-#include "wx/filedlg.h"
+#include "wx/textdlg.h"
 // Standard Library
 #include <filesystem>
 
 
 namespace Strawberry::Accoutrement
 {
+	enum Component
+	{
+		AddSongButton = wxID_HIGHEST + 1,
+		EnqueueSongButton,
+		RemoveSongButton,
+		RenameSongButton
+	};
+
+
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
 			EVT_UPDATE_UI(wxID_ANY, MusicPanel::OnUpdate)
 			EVT_BUTTON(Component::AddSongButton, MusicPanel::OnAddSong)
 			EVT_BUTTON(Component::EnqueueSongButton, MusicPanel::OnEnqueueSong)
 			EVT_BUTTON(Component::RemoveSongButton, MusicPanel::OnRemoveSong)
+			EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
 	wxEND_EVENT_TABLE()
 
 
@@ -58,6 +69,7 @@ namespace Strawberry::Accoutrement
 		auto songListButtons = new wxBoxSizer(wxHORIZONTAL);
 		songListButtons->Add(new wxButton(this, Component::AddSongButton, "Add Song"), 0, wxALL, 5);
 		songListButtons->Add(new wxButton(this, Component::EnqueueSongButton, "Enqueue"), 0, wxALL, 5);
+		songListButtons->Add(new wxButton(this, Component::RenameSongButton, "Rename"), 0, wxALL, 5);
 		sizer->Add(songListButtons, {3, 0}, {1, 1}, wxALIGN_CENTER_HORIZONTAL, 5);
 
 		auto playlistButtons = new wxGridBagSizer(5, 5);
@@ -155,6 +167,39 @@ namespace Strawberry::Accoutrement
 		if (index != -1)
 		{
 			Bot::Get().GetPlaylist().Lock()->RemoveTrack(index);
+		}
+	}
+
+
+	void MusicPanel::OnRenameSong(wxCommandEvent& event)
+	{
+		long item = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (item != -1)
+		{
+			auto strDialog = new wxTextEntryDialog(this, "Choose a new name:");
+			if (strDialog->ShowModal() == wxID_OK)
+			{
+				std::string title(strDialog->GetValue());
+
+				auto songID = mSongDatabaseList->GetItemData(item);
+				auto& song = SongDatabase::Get().GetSong(songID);
+				song.SetTitle(title);
+				mSongDatabaseList->SetItem(item, 0, title);
+
+				auto playlist = Bot::Get().GetPlaylist().Lock();
+				for (int i = 0; i < playlist->Length(); i++)
+				{
+					Song playlistSong = playlist->GetTrackAssociatedData<Song>(i);
+					if (song.GetPath() == playlistSong.GetPath())
+					{
+						playlistSong.SetTitle(title);
+						playlist->SetTrackAssociatedData(i, playlistSong);
+						mPlaylistView->SetItem(i, 0, title);
+					}
+				}
+
+				Layout();
+			}
 		}
 	}
 }

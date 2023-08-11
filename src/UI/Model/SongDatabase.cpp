@@ -46,6 +46,12 @@ namespace Strawberry::Accoutrement
 	}
 
 
+	Song& SongDatabase::GetSong(size_t index)
+	{
+		return mSongs[index];
+	}
+
+
 	size_t SongDatabase::GetNumSongs() const
 	{
 		return mSongs.size();

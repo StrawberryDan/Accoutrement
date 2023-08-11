@@ -32,6 +32,7 @@ namespace Strawberry::Accoutrement
 
 
 		const Song& GetSong(size_t index) const;
+		      Song& GetSong(size_t index);
 		size_t GetNumSongs() const;
 
 		size_t               AddSong(Song song);

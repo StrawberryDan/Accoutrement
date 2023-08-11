@@ -17,7 +17,7 @@ message(STATUS "Configuring wxWidgets")
 set(wxBUILD_CXX_STANDARD 20)
 set(wxBUILD_SHARED OFF)
 set(wxBUILD_MONOLITHIC ON)
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets/source)
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets)
 
 
 # MODULES

@@ -84,7 +84,8 @@ namespace Strawberry::Accoutrement
 
 		if (auto songAdded = playlistMessage->Value<Codec::Audio::Playlist::SongAddedEvent>())
 		{
-			mPlaylistView->InsertItem(songAdded->index, songAdded->title.ValueOr(songAdded->path));
+			Song song = std::any_cast<Song>(songAdded->associatedData);
+			mPlaylistView->InsertItem(songAdded->index, song.GetTitle());
 		}
 		else if (auto songRemoved = playlistMessage->Value<Codec::Audio::Playlist::SongRemovedEvent>())
 		{
@@ -142,9 +143,9 @@ namespace Strawberry::Accoutrement
 
 		selectedSongIndex = selectedSongItem.GetData();
 
-		auto& playlist = Bot::Get().GetPlaylist();
+		auto playlist = Bot::Get().GetPlaylist().Lock();
 		auto song = SongDatabase::Get().GetSong(selectedSongIndex);
-		playlist.Lock()->EnqueueFile(song.GetPath());
+		playlist->EnqueueFile(song.GetPath(), song).Unwrap();
 	}
 
 

@@ -2,10 +2,11 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 #include "NowPlayingPanel.hpp"
+// Accoutrement
+#include "../../Discord/Bot.hpp"
+#include "../Model/Song.hpp"
 // wxWidgets
 #include "wx/gbsizer.h"
-#include "../../Discord/Bot.hpp"
-
 
 //======================================================================================================================
 //  Class Definitions
@@ -64,7 +65,8 @@ namespace Strawberry::Accoutrement
 
 			if (auto songBegan = mMessage->Value<Codec::Audio::Playlist::SongBeganEvent>())
 			{
-				mSongTitle->SetLabelText(songBegan->title.ValueOr(songBegan->path));
+				Song song = std::any_cast<Song>(songBegan->associatedData);
+				mSongTitle->SetLabelText(song.GetTitle());
 				Layout();
 			}
 			else if (auto playbackEnded = mMessage->Value<Codec::Audio::Playlist::PlaybackEndedEvent>())

@@ -67,6 +67,11 @@ namespace Strawberry::Accoutrement
 				mSongTitle->SetLabelText(songChanged->title.ValueOr(songChanged->path));
 				Layout();
 			}
+			else if (auto playbackEnded = mMessage->Value<Codec::Audio::Playlist::PlaybackEndedEvent>())
+			{
+				mSongTitle->SetLabelText("No Song Playing");
+				Layout();
+			}
 		}
 	}
 

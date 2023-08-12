@@ -98,6 +98,10 @@ namespace Strawberry::Accoutrement
 					clock.Restart();
 				}
 			}
+			else
+			{
+				std::this_thread::yield();
+			}
 		});
 	}
 }

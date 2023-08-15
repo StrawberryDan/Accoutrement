@@ -27,4 +27,4 @@ namespace Strawberry::Accoutrement
 
 #define EVT_DISCONNECTED_FROM_VOICE(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_DISCONNECT_FROM_VOICE, id, wxID_ANY, (&fn), nullptr),
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

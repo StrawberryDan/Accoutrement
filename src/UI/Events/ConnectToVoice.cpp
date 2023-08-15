@@ -20,4 +20,4 @@ namespace Strawberry::Accoutrement
 	{
 		return new ConnectToVoice(mGuild, mChannel);
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

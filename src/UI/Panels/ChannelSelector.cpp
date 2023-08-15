@@ -267,4 +267,4 @@ namespace Strawberry::Accoutrement
 
 		return false;
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

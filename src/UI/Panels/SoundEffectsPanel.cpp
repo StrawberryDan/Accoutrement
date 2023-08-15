@@ -35,4 +35,4 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(1, 1);
 		SetSizerAndFit(sizer);
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

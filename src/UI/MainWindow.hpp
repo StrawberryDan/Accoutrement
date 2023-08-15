@@ -28,4 +28,4 @@ namespace Strawberry::Accoutrement
 		void OnVoiceConnect(ConnectToVoice& event);
 		void OnVoiceDisconnect(DisconnectFromVoice& event);
 	};
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

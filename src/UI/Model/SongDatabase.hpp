@@ -48,4 +48,4 @@ namespace Strawberry::Accoutrement
 	private:
 		SongDatabase();
 	};
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

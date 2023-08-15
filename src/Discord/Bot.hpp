@@ -41,4 +41,4 @@ namespace Strawberry::Accoutrement
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mAudioChannel;
 		Core::Option<Core::RepeatingTask>                  mAudioSendingThread;
 	};
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

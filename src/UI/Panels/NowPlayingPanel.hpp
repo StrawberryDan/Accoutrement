@@ -41,4 +41,4 @@ namespace Strawberry::Accoutrement
 
 		Codec::Audio::Playlist::EventReceiver mEventReceiver;
 	};
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

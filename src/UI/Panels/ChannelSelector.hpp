@@ -90,4 +90,4 @@ namespace Strawberry::Accoutrement
 	private:
 		Strawberry::Discord::Snowflake mData;
 	};
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

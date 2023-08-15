@@ -53,4 +53,4 @@ namespace Strawberry::Accoutrement
 		Core::Option<std::string> mArtist;
 		std::filesystem::path     mPath;
 	};
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

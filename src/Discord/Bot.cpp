@@ -91,4 +91,4 @@ namespace Strawberry::Accoutrement
 											std::this_thread::yield();
 										} });
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

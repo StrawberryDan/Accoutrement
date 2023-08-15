@@ -73,4 +73,4 @@ namespace Strawberry::Accoutrement
 	{
 		return mToken;
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

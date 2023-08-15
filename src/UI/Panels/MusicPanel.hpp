@@ -37,4 +37,4 @@ namespace Strawberry::Accoutrement
 		wxListCtrl*                           mPlaylistView;
 		Codec::Audio::Playlist::EventReceiver mEventReceiver;
 	};
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

@@ -72,4 +72,4 @@ namespace Strawberry::Accoutrement
 		json["title"] = GetTitle();
 		return json;
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

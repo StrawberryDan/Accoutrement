@@ -223,4 +223,4 @@ namespace Strawberry::Accoutrement
 			}
 		}
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

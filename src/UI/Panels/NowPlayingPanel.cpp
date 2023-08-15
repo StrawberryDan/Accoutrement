@@ -88,4 +88,4 @@ namespace Strawberry::Accoutrement
 	{
 		Bot::Get().GetPlaylist().Lock()->GotoPrevTrack();
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

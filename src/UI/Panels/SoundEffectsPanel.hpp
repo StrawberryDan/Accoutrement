@@ -27,4 +27,4 @@ namespace Strawberry::Accoutrement
 		wxButton*   mPlayButton       = nullptr;
 		wxButton*   mStopButton       = nullptr;
 	};
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

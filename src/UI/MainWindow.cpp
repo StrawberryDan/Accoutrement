@@ -76,4 +76,4 @@ namespace Strawberry::Accoutrement
 		GetStatusBar()->SetStatusText("Not Connected");
 		event.Skip();
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

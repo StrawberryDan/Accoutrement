@@ -25,4 +25,4 @@ namespace Strawberry::Accoutrement
 	{
 		return new GuildCreated(mGuild);
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

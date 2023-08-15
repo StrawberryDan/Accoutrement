@@ -39,4 +39,4 @@ namespace Strawberry::Accoutrement
 
 #define EVT_CONNECT_TO_VOICE(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_CONNECT_TO_VOICE, id, wxID_ANY, (&fn), nullptr),
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

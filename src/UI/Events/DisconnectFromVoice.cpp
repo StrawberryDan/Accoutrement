@@ -18,4 +18,4 @@ namespace Strawberry::Accoutrement
 	{
 		return new DisconnectFromVoice();
 	}
-}// namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement

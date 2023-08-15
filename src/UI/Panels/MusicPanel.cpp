@@ -10,7 +10,6 @@
 #include "wx/button.h"
 #include "wx/filedlg.h"
 #include "wx/gbsizer.h"
-#include "wx/listbox.h"
 #include "wx/sizer.h"
 #include "wx/stattext.h"
 #include "wx/textctrl.h"
@@ -24,7 +23,7 @@ namespace Strawberry::Accoutrement
 {
 	enum Component
 	{
-		AddSongToDatabaseButton      = wxID_HIGHEST + 1,
+		AddSongToDatabaseButton = wxID_HIGHEST + 1,
 		RenameSongButton,
 		RemoveSongFromDatabaseButton,
 
@@ -34,12 +33,12 @@ namespace Strawberry::Accoutrement
 
 
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
-			EVT_BUTTON(Component::AddSongToDatabaseButton     , MusicPanel::OnAddSong)
-			EVT_BUTTON(Component::EnqueueSongToPlaylistButton , MusicPanel::OnEnqueueSong)
+			EVT_BUTTON(Component::AddSongToDatabaseButton, MusicPanel::OnAddSong)
+			EVT_BUTTON(Component::EnqueueSongToPlaylistButton, MusicPanel::OnEnqueueSong)
 			EVT_BUTTON(Component::RemoveSongFromDatabaseButton, MusicPanel::OnRemoveFromDatabase)
 			EVT_BUTTON(Component::RemoveSongFromPlaylistButton, MusicPanel::OnRemoveSong)
-			EVT_BUTTON(Component::RenameSongButton            , MusicPanel::OnRenameSong)
-			EVT_UPDATE_UI(wxID_ANY                            , MusicPanel::OnUpdate)
+			EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
+			EVT_UPDATE_UI(wxID_ANY, MusicPanel::OnUpdate)
 	wxEND_EVENT_TABLE()
 
 
@@ -113,7 +112,8 @@ namespace Strawberry::Accoutrement
 		{
 			for (int i = 0; i < mPlaylistView->GetItemCount(); i++)
 			{
-				mPlaylistView->SetItemBackgroundColour(i, i == songBegan->index ? wxColor(32, 128, 32, 255) : mPlaylistView->GetBackgroundColour());
+				mPlaylistView->SetItemBackgroundColour(i, i == songBegan->index ? wxColor(32, 128, 32, 255)
+																				: mPlaylistView->GetBackgroundColour());
 			}
 		}
 	}

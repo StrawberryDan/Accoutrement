@@ -4,7 +4,6 @@
 #include "ConnectToVoice.hpp"
 
 
-
 namespace Strawberry::Accoutrement
 {
 	wxDEFINE_EVENT(EVT_TYPE_CONNECT_TO_VOICE, ConnectToVoice);
@@ -12,9 +11,8 @@ namespace Strawberry::Accoutrement
 
 	ConnectToVoice::ConnectToVoice(Discord::Entity::Guild guild, Discord::Entity::Channel channel)
 		: wxCommandEvent(EVT_TYPE_CONNECT_TO_VOICE, GetId())
-		, mGuild(std::move(guild))
-		, mChannel(std::move(channel))
-	{}
+		  , mGuild(std::move(guild))
+		  , mChannel(std::move(channel)) {}
 
 
 	wxEvent* ConnectToVoice::Clone() const

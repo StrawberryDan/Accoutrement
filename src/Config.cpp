@@ -1,27 +1,22 @@
 #include "Config.hpp"
 
 
-
 #include <memory>
 #include <filesystem>
 #include <fstream>
-
 
 
 #include "Strawberry/Core/Util/Assert.hpp"
 #include "nlohmann/json.hpp"
 
 
-
 using Strawberry::Core::Assert;
-
 
 
 namespace Strawberry::Accoutrement
 {
 	constexpr const char* kConfigFile = "config.json";
 	std::unique_ptr<Config> gConfig = nullptr;
-
 
 
 	void Config::Initialise()
@@ -41,13 +36,11 @@ namespace Strawberry::Accoutrement
 	}
 
 
-
 	Config& Config::Get()
 	{
 		Assert(gConfig != nullptr);
 		return *gConfig;
 	}
-
 
 
 	Config Config::Read()
@@ -64,7 +57,6 @@ namespace Strawberry::Accoutrement
 	}
 
 
-
 	void Config::Dump()
 	{
 		using nlohmann::json;
@@ -75,7 +67,6 @@ namespace Strawberry::Accoutrement
 		std::ofstream file(kConfigFile, std::ofstream::ate);
 		file << data.dump(1, '\t', false);
 	}
-
 
 
 	const std::string& Config::GetToken() const

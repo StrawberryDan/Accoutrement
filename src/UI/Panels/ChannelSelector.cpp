@@ -16,13 +16,6 @@
 
 namespace Strawberry::Accoutrement
 {
-	enum CommandEvents
-		: wxEventType
-	{
-		AddGuild,
-	};
-
-
 	enum ComponentId
 		: wxWindowID
 	{
@@ -62,11 +55,10 @@ namespace Strawberry::Accoutrement
 
 		Bot::Get().RegisterEventListener(this);
 
-		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(SERVER));
 		for (auto snowflake: Bot::Get().FetchGuilds())
 		{
 			auto guild = Bot::Get().FetchGuild(snowflake);
-			QueueEvent(new GuildCreated(*guild));
+			wxPanel::QueueEvent(new GuildCreated(*guild));
 		}
 	}
 

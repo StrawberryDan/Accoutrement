@@ -20,10 +20,9 @@ namespace Strawberry::Accoutrement
 	class NowPlayingPanel
 		: public wxPanel
 	{
-		wxDECLARE_EVENT_TABLE();
+	wxDECLARE_EVENT_TABLE();
 	public:
-		NowPlayingPanel(wxWindow* parent);
-
+		explicit NowPlayingPanel(wxWindow* parent);
 
 
 	protected:
@@ -34,9 +33,9 @@ namespace Strawberry::Accoutrement
 
 	private:
 		wxStaticText* mSongTitle;
-		wxButton*     mPlayPauseButton;
-		wxButton*     mPrevSongButton;
-		wxButton*     mNextSongButton;
+		wxButton* mPlayPauseButton;
+		wxButton* mPrevSongButton;
+		wxButton* mNextSongButton;
 
 
 		Codec::Audio::Playlist::EventReceiver mEventReceiver;

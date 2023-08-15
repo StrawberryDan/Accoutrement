@@ -62,8 +62,8 @@ namespace Strawberry::Accoutrement
 
 
 	wxBEGIN_EVENT_TABLE(Application, wxApp)
-		EVT_CONNECT_TO_VOICE(wxID_ANY, Application::OnVoiceConnect)
-		EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, Application::OnVoiceDisconnect)
+			EVT_CONNECT_TO_VOICE(wxID_ANY, Application::OnVoiceConnect)
+			EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, Application::OnVoiceDisconnect)
 	wxEND_EVENT_TABLE()
 }
 

@@ -29,7 +29,7 @@ namespace Strawberry::Accoutrement
 	SongDatabase::~SongDatabase()
 	{
 		nlohmann::json json;
-		for (const auto& [index, song] : mSongs)
+		for (const auto& [index, song]: mSongs)
 		{
 			json["songs"].push_back(song.ToJSON());
 		}

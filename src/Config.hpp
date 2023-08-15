@@ -1,9 +1,7 @@
 #pragma once
 
 
-
 #include <string>
-
 
 
 namespace Strawberry::Accoutrement
@@ -20,10 +18,8 @@ namespace Strawberry::Accoutrement
 		static void Dump();
 
 
-
 	public:
-		const std::string& GetToken() const;
-
+		[[nodiscard]] const std::string& GetToken() const;
 
 
 	private:

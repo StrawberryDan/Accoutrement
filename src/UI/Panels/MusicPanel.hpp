@@ -14,13 +14,13 @@
 namespace Strawberry::Accoutrement
 {
 	class MusicPanel
-			: public wxPanel
+		: public wxPanel
 	{
-		wxDECLARE_EVENT_TABLE();
+	wxDECLARE_EVENT_TABLE();
 
 
 	public:
-		MusicPanel(wxWindow* parent);
+		explicit MusicPanel(wxWindow* parent);
 
 
 	protected:
@@ -33,8 +33,8 @@ namespace Strawberry::Accoutrement
 
 
 	protected:
-		wxListCtrl*                           mSongDatabaseList;
-		wxListCtrl*                           mPlaylistView;
+		wxListCtrl* mSongDatabaseList;
+		wxListCtrl* mPlaylistView;
 		Codec::Audio::Playlist::EventReceiver mEventReceiver;
 	};
 }

@@ -27,13 +27,13 @@ namespace Strawberry::Accoutrement
 {
 	class ChannelSelector
 		: public wxPanel
-		, public Strawberry::Discord::EventListener
+		  , public Strawberry::Discord::EventListener
 	{
-		wxDECLARE_EVENT_TABLE();
+	wxDECLARE_EVENT_TABLE();
 
 
 	public:
-		ChannelSelector(wxWindow* parent);
+		explicit ChannelSelector(wxWindow* parent);
 
 
 		bool Destroy() override;
@@ -45,12 +45,19 @@ namespace Strawberry::Accoutrement
 
 	private:
 		void ProcessEvent(const Strawberry::Discord::Event::EventBase& event) override;
-		void OnGuildCreated(GuildCreated& event) { event.Skip(); 	AddGuild(static_cast<GuildCreated&>(event).GetGuild()); }
+
+
+		void OnGuildCreated(GuildCreated& event)
+		{
+			event.Skip();
+			AddGuild(static_cast<GuildCreated&>(event).GetGuild());
+		}
+
+
 		Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>>
-			GetSelectedChannel() const;
+		GetSelectedChannel() const;
 		void UpdateConnectButton();
 		bool IsConnectedToSelectedChannel() const;
-
 
 
 	private:
@@ -68,15 +75,15 @@ namespace Strawberry::Accoutrement
 	};
 
 
-
-	class ChannelSelector::SnowflakeClientData : public wxClientData
+	class ChannelSelector::SnowflakeClientData
+		: public wxClientData
 	{
 	public:
-		SnowflakeClientData(Strawberry::Discord::Snowflake data) : mData(data)
-		{}
+		SnowflakeClientData(Strawberry::Discord::Snowflake data)
+			: mData(data) {}
 
 
-		Strawberry::Discord::Snowflake Get() const { return mData; }
+		[[nodiscard]] Strawberry::Discord::Snowflake Get() const { return mData; }
 
 
 	private:

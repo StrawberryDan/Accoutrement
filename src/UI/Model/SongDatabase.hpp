@@ -31,17 +31,17 @@ namespace Strawberry::Accoutrement
 		~SongDatabase();
 
 
-		const Song& GetSong(size_t index) const;
-		      Song& GetSong(size_t index);
-		size_t GetNumSongs() const;
+		[[nodiscard]] const Song& GetSong(size_t index) const;
+		Song& GetSong(size_t index);
+		[[nodiscard]] size_t GetNumSongs() const;
 
-		size_t               AddSong(Song song);
+		size_t AddSong(Song song);
 		Core::Option<size_t> GetSongIndex(const Song& song);
-		void                 RemoveSong(size_t index);
+		void RemoveSong(size_t index);
 
 
 	private:
-		size_t                 mNextSongId = 0;
+		size_t mNextSongId = 0;
 		std::map<size_t, Song> mSongs;
 
 

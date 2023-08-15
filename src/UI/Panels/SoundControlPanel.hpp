@@ -17,6 +17,6 @@ namespace Strawberry::Accoutrement
 		: public wxPanel
 	{
 	public:
-		SoundControlPanel(wxWindow* parent);
+		explicit SoundControlPanel(wxWindow* parent);
 	};
 }

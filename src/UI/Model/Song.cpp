@@ -25,18 +25,12 @@ namespace Strawberry::Accoutrement
 		auto stream = file->GetBestStream(Codec::MediaType::Audio);
 		if (!stream) return Core::NullOpt;
 
-		song.mTitle  = stream->GetTitle();
-		song.mAlbum  = stream->GetAlbum();
+		song.mTitle = stream->GetTitle();
+		song.mAlbum = stream->GetAlbum();
 		song.mArtist = stream->GetArtist();
 		song.mPath = absolutePath;
 
 		return song;
-	}
-
-
-	Core::Option<Song> Song::FromJSON(const nlohmann::json& json)
-	{
-		return Song();
 	}
 
 
@@ -74,7 +68,7 @@ namespace Strawberry::Accoutrement
 	nlohmann::json Song::ToJSON() const
 	{
 		nlohmann::json json;
-		json["path"]  = GetPath();
+		json["path"] = GetPath();
 		json["title"] = GetTitle();
 		return json;
 	}

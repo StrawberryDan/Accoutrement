@@ -12,11 +12,10 @@
 #include "Strawberry/Core/Sync/Mutex.hpp"
 
 
-
 namespace Strawberry::Accoutrement
 {
 	class Bot
-			: public Strawberry::Discord::Bot
+		: public Strawberry::Discord::Bot
 	{
 	public:
 		static void Initialise();
@@ -33,14 +32,13 @@ namespace Strawberry::Accoutrement
 		auto& GetPlaylist() { return mPlaylist; }
 
 
-
 	private:
 		Bot();
 
 
 	private:
-		Core::Mutex<Codec::Audio::Playlist>                mPlaylist;
+		Core::Mutex<Codec::Audio::Playlist> mPlaylist;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mAudioChannel;
-		Core::Option<Core::RepeatingTask>                  mAudioSendingThread;
+		Core::Option<Core::RepeatingTask> mAudioSendingThread;
 	};
 }

@@ -21,12 +21,12 @@
 namespace Strawberry::Accoutrement
 {
 	wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
-			EVT_CONNECT_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
+		EVT_CONNECT_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
 			EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, MainWindow::OnVoiceDisconnect)
-	wxEND_EVENT_TABLE()
+				wxEND_EVENT_TABLE()
 
 
-	MainWindow::MainWindow()
+					MainWindow::MainWindow()
 		: wxFrame(nullptr, wxID_ANY, "Accoutrement")
 	{
 		wxFrame::SetMenuBar(new wxMenuBar());
@@ -34,7 +34,7 @@ namespace Strawberry::Accoutrement
 		auto statusBar = wxFrame::CreateStatusBar();
 		statusBar->SetStatusText("Not Connected");
 
-		auto sizer = new wxFlexGridSizer(3, 1, 5, 5);
+		auto sizer           = new wxFlexGridSizer(3, 1, 5, 5);
 
 		auto channelSelector = new ChannelSelector(this);
 		sizer->Add(channelSelector, 0, wxALL | wxEXPAND | wxALIGN_TOP, 10);
@@ -66,9 +66,7 @@ namespace Strawberry::Accoutrement
 	void MainWindow::OnVoiceConnect(ConnectToVoice& event)
 	{
 		GetStatusBar()->SetStatusText(
-			fmt::format("Connected to [{}] --> [{}]",
-						event.GetGuild().GetName(),
-						event.GetChannel().GetName()));
+			fmt::format("Connected to [{}] --> [{}]", event.GetGuild().GetName(), event.GetChannel().GetName()));
 		event.Skip();
 	}
 
@@ -78,4 +76,4 @@ namespace Strawberry::Accoutrement
 		GetStatusBar()->SetStatusText("Not Connected");
 		event.Skip();
 	}
-}
+}// namespace Strawberry::Accoutrement

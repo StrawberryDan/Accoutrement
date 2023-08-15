@@ -29,7 +29,7 @@ namespace Strawberry::Accoutrement
 	SongDatabase::~SongDatabase()
 	{
 		nlohmann::json json;
-		for (const auto& [index, song]: mSongs)
+		for (const auto& [index, song] : mSongs)
 		{
 			json["songs"].push_back(song.ToJSON());
 		}
@@ -92,10 +92,10 @@ namespace Strawberry::Accoutrement
 			nlohmann::json json;
 			file >> json;
 
-			for (auto songData: json["songs"])
+			for (auto songData : json["songs"])
 			{
 				std::string title = songData["title"];
-				auto song = Song::FromFile(songData["path"]);
+				auto        song  = Song::FromFile(songData["path"]);
 				if (song)
 				{
 					song->SetTitle(title);
@@ -104,4 +104,4 @@ namespace Strawberry::Accoutrement
 			}
 		}
 	}
-}
+}// namespace Strawberry::Accoutrement

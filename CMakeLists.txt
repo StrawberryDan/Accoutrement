@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 23)
 # Get wxWidgets
 message(STATUS "Cloning wxWidgets")
 execute_process(
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/build_wx.sh ${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	COMMAND_ERROR_IS_FATAL ANY
+		COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/build_wx.sh ${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMAND_ERROR_IS_FATAL ANY
 )
 
 
@@ -21,8 +21,8 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets)
 
 
 # MODULES
-add_subdirectory(../Core    ${CMAKE_CURRENT_BINARY_DIR}/Core)
-add_subdirectory(../Codec   ${CMAKE_CURRENT_BINARY_DIR}/Codec)
+add_subdirectory(../Core ${CMAKE_CURRENT_BINARY_DIR}/Core)
+add_subdirectory(../Codec ${CMAKE_CURRENT_BINARY_DIR}/Codec)
 add_subdirectory(../Discord ${CMAKE_CURRENT_BINARY_DIR}/Discord)
 
 

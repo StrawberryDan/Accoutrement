@@ -4,10 +4,10 @@
 #include <memory>
 
 
-#include <thread>
-#include "Strawberry/Core/Util/Assert.hpp"
 #include "../Config.hpp"
+#include "Strawberry/Core/Util/Assert.hpp"
 #include "Strawberry/Core/Util/Metronome.hpp"
+#include <thread>
 
 
 using Strawberry::Core::Assert;
@@ -17,7 +17,7 @@ using Strawberry::Discord::Intent;
 namespace Strawberry::Accoutrement
 {
 	static std::unique_ptr<Bot> gBot = nullptr;
-	static std::future<void> gRun = {};
+	static std::future<void>    gRun = {};
 
 
 	void Bot::Initialise()
@@ -29,10 +29,7 @@ namespace Strawberry::Accoutrement
 
 	void Bot::Run()
 	{
-		gRun = std::async(std::launch::async, []()
-		{
-			gBot->Strawberry::Discord::Bot::Run();
-		});
+		gRun = std::async(std::launch::async, []() { gBot->Strawberry::Discord::Bot::Run(); });
 	}
 
 
@@ -60,13 +57,10 @@ namespace Strawberry::Accoutrement
 
 	Bot::Bot()
 		: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
-		  , mPlaylist(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
+		, mPlaylist(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
 	{
-		mAudioSendingThread.Emplace([
-										this,
-										clock = Core::Metronome(0.00, 0.01)
-									](Core::RepeatingTask* thread) mutable
-									{
+		mAudioSendingThread.Emplace([this,
+									 clock = Core::Metronome(0.00, 0.01)](Core::RepeatingTask* thread) mutable {
 										if (clock)
 										{
 											if (auto connection = Bot::TryGet().AndThen(
@@ -95,7 +89,6 @@ namespace Strawberry::Accoutrement
 										else
 										{
 											std::this_thread::yield();
-										}
-									});
+										} });
 	}
-}
+}// namespace Strawberry::Accoutrement

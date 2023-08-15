@@ -37,8 +37,8 @@ namespace Strawberry::Accoutrement
 
 
 	private:
-		Core::Mutex<Codec::Audio::Playlist> mPlaylist;
+		Core::Mutex<Codec::Audio::Playlist>                mPlaylist;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mAudioChannel;
-		Core::Option<Core::RepeatingTask> mAudioSendingThread;
+		Core::Option<Core::RepeatingTask>                  mAudioSendingThread;
 	};
-}
+}// namespace Strawberry::Accoutrement

@@ -20,7 +20,7 @@ namespace Strawberry::Accoutrement
 
 		auto sizer = new wxGridBagSizer(5, 5);
 
-		auto list = new wxListCtrl(this, wxID_ANY);
+		auto list  = new wxListCtrl(this, wxID_ANY);
 		sizer->Add(list, {0, 0}, {2, 1}, wxALL | wxEXPAND, 5);
 
 		auto removeButton = new wxButton(this, wxID_ANY, "Remove");
@@ -34,4 +34,4 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(0);
 		SetSizerAndFit(sizer);
 	}
-}
+}// namespace Strawberry::Accoutrement

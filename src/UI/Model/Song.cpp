@@ -19,16 +19,16 @@ namespace Strawberry::Accoutrement
 		if (!std::filesystem::exists(absolutePath)) return Core::NullOpt;
 		absolutePath = std::filesystem::absolute(absolutePath);
 
-		auto file = Codec::MediaFile::Open(filePath);
+		auto file    = Codec::MediaFile::Open(filePath);
 		if (!file) return Core::NullOpt;
 
 		auto stream = file->GetBestStream(Codec::MediaType::Audio);
 		if (!stream) return Core::NullOpt;
 
-		song.mTitle = stream->GetTitle();
-		song.mAlbum = stream->GetAlbum();
+		song.mTitle  = stream->GetTitle();
+		song.mAlbum  = stream->GetAlbum();
 		song.mArtist = stream->GetArtist();
-		song.mPath = absolutePath;
+		song.mPath   = absolutePath;
 
 		return song;
 	}
@@ -68,8 +68,8 @@ namespace Strawberry::Accoutrement
 	nlohmann::json Song::ToJSON() const
 	{
 		nlohmann::json json;
-		json["path"] = GetPath();
+		json["path"]  = GetPath();
 		json["title"] = GetTitle();
 		return json;
 	}
-}
+}// namespace Strawberry::Accoutrement

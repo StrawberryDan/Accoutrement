@@ -30,7 +30,7 @@ namespace Strawberry::Accoutrement
 
 
 	private:
-		const Discord::Entity::Guild mGuild;
+		const Discord::Entity::Guild   mGuild;
 		const Discord::Entity::Channel mChannel;
 	};
 
@@ -38,5 +38,5 @@ namespace Strawberry::Accoutrement
 	wxDECLARE_EVENT(EVT_TYPE_CONNECT_TO_VOICE, ConnectToVoice);
 
 #define EVT_CONNECT_TO_VOICE(id, fn) \
-    DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_CONNECT_TO_VOICE, id, wxID_ANY, (&fn), nullptr),
-}
+	DECLARE_EVENT_TABLE_ENTRY(EVT_TYPE_CONNECT_TO_VOICE, id, wxID_ANY, (&fn), nullptr),
+}// namespace Strawberry::Accoutrement

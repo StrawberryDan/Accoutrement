@@ -12,7 +12,6 @@ namespace Strawberry::Accoutrement
 	DisconnectFromVoice::DisconnectFromVoice()
 		: wxCommandEvent(EVT_TYPE_DISCONNECT_FROM_VOICE, GetId())
 	{
-
 	}
 
 
@@ -20,4 +19,4 @@ namespace Strawberry::Accoutrement
 	{
 		return new DisconnectFromVoice();
 	}
-}
+}// namespace Strawberry::Accoutrement

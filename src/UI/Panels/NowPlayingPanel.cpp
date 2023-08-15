@@ -21,15 +21,15 @@ namespace Strawberry::Accoutrement
 
 
 	wxBEGIN_EVENT_TABLE(NowPlayingPanel, wxPanel)
-			EVT_UPDATE_UI(wxID_ANY, NowPlayingPanel::Update)
+		EVT_UPDATE_UI(wxID_ANY, NowPlayingPanel::Update)
 			EVT_BUTTON(Component::NextSongButton, NowPlayingPanel::NextSong)
-			EVT_BUTTON(Component::PrevSongButton, NowPlayingPanel::PrevSong)
-	wxEND_EVENT_TABLE()
+				EVT_BUTTON(Component::PrevSongButton, NowPlayingPanel::PrevSong)
+					wxEND_EVENT_TABLE()
 
 
-	NowPlayingPanel::NowPlayingPanel(wxWindow* parent)
+						NowPlayingPanel::NowPlayingPanel(wxWindow* parent)
 		: wxPanel(parent)
-		  , mEventReceiver(Bot::Get().GetPlaylist().Lock()->CreateEventReceiver())
+		, mEventReceiver(Bot::Get().GetPlaylist().Lock()->CreateEventReceiver())
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
@@ -88,4 +88,4 @@ namespace Strawberry::Accoutrement
 	{
 		Bot::Get().GetPlaylist().Lock()->GotoPrevTrack();
 	}
-}
+}// namespace Strawberry::Accoutrement

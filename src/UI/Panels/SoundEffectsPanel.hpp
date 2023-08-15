@@ -24,7 +24,7 @@ namespace Strawberry::Accoutrement
 
 	private:
 		wxListCtrl* mSoundEffectsList = nullptr;
-		wxButton* mPlayButton = nullptr;
-		wxButton* mStopButton = nullptr;
+		wxButton*   mPlayButton       = nullptr;
+		wxButton*   mStopButton       = nullptr;
 	};
-}
+}// namespace Strawberry::Accoutrement

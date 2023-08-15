@@ -5,11 +5,11 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // wxWidgets
-#include <Strawberry/Core/IO/ChannelReceiver.hpp>
-#include <Codec/Audio/Playlist.hpp>
-#include "wx/panel.h"
 #include "wx/button.h"
+#include "wx/panel.h"
 #include "wx/stattext.h"
+#include <Codec/Audio/Playlist.hpp>
+#include <Strawberry/Core/IO/ChannelReceiver.hpp>
 
 
 //======================================================================================================================
@@ -20,7 +20,8 @@ namespace Strawberry::Accoutrement
 	class NowPlayingPanel
 		: public wxPanel
 	{
-	wxDECLARE_EVENT_TABLE();
+		wxDECLARE_EVENT_TABLE();
+
 	public:
 		explicit NowPlayingPanel(wxWindow* parent);
 
@@ -33,11 +34,11 @@ namespace Strawberry::Accoutrement
 
 	private:
 		wxStaticText* mSongTitle;
-		wxButton* mPlayPauseButton;
-		wxButton* mPrevSongButton;
-		wxButton* mNextSongButton;
+		wxButton*     mPlayPauseButton;
+		wxButton*     mPrevSongButton;
+		wxButton*     mNextSongButton;
 
 
 		Codec::Audio::Playlist::EventReceiver mEventReceiver;
 	};
-}
+}// namespace Strawberry::Accoutrement

@@ -5,9 +5,9 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // This Project
-#include "../Events/GuildCreated.hpp"
 #include "../Events/ConnectToVoice.hpp"
 #include "../Events/DisconnectFromVoice.hpp"
+#include "../Events/GuildCreated.hpp"
 // wxWidgets
 #include "wx/choice.h"
 #include "wx/panel.h"
@@ -27,9 +27,9 @@ namespace Strawberry::Accoutrement
 {
 	class ChannelSelector
 		: public wxPanel
-		  , public Strawberry::Discord::EventListener
+		, public Strawberry::Discord::EventListener
 	{
-	wxDECLARE_EVENT_TABLE();
+		wxDECLARE_EVENT_TABLE();
 
 
 	public:
@@ -55,7 +55,7 @@ namespace Strawberry::Accoutrement
 
 
 		Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>>
-		GetSelectedChannel() const;
+			 GetSelectedChannel() const;
 		void UpdateConnectButton();
 		bool IsConnectedToSelectedChannel() const;
 
@@ -80,7 +80,9 @@ namespace Strawberry::Accoutrement
 	{
 	public:
 		SnowflakeClientData(Strawberry::Discord::Snowflake data)
-			: mData(data) {}
+			: mData(data)
+		{
+		}
 
 
 		[[nodiscard]] Strawberry::Discord::Snowflake Get() const { return mData; }
@@ -89,4 +91,4 @@ namespace Strawberry::Accoutrement
 	private:
 		Strawberry::Discord::Snowflake mData;
 	};
-}
+}// namespace Strawberry::Accoutrement

@@ -1,9 +1,9 @@
 #include "Config.hpp"
 
 
-#include <memory>
 #include <filesystem>
 #include <fstream>
+#include <memory>
 
 
 #include "Strawberry/Core/Util/Assert.hpp"
@@ -15,8 +15,8 @@ using Strawberry::Core::Assert;
 
 namespace Strawberry::Accoutrement
 {
-	constexpr const char* kConfigFile = "config.json";
-	std::unique_ptr<Config> gConfig = nullptr;
+	constexpr const char*   kConfigFile = "config.json";
+	std::unique_ptr<Config> gConfig     = nullptr;
 
 
 	void Config::Initialise()
@@ -73,4 +73,4 @@ namespace Strawberry::Accoutrement
 	{
 		return mToken;
 	}
-}
+}// namespace Strawberry::Accoutrement

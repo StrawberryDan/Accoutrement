@@ -25,4 +25,4 @@ namespace Strawberry::Accoutrement
 	private:
 		std::string mToken;
 	};
-}
+}// namespace Strawberry::Accoutrement

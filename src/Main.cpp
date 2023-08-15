@@ -6,8 +6,8 @@
 #include "Discord/Bot.hpp"
 #include "UI/MainWindow.hpp"
 // WxWidgets
-#include "wx/wx.h"
 #include "wx/sizer.h"
+#include "wx/wx.h"
 
 
 //======================================================================================================================
@@ -18,7 +18,7 @@ namespace Strawberry::Accoutrement
 	class Application
 		: public wxApp
 	{
-	wxDECLARE_EVENT_TABLE();
+		wxDECLARE_EVENT_TABLE();
 
 
 	public:
@@ -62,10 +62,10 @@ namespace Strawberry::Accoutrement
 
 
 	wxBEGIN_EVENT_TABLE(Application, wxApp)
-			EVT_CONNECT_TO_VOICE(wxID_ANY, Application::OnVoiceConnect)
+		EVT_CONNECT_TO_VOICE(wxID_ANY, Application::OnVoiceConnect)
 			EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, Application::OnVoiceDisconnect)
-	wxEND_EVENT_TABLE()
-}
+				wxEND_EVENT_TABLE()
+}// namespace Strawberry::Accoutrement
 
 
 wxIMPLEMENT_APP(Strawberry::Accoutrement::Application);

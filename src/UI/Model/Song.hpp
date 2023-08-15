@@ -10,8 +10,8 @@
 #include "Strawberry/Core/Util/Option.hpp"
 // Standard Library
 #include <cstdint>
-#include <string>
 #include <filesystem>
+#include <string>
 
 
 //======================================================================================================================
@@ -25,10 +25,10 @@ namespace Strawberry::Accoutrement
 		static Core::Option<Song> FromFile(const std::string& filePath);
 
 
-		[[nodiscard]] std::string GetTitle() const;
+		[[nodiscard]] std::string                      GetTitle() const;
 		[[nodiscard]] const Core::Option<std::string>& GetAlbum() const;
 		[[nodiscard]] const Core::Option<std::string>& GetArtist() const;
-		[[nodiscard]] const std::filesystem::path& GetPath() const;
+		[[nodiscard]] const std::filesystem::path&     GetPath() const;
 
 
 		void SetTitle(const std::string& title);
@@ -40,8 +40,7 @@ namespace Strawberry::Accoutrement
 		bool operator!=(const Song& rhs) const { return mPath != rhs.mPath; }
 
 
-		[[nodiscard]]
-		nlohmann::json ToJSON() const;
+		[[nodiscard]] nlohmann::json ToJSON() const;
 
 
 	private:
@@ -52,6 +51,6 @@ namespace Strawberry::Accoutrement
 		Core::Option<std::string> mTitle;
 		Core::Option<std::string> mAlbum;
 		Core::Option<std::string> mArtist;
-		std::filesystem::path mPath;
+		std::filesystem::path     mPath;
 	};
-}
+}// namespace Strawberry::Accoutrement

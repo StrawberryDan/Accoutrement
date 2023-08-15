@@ -13,8 +13,7 @@ namespace Strawberry::Accoutrement
 		: wxCommandEvent(EVT_TYPE_CONNECT_TO_VOICE, GetId())
 		, mGuild(std::move(guild))
 		, mChannel(std::move(channel))
-	{
-	}
+	{}
 
 
 	wxEvent* ConnectToVoice::Clone() const

@@ -11,8 +11,7 @@ namespace Strawberry::Accoutrement
 
 	DisconnectFromVoice::DisconnectFromVoice()
 		: wxCommandEvent(EVT_TYPE_DISCONNECT_FROM_VOICE, GetId())
-	{
-	}
+	{}
 
 
 	wxEvent* DisconnectFromVoice::Clone() const

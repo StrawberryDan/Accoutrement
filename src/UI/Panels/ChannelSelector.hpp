@@ -81,8 +81,7 @@ namespace Strawberry::Accoutrement
 	public:
 		SnowflakeClientData(Strawberry::Discord::Snowflake data)
 			: mData(data)
-		{
-		}
+		{}
 
 
 		[[nodiscard]] Strawberry::Discord::Snowflake Get() const { return mData; }

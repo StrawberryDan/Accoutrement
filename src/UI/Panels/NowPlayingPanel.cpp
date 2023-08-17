@@ -20,14 +20,16 @@ namespace Strawberry::Accoutrement
 	};
 
 
+	// clang-format off
 	wxBEGIN_EVENT_TABLE(NowPlayingPanel, wxPanel)
-		EVT_UPDATE_UI(wxID_ANY, NowPlayingPanel::Update)
-			EVT_BUTTON(Component::NextSongButton, NowPlayingPanel::NextSong)
-				EVT_BUTTON(Component::PrevSongButton, NowPlayingPanel::PrevSong)
-					wxEND_EVENT_TABLE()
+	EVT_UPDATE_UI(wxID_ANY, NowPlayingPanel::Update)
+	EVT_BUTTON(Component::NextSongButton, NowPlayingPanel::NextSong)
+	EVT_BUTTON(Component::PrevSongButton, NowPlayingPanel::PrevSong)
+	wxEND_EVENT_TABLE();
+	// clang-format on
 
 
-						NowPlayingPanel::NowPlayingPanel(wxWindow* parent)
+	NowPlayingPanel::NowPlayingPanel(wxWindow* parent)
 		: wxPanel(parent)
 		, mEventReceiver(Bot::Get().GetPlaylist().Lock()->CreateEventReceiver())
 	{
@@ -78,14 +80,8 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void NowPlayingPanel::NextSong(wxCommandEvent& event)
-	{
-		Bot::Get().GetPlaylist().Lock()->GotoNextTrack();
-	}
+	void NowPlayingPanel::NextSong(wxCommandEvent& event) { Bot::Get().GetPlaylist().Lock()->GotoNextTrack(); }
 
 
-	void NowPlayingPanel::PrevSong(wxCommandEvent& event)
-	{
-		Bot::Get().GetPlaylist().Lock()->GotoPrevTrack();
-	}
+	void NowPlayingPanel::PrevSong(wxCommandEvent& event) { Bot::Get().GetPlaylist().Lock()->GotoPrevTrack(); }
 } // namespace Strawberry::Accoutrement

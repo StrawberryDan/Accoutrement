@@ -15,8 +15,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class Application
-		: public wxApp
+	class Application : public wxApp
 	{
 		wxDECLARE_EVENT_TABLE();
 
@@ -44,16 +43,10 @@ namespace Strawberry::Accoutrement
 		}
 
 
-		void OnVoiceConnect(ConnectToVoice& event)
-		{
-			Bot::Get().ConnectToVoice(event.GetGuild().GetId(), event.GetChannel().GetId());
-		}
+		void OnVoiceConnect(ConnectToVoice& event) { Bot::Get().ConnectToVoice(event.GetGuild().GetId(), event.GetChannel().GetId()); }
 
 
-		void OnVoiceDisconnect(DisconnectFromVoice& event)
-		{
-			Bot::Get().DisconnectFromVoice();
-		}
+		void OnVoiceDisconnect(DisconnectFromVoice& event) { Bot::Get().DisconnectFromVoice(); }
 
 
 	private:
@@ -61,10 +54,12 @@ namespace Strawberry::Accoutrement
 	};
 
 
+	// clang-format off
 	wxBEGIN_EVENT_TABLE(Application, wxApp)
-		EVT_CONNECT_TO_VOICE(wxID_ANY, Application::OnVoiceConnect)
-			EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, Application::OnVoiceDisconnect)
-				wxEND_EVENT_TABLE()
+	EVT_CONNECT_TO_VOICE(wxID_ANY, Application::OnVoiceConnect)
+	EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, Application::OnVoiceDisconnect)
+	wxEND_EVENT_TABLE();
+	// clang-format on
 } // namespace Strawberry::Accoutrement
 
 

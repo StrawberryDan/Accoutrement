@@ -25,16 +25,17 @@ namespace Strawberry::Accoutrement
 	};
 
 
+	// clang-format off
 	wxBEGIN_EVENT_TABLE(ChannelSelector, wxPanel)
-		EVT_BUTTON(CONNECT, ChannelSelector::OnConnect)
-			EVT_BUTTON(DISCONNECT, ChannelSelector::OnDisconnect)
-				EVT_CHOICE(SERVER, ChannelSelector::OnSelectServer)
-					EVT_CHOICE(CHANNEL, ChannelSelector::OnSelectChannel)
-						EVT_GUILD_CREATED(wxID_ANY, ChannelSelector::OnGuildCreated)
-							wxEND_EVENT_TABLE()
+	EVT_BUTTON(CONNECT, ChannelSelector::OnConnect)
+	EVT_BUTTON(DISCONNECT, ChannelSelector::OnDisconnect)
+	EVT_CHOICE(SERVER, ChannelSelector::OnSelectServer) EVT_CHOICE(CHANNEL, ChannelSelector::OnSelectChannel)
+	EVT_GUILD_CREATED(wxID_ANY, ChannelSelector::OnGuildCreated)
+	wxEND_EVENT_TABLE();
+	// clang-format on
 
 
-								ChannelSelector::ChannelSelector(wxWindow* parent)
+	ChannelSelector::ChannelSelector(wxWindow* parent)
 		: wxPanel(parent)
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
@@ -75,10 +76,7 @@ namespace Strawberry::Accoutrement
 		using Strawberry::Discord::Event::GuildCreate;
 
 
-		if (auto guildCreate = event.Cast<GuildCreate>())
-		{
-			QueueEvent(new GuildCreated(guildCreate->GetGuild()));
-		}
+		if (auto guildCreate = event.Cast<GuildCreate>()) { QueueEvent(new GuildCreated(guildCreate->GetGuild())); }
 	}
 
 
@@ -89,17 +87,10 @@ namespace Strawberry::Accoutrement
 
 		int serverSelectionIndex  = serverChoice->GetSelection();
 		int channelSelectionIndex = channelChoice->GetSelection();
-		if (serverSelectionIndex == wxNOT_FOUND || channelSelectionIndex == wxNOT_FOUND)
-		{
-			return Core::NullOpt;
-		}
+		if (serverSelectionIndex == wxNOT_FOUND || channelSelectionIndex == wxNOT_FOUND) { return Core::NullOpt; }
 
-		auto guildId = static_cast<SnowflakeClientData*>(serverChoice->GetClientObject(
-															 serverSelectionIndex))
-						   ->Get();
-		auto channelId = static_cast<SnowflakeClientData*>(channelChoice->GetClientObject(
-															   channelSelectionIndex))
-							 ->Get();
+		auto guildId   = static_cast<SnowflakeClientData*>(serverChoice->GetClientObject(serverSelectionIndex))->Get();
+		auto channelId = static_cast<SnowflakeClientData*>(channelChoice->GetClientObject(channelSelectionIndex))->Get();
 
 		return std::make_pair(guildId, channelId);
 	}
@@ -125,16 +116,10 @@ namespace Strawberry::Accoutrement
 		}
 
 		// Add new servers to the list
-		if (!alreadyContains)
-		{
-			serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId()));
-		}
+		if (!alreadyContains) { serverChoice->Append(guild.GetName(), new SnowflakeClientData(guild.GetId())); }
 
 		// Select this guild now if it's the first in.
-		if (serverChoice->GetCount() == 1)
-		{
-			OnSelectServer(guild.GetId());
-		}
+		if (serverChoice->GetCount() == 1) { OnSelectServer(guild.GetId()); }
 	}
 
 
@@ -158,10 +143,7 @@ namespace Strawberry::Accoutrement
 		}
 
 		// Add new servers to the list
-		if (!alreadyContains)
-		{
-			channelChoice->Append(channel.GetName(), new SnowflakeClientData(channel.GetId()));
-		}
+		if (!alreadyContains) { channelChoice->Append(channel.GetName(), new SnowflakeClientData(channel.GetId())); }
 	}
 
 
@@ -176,9 +158,7 @@ namespace Strawberry::Accoutrement
 			auto [guildId, channelId] = selection.Unwrap();
 
 			mConnectButton->Disable();
-			QueueEvent(new ConnectToVoice(
-				*Bot::Get().GetGuild(guildId),
-				*Bot::Get().GetChannel(channelId)));
+			QueueEvent(new ConnectToVoice(*Bot::Get().GetGuild(guildId), *Bot::Get().GetChannel(channelId)));
 		}
 	}
 
@@ -212,27 +192,18 @@ namespace Strawberry::Accoutrement
 		for (auto channelId : Bot::Get().FetchChannels(guild->GetId()))
 		{
 			auto* channel = Bot::Get().GetChannel(channelId);
-			if (channel->GetType() == Channel::Type::GUILD_VOICE)
-			{
-				channels.push_back(*channel);
-			}
+			if (channel->GetType() == Channel::Type::GUILD_VOICE) { channels.push_back(*channel); }
 		}
 
 
 		std::sort(channels.begin(), channels.end(), [](const auto& a, const auto& b) { return a.GetPosition() < b.GetPosition(); });
-		for (const auto& channel : channels)
-		{
-			AddChannel(channel);
-		}
+		for (const auto& channel : channels) { AddChannel(channel); }
 
 		UpdateConnectButton();
 	}
 
 
-	void ChannelSelector::OnSelectChannel(wxCommandEvent& event)
-	{
-		UpdateConnectButton();
-	}
+	void ChannelSelector::OnSelectChannel(wxCommandEvent& event) { UpdateConnectButton(); }
 
 
 	void ChannelSelector::UpdateConnectButton()
@@ -243,14 +214,8 @@ namespace Strawberry::Accoutrement
 			auto connectedGuild       = Bot::Get().GetVoiceConnection().Map([](const auto& x) { return x.GetGuild(); });
 			auto connectedChannel     = Bot::Get().GetVoiceConnection().Map([](const auto& x) { return x.GetChannel(); });
 
-			if (guildId == connectedGuild && channelId == connectedChannel)
-			{
-				mConnectButton->Disable();
-			}
-			else
-			{
-				mConnectButton->Enable();
-			}
+			if (guildId == connectedGuild && channelId == connectedChannel) { mConnectButton->Disable(); }
+			else { mConnectButton->Enable(); }
 		}
 	}
 

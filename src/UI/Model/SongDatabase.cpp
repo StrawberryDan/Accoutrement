@@ -17,10 +17,7 @@ namespace Strawberry::Accoutrement
 
 	SongDatabase& SongDatabase::Get()
 	{
-		if (!sGlobalInstance)
-		{
-			sGlobalInstance = std::unique_ptr<SongDatabase>(new SongDatabase());
-		}
+		if (!sGlobalInstance) { sGlobalInstance = std::unique_ptr<SongDatabase>(new SongDatabase()); }
 
 		return *sGlobalInstance;
 	}
@@ -29,10 +26,7 @@ namespace Strawberry::Accoutrement
 	SongDatabase::~SongDatabase()
 	{
 		nlohmann::json json;
-		for (const auto& [index, song] : mSongs)
-		{
-			json["songs"].push_back(song.ToJSON());
-		}
+		for (const auto& [index, song] : mSongs) { json["songs"].push_back(song.ToJSON()); }
 
 
 		std::ofstream file("./song_database.json");
@@ -40,22 +34,13 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	const Song& SongDatabase::GetSong(size_t index) const
-	{
-		return mSongs.at(index);
-	}
+	const Song& SongDatabase::GetSong(size_t index) const { return mSongs.at(index); }
 
 
-	Song& SongDatabase::GetSong(size_t index)
-	{
-		return mSongs.at(index);
-	}
+	Song& SongDatabase::GetSong(size_t index) { return mSongs.at(index); }
 
 
-	size_t SongDatabase::GetNumSongs() const
-	{
-		return mSongs.size();
-	}
+	size_t SongDatabase::GetNumSongs() const { return mSongs.size(); }
 
 
 	size_t SongDatabase::AddSong(Song song)
@@ -77,10 +62,7 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void SongDatabase::RemoveSong(size_t index)
-	{
-		mSongs.erase(index);
-	}
+	void SongDatabase::RemoveSong(size_t index) { mSongs.erase(index); }
 
 
 	SongDatabase::SongDatabase()

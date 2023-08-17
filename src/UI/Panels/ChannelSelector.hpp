@@ -54,10 +54,9 @@ namespace Strawberry::Accoutrement
 		}
 
 
-		Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>>
-			 GetSelectedChannel() const;
-		void UpdateConnectButton();
-		bool IsConnectedToSelectedChannel() const;
+		Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>> GetSelectedChannel() const;
+		void                                                            UpdateConnectButton();
+		bool                                                            IsConnectedToSelectedChannel() const;
 
 
 	private:
@@ -75,8 +74,7 @@ namespace Strawberry::Accoutrement
 	};
 
 
-	class ChannelSelector::SnowflakeClientData
-		: public wxClientData
+	class ChannelSelector::SnowflakeClientData : public wxClientData
 	{
 	public:
 		SnowflakeClientData(Strawberry::Discord::Snowflake data)

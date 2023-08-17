@@ -16,8 +16,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class MainWindow
-		: public wxFrame
+	class MainWindow : public wxFrame
 	{
 		wxDECLARE_EVENT_TABLE();
 

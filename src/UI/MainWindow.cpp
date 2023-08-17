@@ -20,13 +20,15 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
+	// clang-format off
 	wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
-		EVT_CONNECT_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
-			EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, MainWindow::OnVoiceDisconnect)
-				wxEND_EVENT_TABLE()
+	EVT_CONNECT_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
+	EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, MainWindow::OnVoiceDisconnect)
+	wxEND_EVENT_TABLE();
+	// clang-format on
 
 
-					MainWindow::MainWindow()
+	MainWindow::MainWindow()
 		: wxFrame(nullptr, wxID_ANY, "Accoutrement")
 	{
 		wxFrame::SetMenuBar(new wxMenuBar());
@@ -65,8 +67,7 @@ namespace Strawberry::Accoutrement
 
 	void MainWindow::OnVoiceConnect(ConnectToVoice& event)
 	{
-		GetStatusBar()->SetStatusText(
-			fmt::format("Connected to [{}] --> [{}]", event.GetGuild().GetName(), event.GetChannel().GetName()));
+		GetStatusBar()->SetStatusText(fmt::format("Connected to [{}] --> [{}]", event.GetGuild().GetName(), event.GetChannel().GetName()));
 		event.Skip();
 	}
 

@@ -13,8 +13,7 @@
 
 namespace Strawberry::Accoutrement
 {
-	class MusicPanel
-		: public wxPanel
+	class MusicPanel : public wxPanel
 	{
 		wxDECLARE_EVENT_TABLE();
 

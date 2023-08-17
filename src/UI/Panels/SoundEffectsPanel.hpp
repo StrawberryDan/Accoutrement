@@ -15,8 +15,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class SoundEffectsPanel
-		: public wxPanel
+	class SoundEffectsPanel : public wxPanel
 	{
 	public:
 		SoundEffectsPanel(wxWindow* parent);

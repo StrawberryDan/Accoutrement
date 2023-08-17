@@ -23,10 +23,7 @@ namespace Strawberry::Accoutrement
 	{
 		Assert(gConfig == nullptr);
 
-		if (std::filesystem::exists(kConfigFile))
-		{
-			gConfig = std::make_unique<Config>(Read());
-		}
+		if (std::filesystem::exists(kConfigFile)) { gConfig = std::make_unique<Config>(Read()); }
 		else
 		{
 			gConfig = std::make_unique<Config>();
@@ -69,8 +66,5 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	const std::string& Config::GetToken() const
-	{
-		return mToken;
-	}
+	const std::string& Config::GetToken() const { return mToken; }
 } // namespace Strawberry::Accoutrement

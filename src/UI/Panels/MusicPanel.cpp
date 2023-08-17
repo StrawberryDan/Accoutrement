@@ -32,17 +32,19 @@ namespace Strawberry::Accoutrement
 	};
 
 
+	// clang-format off
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
-		EVT_BUTTON(Component::AddSongToDatabaseButton, MusicPanel::OnAddSong)
-			EVT_BUTTON(Component::EnqueueSongToPlaylistButton, MusicPanel::OnEnqueueSong)
-				EVT_BUTTON(Component::RemoveSongFromDatabaseButton, MusicPanel::OnRemoveFromDatabase)
-					EVT_BUTTON(Component::RemoveSongFromPlaylistButton, MusicPanel::OnRemoveSong)
-						EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
-							EVT_UPDATE_UI(wxID_ANY, MusicPanel::OnUpdate)
-								wxEND_EVENT_TABLE()
+	EVT_BUTTON(Component::AddSongToDatabaseButton, MusicPanel::OnAddSong)
+	EVT_BUTTON(Component::EnqueueSongToPlaylistButton, MusicPanel::OnEnqueueSong)
+	EVT_BUTTON(Component::RemoveSongFromDatabaseButton, MusicPanel::OnRemoveFromDatabase)
+	EVT_BUTTON(Component::RemoveSongFromPlaylistButton, MusicPanel::OnRemoveSong)
+	EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
+	EVT_UPDATE_UI(wxID_ANY, MusicPanel::OnUpdate)
+	wxEND_EVENT_TABLE();
+	// clang-format on
 
 
-									MusicPanel::MusicPanel(wxWindow* parent)
+	MusicPanel::MusicPanel(wxWindow* parent)
 		: wxPanel(parent)
 		, mEventReceiver(Bot::Get().GetPlaylist().Lock()->CreateEventReceiver())
 	{
@@ -121,10 +123,7 @@ namespace Strawberry::Accoutrement
 		wxFileDialog fileDialog(this, "Choose a song file...");
 		fileDialog.SetWindowStyle(wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST);
 		auto dialogResult = fileDialog.ShowModal();
-		if (dialogResult == wxID_CANCEL)
-		{
-			return;
-		}
+		if (dialogResult == wxID_CANCEL) { return; }
 		else if (dialogResult == wxID_OK)
 		{
 			wxArrayString paths;
@@ -147,13 +146,11 @@ namespace Strawberry::Accoutrement
 	void MusicPanel::OnEnqueueSong(wxCommandEvent& event)
 	{
 		size_t selectedSongIndex = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (selectedSongIndex == -1)
-			return;
+		if (selectedSongIndex == -1) return;
 
 		wxListItem selectedSongItem;
 		selectedSongItem.SetId(selectedSongIndex);
-		if (!mSongDatabaseList->GetItem(selectedSongItem))
-			return;
+		if (!mSongDatabaseList->GetItem(selectedSongItem)) return;
 
 		selectedSongIndex = selectedSongItem.GetData();
 
@@ -166,10 +163,7 @@ namespace Strawberry::Accoutrement
 	void MusicPanel::OnRemoveSong(wxCommandEvent& event)
 	{
 		auto index = mPlaylistView->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (index != -1)
-		{
-			Bot::Get().GetPlaylist().Lock()->RemoveTrack(index);
-		}
+		if (index != -1) { Bot::Get().GetPlaylist().Lock()->RemoveTrack(index); }
 	}
 
 

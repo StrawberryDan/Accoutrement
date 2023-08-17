@@ -17,8 +17,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class NowPlayingPanel
-		: public wxPanel
+	class NowPlayingPanel : public wxPanel
 	{
 		wxDECLARE_EVENT_TABLE();
 

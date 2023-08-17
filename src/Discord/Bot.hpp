@@ -14,8 +14,7 @@
 
 namespace Strawberry::Accoutrement
 {
-	class Bot
-		: public Strawberry::Discord::Bot
+	class Bot : public Strawberry::Discord::Bot
 	{
 	public:
 		static void Initialise();

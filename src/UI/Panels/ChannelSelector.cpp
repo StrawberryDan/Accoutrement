@@ -203,7 +203,10 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void ChannelSelector::OnSelectChannel(wxCommandEvent& event) { UpdateConnectButton(); }
+	void ChannelSelector::OnSelectChannel(wxCommandEvent& event)
+	{
+		UpdateConnectButton();
+	}
 
 
 	void ChannelSelector::UpdateConnectButton()

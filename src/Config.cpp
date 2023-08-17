@@ -66,5 +66,8 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	const std::string& Config::GetToken() const { return mToken; }
+	const std::string& Config::GetToken() const
+	{
+		return mToken;
+	}
 } // namespace Strawberry::Accoutrement

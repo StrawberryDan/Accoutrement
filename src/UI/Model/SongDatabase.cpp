@@ -34,13 +34,22 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	const Song& SongDatabase::GetSong(size_t index) const { return mSongs.at(index); }
+	const Song& SongDatabase::GetSong(size_t index) const
+	{
+		return mSongs.at(index);
+	}
 
 
-	Song& SongDatabase::GetSong(size_t index) { return mSongs.at(index); }
+	Song& SongDatabase::GetSong(size_t index)
+	{
+		return mSongs.at(index);
+	}
 
 
-	size_t SongDatabase::GetNumSongs() const { return mSongs.size(); }
+	size_t SongDatabase::GetNumSongs() const
+	{
+		return mSongs.size();
+	}
 
 
 	size_t SongDatabase::AddSong(Song song)
@@ -62,7 +71,10 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void SongDatabase::RemoveSong(size_t index) { mSongs.erase(index); }
+	void SongDatabase::RemoveSong(size_t index)
+	{
+		mSongs.erase(index);
+	}
 
 
 	SongDatabase::SongDatabase()

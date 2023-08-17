@@ -41,16 +41,28 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	const Core::Option<std::string>& Song::GetAlbum() const { return mAlbum; }
+	const Core::Option<std::string>& Song::GetAlbum() const
+	{
+		return mAlbum;
+	}
 
 
-	const Core::Option<std::string>& Song::GetArtist() const { return mArtist; }
+	const Core::Option<std::string>& Song::GetArtist() const
+	{
+		return mArtist;
+	}
 
 
-	const std::filesystem::path& Song::GetPath() const { return mPath; }
+	const std::filesystem::path& Song::GetPath() const
+	{
+		return mPath;
+	}
 
 
-	void Song::SetTitle(const std::string& title) { mTitle = title; }
+	void Song::SetTitle(const std::string& title)
+	{
+		mTitle = title;
+	}
 
 
 	nlohmann::json Song::ToJSON() const

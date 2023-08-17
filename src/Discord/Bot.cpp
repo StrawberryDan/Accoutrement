@@ -49,7 +49,10 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	Core::Option<Bot*> Bot::TryGet() { return gBot.get(); }
+	Core::Option<Bot*> Bot::TryGet()
+	{
+		return gBot.get();
+	}
 
 
 	Bot::Bot()

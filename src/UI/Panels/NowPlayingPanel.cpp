@@ -80,8 +80,14 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	void NowPlayingPanel::NextSong(wxCommandEvent& event) { Bot::Get().GetPlaylist().Lock()->GotoNextTrack(); }
+	void NowPlayingPanel::NextSong(wxCommandEvent& event)
+	{
+		Bot::Get().GetPlaylist().Lock()->GotoNextTrack();
+	}
 
 
-	void NowPlayingPanel::PrevSong(wxCommandEvent& event) { Bot::Get().GetPlaylist().Lock()->GotoPrevTrack(); }
+	void NowPlayingPanel::PrevSong(wxCommandEvent& event)
+	{
+		Bot::Get().GetPlaylist().Lock()->GotoPrevTrack();
+	}
 } // namespace Strawberry::Accoutrement

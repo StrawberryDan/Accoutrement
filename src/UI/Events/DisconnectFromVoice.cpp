@@ -14,5 +14,8 @@ namespace Strawberry::Accoutrement
 	{}
 
 
-	wxEvent* DisconnectFromVoice::Clone() const { return new DisconnectFromVoice(); }
+	wxEvent* DisconnectFromVoice::Clone() const
+	{
+		return new DisconnectFromVoice();
+	}
 } // namespace Strawberry::Accoutrement

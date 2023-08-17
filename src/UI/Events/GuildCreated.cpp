@@ -15,8 +15,14 @@ namespace Strawberry::Accoutrement
 	{}
 
 
-	const Discord::Entity::Guild& GuildCreated::GetGuild() { return mGuild; }
+	const Discord::Entity::Guild& GuildCreated::GetGuild()
+	{
+		return mGuild;
+	}
 
 
-	wxEvent* GuildCreated::Clone() const { return new GuildCreated(mGuild); }
+	wxEvent* GuildCreated::Clone() const
+	{
+		return new GuildCreated(mGuild);
+	}
 } // namespace Strawberry::Accoutrement

@@ -16,5 +16,8 @@ namespace Strawberry::Accoutrement
 	{}
 
 
-	wxEvent* ConnectToVoice::Clone() const { return new ConnectToVoice(mGuild, mChannel); }
+	wxEvent* ConnectToVoice::Clone() const
+	{
+		return new ConnectToVoice(mGuild, mChannel);
+	}
 } // namespace Strawberry::Accoutrement

@@ -54,6 +54,8 @@ add_executable(Accoutrement
 		src/UI/Model/SongDatabase.hpp
 		src/UI/Model/Song.cpp
 		src/UI/Model/Song.hpp
+		src/UI/Model/Sound.cpp
+		src/UI/Model/Sound.hpp
 )
 
 

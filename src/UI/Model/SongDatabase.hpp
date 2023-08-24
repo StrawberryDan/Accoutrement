@@ -36,7 +36,7 @@ namespace Strawberry::Accoutrement
 		[[nodiscard]] size_t      GetNumSongs() const;
 
 		size_t               AddSong(Song song);
-		Core::Option<size_t> GetSongIndex(const Song& song);
+		Core::Optional<size_t> GetSongIndex(const Song& song);
 		void                 RemoveSong(size_t index);
 
 

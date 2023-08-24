@@ -8,7 +8,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	static Core::Mutex<Core::Option<Core::Mutex<SoundDatabase>>> sInstance;
+	static Core::Mutex<Core::Optional<Core::Mutex<SoundDatabase>>> sInstance;
 
 	Core::MutexGuard<SoundDatabase> SoundDatabase::Get()
 	{
@@ -29,9 +29,9 @@ namespace Strawberry::Accoutrement
 		mSounds.erase(id);
 	}
 
-	const Core::Option<const Sound*> SoundDatabase::GetSound(SoundDatabase::Id id) const
+	const Core::Optional<const Sound*> SoundDatabase::GetSound(SoundDatabase::Id id) const
 	{
-		return mSounds.contains(id) ? Core::Option(&mSounds.at(id)) : Core::NullOpt;
+		return mSounds.contains(id) ? Core::Optional(&mSounds.at(id)) : Core::NullOpt;
 	}
 
 	size_t SoundDatabase::Count() const

@@ -7,7 +7,7 @@
 // JSON
 #include "nlohmann/json.hpp"
 // Core
-#include "Strawberry/Core/Util/Option.hpp"
+#include "Strawberry/Core/Util/Optional.hpp"
 // Standard Library
 #include <cstdint>
 #include <filesystem>
@@ -22,12 +22,12 @@ namespace Strawberry::Accoutrement
 	class Song
 	{
 	public:
-		static Core::Option<Song> FromFile(const std::string& filePath);
+		static Core::Optional<Song> FromFile(const std::string& filePath);
 
 
 		[[nodiscard]] std::string                      GetTitle() const;
-		[[nodiscard]] const Core::Option<std::string>& GetAlbum() const;
-		[[nodiscard]] const Core::Option<std::string>& GetArtist() const;
+		[[nodiscard]] const Core::Optional<std::string>& GetAlbum() const;
+		[[nodiscard]] const Core::Optional<std::string>& GetArtist() const;
 		[[nodiscard]] const std::filesystem::path&     GetPath() const;
 
 
@@ -48,9 +48,9 @@ namespace Strawberry::Accoutrement
 
 
 	private:
-		Core::Option<std::string> mTitle;
-		Core::Option<std::string> mAlbum;
-		Core::Option<std::string> mArtist;
+		Core::Optional<std::string> mTitle;
+		Core::Optional<std::string> mAlbum;
+		Core::Optional<std::string> mArtist;
 		std::filesystem::path     mPath;
 	};
 } // namespace Strawberry::Accoutrement

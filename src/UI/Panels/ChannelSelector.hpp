@@ -53,8 +53,7 @@ namespace Strawberry::Accoutrement
 			AddGuild(static_cast<GuildCreated&>(event).GetGuild());
 		}
 
-
-		Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>> GetSelectedChannel() const;
+		Core::Optional<std::pair<Discord::Snowflake, Discord::Snowflake>> GetSelectedChannel() const;
 		void                                                            UpdateConnectButton();
 		bool                                                            IsConnectedToSelectedChannel() const;
 

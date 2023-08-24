@@ -59,8 +59,7 @@ namespace Strawberry::Accoutrement
 		return id;
 	}
 
-
-	Core::Option<size_t> SongDatabase::GetSongIndex(const Song& song)
+	Core::Optional<size_t> SongDatabase::GetSongIndex(const Song& song)
 	{
 		for (int i = 0; i < mSongs.size(); i++)
 		{

@@ -10,7 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	Core::Option<Sound> Sound::FromFile(const std::filesystem::path& path)
+	Core::Optional<Sound> Sound::FromFile(const std::filesystem::path& path)
 	{
 		// Load our file
 		auto file = Codec::MediaFile::Open(path);

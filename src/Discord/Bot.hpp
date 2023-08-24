@@ -25,8 +25,7 @@ namespace Strawberry::Accoutrement
 
 		static Bot& Get();
 
-		static Core::Option<Bot*> TryGet();
-
+		static Core::Optional<Bot*> TryGet();
 
 		auto& GetPlaylist() { return mPlaylist; }
 
@@ -38,6 +37,6 @@ namespace Strawberry::Accoutrement
 	private:
 		Core::Mutex<Codec::Audio::Playlist>                mPlaylist;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mAudioChannel;
-		Core::Option<Core::RepeatingTask>                  mAudioSendingThread;
+		Core::Optional<Core::RepeatingTask>                mAudioSendingThread;
 	};
 } // namespace Strawberry::Accoutrement

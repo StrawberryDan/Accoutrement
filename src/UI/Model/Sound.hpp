@@ -6,7 +6,7 @@
 // Codec
 #include "Codec/Audio/Frame.hpp"
 // Core
-#include "Strawberry/Core/Util/Option.hpp"
+#include "Strawberry/Core/Util/Optional.hpp"
 // Standard Library
 #include <filesystem>
 #include <vector>
@@ -20,7 +20,7 @@ namespace Strawberry::Accoutrement
 	{
 	public:
 		/// Loads a sound from a media file.
-		static Core::Option<Sound> FromFile(const std::filesystem::path& path);
+		static Core::Optional<Sound> FromFile(const std::filesystem::path& path);
 
 
 		/// Constructs a sound from a list of frames.

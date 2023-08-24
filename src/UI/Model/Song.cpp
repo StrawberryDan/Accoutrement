@@ -11,7 +11,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	Core::Option<Song> Song::FromFile(const std::string& filePath)
+	Core::Optional<Song> Song::FromFile(const std::string& filePath)
 	{
 		Song song;
 
@@ -40,14 +40,12 @@ namespace Strawberry::Accoutrement
 		return mTitle.ValueOr(fileName);
 	}
 
-
-	const Core::Option<std::string>& Song::GetAlbum() const
+	const Core::Optional<std::string>& Song::GetAlbum() const
 	{
 		return mAlbum;
 	}
 
-
-	const Core::Option<std::string>& Song::GetArtist() const
+	const Core::Optional<std::string>& Song::GetArtist() const
 	{
 		return mArtist;
 	}

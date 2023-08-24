@@ -79,8 +79,7 @@ namespace Strawberry::Accoutrement
 		if (auto guildCreate = event.Cast<GuildCreate>()) { QueueEvent(new GuildCreated(guildCreate->GetGuild())); }
 	}
 
-
-	Core::Option<std::pair<Discord::Snowflake, Discord::Snowflake>> ChannelSelector::GetSelectedChannel() const
+	Core::Optional<std::pair<Discord::Snowflake, Discord::Snowflake>> ChannelSelector::GetSelectedChannel() const
 	{
 		auto* serverChoice        = static_cast<wxChoice*>(FindWindowById(SERVER));
 		auto* channelChoice       = static_cast<wxChoice*>(FindWindowById(CHANNEL));

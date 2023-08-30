@@ -73,7 +73,7 @@ namespace Strawberry::Accoutrement
 					clock.Tick();
 					if (mAudioChannel) mAudioChannel->EnqueueFrame(frame.Unwrap());
 				}
-				else { clock.Restart(); }
+				else { clock.TickWithoutProgress(); }
 			}
 			else { std::this_thread::yield(); }
 		});

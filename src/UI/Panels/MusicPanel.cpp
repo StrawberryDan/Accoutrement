@@ -4,8 +4,8 @@
 #include "MusicPanel.hpp"
 // This Project
 #include "../../Discord/Bot.hpp"
-#include "../Model/Song.hpp"
-#include "../Model/SongDatabase.hpp"
+#include "../../Model/Song.hpp"
+#include "../../Model/SongDatabase.hpp"
 // Wx Widgets
 #include "wx/button.h"
 #include "wx/filedlg.h"

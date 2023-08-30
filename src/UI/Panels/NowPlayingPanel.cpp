@@ -4,7 +4,7 @@
 #include "NowPlayingPanel.hpp"
 // Accoutrement
 #include "../../Discord/Bot.hpp"
-#include "../Model/Song.hpp"
+#include "../../Model/Song.hpp"
 // wxWidgets
 #include "wx/gbsizer.h"
 

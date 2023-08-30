@@ -29,7 +29,7 @@ namespace Strawberry::Accoutrement
 		mSounds.erase(id);
 	}
 
-	const Core::Optional<const Sound*> SoundDatabase::GetSound(SoundDatabase::Id id) const
+	Core::Optional<const Sound*> SoundDatabase::GetSound(SoundDatabase::Id id) const
 	{
 		return mSounds.contains(id) ? Core::Optional(&mSounds.at(id)) : Core::NullOpt;
 	}

@@ -58,6 +58,8 @@ add_executable(Accoutrement
 		src/Model/SoundDatabase.hpp
 		src/Model/Sound.cpp
 		src/Model/Sound.hpp
+		src/Model/SoundPlayer.cpp
+		src/Model/SoundPlayer.hpp
 )
 
 

@@ -30,6 +30,8 @@ namespace Strawberry::Accoutrement
 
 		auto& GetPlaylist() { return mPlaylist; }
 
+		auto& GetSoundPlayer() { return mSoundPlayer; }
+
 
 	private:
 		Bot();

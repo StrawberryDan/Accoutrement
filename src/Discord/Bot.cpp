@@ -13,12 +13,10 @@
 using Strawberry::Core::Assert;
 using Strawberry::Discord::Intent;
 
-
 namespace Strawberry::Accoutrement
 {
 	static std::unique_ptr<Bot> gBot = nullptr;
 	static std::future<void>    gRun = {};
-
 
 	void Bot::Initialise()
 	{
@@ -26,12 +24,10 @@ namespace Strawberry::Accoutrement
 		gBot = std::unique_ptr<Bot>(new Bot());
 	}
 
-
 	void Bot::Run()
 	{
 		gRun = std::async(std::launch::async, []() { gBot->Strawberry::Discord::Bot::Run(); });
 	}
-
 
 	void Bot::Stop()
 	{
@@ -40,7 +36,6 @@ namespace Strawberry::Accoutrement
 		gRun = {};
 		gBot.reset();
 	}
-
 
 	Bot& Bot::Get()
 	{
@@ -53,29 +48,50 @@ namespace Strawberry::Accoutrement
 		return gBot.get();
 	}
 
-
 	Bot::Bot()
 		: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
 		, mPlaylist(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
+		, mSoundPlayer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
 	{
-		mAudioSendingThread.Emplace([this, clock = Core::Metronome(0.00, 0.01)](Core::RepeatingTask* thread) mutable {
-			if (clock)
-			{
-				if (auto connection = Bot::TryGet().AndThen([](auto x) { return x->GetVoiceConnection().AsPtr(); }); connection && !mAudioChannel)
+		mAudioSendingThread.Emplace(
+			[this, musicClock = Core::Metronome(0.00, 0.01), sfxClock = Core::Metronome(0.00, 0.01)](Core::RepeatingTask* thread) mutable {
+				if (musicClock || sfxClock)
 				{
-					mAudioChannel = connection->CreateInputChannel();
-				}
-				else if (!connection && mAudioChannel) { mAudioChannel.reset(); }
+					if (auto connection = Bot::TryGet().AndThen([](auto x) { return x->GetVoiceConnection().AsPtr(); });
+						connection && !mMusicChannel && !mSoundChannel)
+					{
+						mMusicChannel = connection->CreateInputChannel();
+						mSoundChannel = connection->CreateInputChannel();
+					}
+					else if (!connection && mMusicChannel && mSoundChannel)
+					{
+						mMusicChannel.reset();
+						mSoundChannel.reset();
+					}
 
-				if (auto frame = mPlaylist.Lock()->ReadFrame())
-				{
-					clock.SetFrequency(frame->GetDuration());
-					clock.Tick();
-					if (mAudioChannel) mAudioChannel->EnqueueFrame(frame.Unwrap());
+					if (musicClock)
+					{
+						if (auto frame = mPlaylist.Lock()->ReadFrame())
+						{
+							musicClock.SetFrequency(frame->GetDuration());
+							musicClock.Tick();
+							if (mMusicChannel) mMusicChannel->EnqueueFrame(frame.Unwrap());
+						}
+						else { musicClock.TickWithoutProgress(); }
+					}
+
+					if (sfxClock)
+					{
+						if (auto frame = mSoundPlayer.Lock()->ReceiveAudio())
+						{
+							sfxClock.SetFrequency(frame->GetDuration());
+							sfxClock.Tick();
+							if (mSoundChannel) mSoundChannel->EnqueueFrame(frame.Unwrap());
+						}
+						else { sfxClock.TickWithoutProgress(); }
+					}
 				}
-				else { clock.TickWithoutProgress(); }
-			}
-			else { std::this_thread::yield(); }
-		});
+				else { std::this_thread::yield(); }
+			});
 	}
 } // namespace Strawberry::Accoutrement

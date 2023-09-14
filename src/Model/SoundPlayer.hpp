@@ -39,7 +39,6 @@ namespace Strawberry::Accoutrement
 		// A Sound Entry is a sound, how far into the sound we've mixes, and whether it should repeat.
 		using SoundEntry = std::tuple<Sound, unsigned int, bool>;
 
-
 		// A map of our currently active sounds
 		std::map<unsigned int, SoundEntry>                                         mCurrentSounds;
 		// Our audio mixer.
@@ -48,9 +47,9 @@ namespace Strawberry::Accoutrement
 		std::map<unsigned int, std::shared_ptr<Codec::Audio::Mixer::InputChannel>> mMixerChannels;
 		// The generator for our sound IDs.
 		Core::IDGenerator<unsigned int>                                            mIdGenerator;
-		// The thread which does the mixing.
-		Core::RepeatingTask                                                        mMixingThread;
 		// The metronomes to time the mixing of frames by.
 		std::map<unsigned int, Core::Metronome>                                    mMixingMetronomes;
+		// The thread which does the mixing.
+		Core::RepeatingTask                                                        mMixingThread;
 	};
 } // namespace Strawberry::Accoutrement

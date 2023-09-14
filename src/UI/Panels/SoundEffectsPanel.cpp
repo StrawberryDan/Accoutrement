@@ -70,6 +70,17 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(0, 1);
 		sizer->AddGrowableCol(1, 1);
 		SetSizerAndFit(sizer);
+
+		auto soundDatabase = SoundDatabase::Get();
+		for (int i = 0; i < soundDatabase->Count(); i++)
+		{
+			auto sound = soundDatabase->GetSound(i);
+			if (sound)
+			{
+				auto item = mSoundEffectsList->InsertItem(mSoundEffectsList->GetItemCount(), sound->GetName());
+				mSoundEffectsList->SetItemPtrData(item, i);
+			}
+		}
 	}
 
 	void SoundEffectsPanel::OnPlayOnceButton(wxCommandEvent& event)

@@ -27,6 +27,7 @@ namespace Strawberry::Accoutrement
 		void OnPlayRepeatButton(wxCommandEvent& event);
 		void OnAddSoundButton(wxCommandEvent& event);
 		void OnRemoveSoundButton(wxCommandEvent& event);
+		void OnRenameSoundButton(wxCommandEvent& event);
 
 
 	private:
@@ -35,5 +36,6 @@ namespace Strawberry::Accoutrement
 		wxButton*   mPlayRepeatButton  = nullptr;
 		wxButton*   mAddSoundButton    = nullptr;
 		wxButton*   mRemoveSoundButton = nullptr;
+		wxButton*   mRenameSoundButton = nullptr;
 	};
 } // namespace Strawberry::Accoutrement

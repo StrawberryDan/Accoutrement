@@ -31,12 +31,18 @@ namespace Strawberry::Accoutrement
 		const Codec::Audio::Frame& GetFrame(size_t index) const;
 		const Codec::Audio::Frame& operator[](size_t index) const;
 
+		/// Returns the name of the sound.
+		const std::string& GetName() const { return mName; }
+
+		/// Sets the name of the sound
+		void SetName(const std::string& name) { mName = name; }
 
 		/// Returns the number of audio frames in the sound.
 		size_t Size() const;
 
 
 	private:
+		std::string                      mName;
 		std::vector<Codec::Audio::Frame> mFrames;
 	};
 } // namespace Strawberry::Accoutrement

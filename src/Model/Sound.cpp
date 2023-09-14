@@ -30,7 +30,9 @@ namespace Strawberry::Accoutrement
 		}
 		// Compress and return as a Sound.
 		frames.shrink_to_fit();
-		return Sound(frames);
+		Sound sound(frames);
+		sound.mName = path;
+		return sound;
 	}
 
 	Sound::Sound(std::vector<Codec::Audio::Frame> frames)

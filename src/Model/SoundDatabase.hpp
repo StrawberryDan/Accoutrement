@@ -26,6 +26,8 @@ namespace Strawberry::Accoutrement
 		using Id = size_t;
 
 	public:
+		/// Writes contents to file on shutdown
+		~SoundDatabase();
 		/// Adds a new sound to the database. Returns the id of the added sound.
 		Id                               AddSound(Sound sound);
 		/// Removes the sound associated with the given Id.
@@ -36,7 +38,8 @@ namespace Strawberry::Accoutrement
 		size_t                           Count() const;
 
 	private:
-		SoundDatabase() = default;
+		/// Loads database from file
+		SoundDatabase();
 
 	private:
 		Id                  mNextId = 0;

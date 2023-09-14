@@ -38,6 +38,9 @@ namespace Strawberry::Accoutrement
 
 	void SoundPlayer::Mix()
 	{
+		// List of sounds to remove once we're done iterating.
+		std::set<unsigned int> soundsToRemove;
+		// Iterate over our current sounds
 		for (auto& [id, soundEntry] : mCurrentSounds)
 		{
 			// Unpack our sound data
@@ -58,7 +61,8 @@ namespace Strawberry::Accoutrement
 					if (repeating) { progress = 0; }
 					else
 					{
-						RemoveSound(id);
+						// Remove this later
+						soundsToRemove.emplace(id);
 						continue;
 					}
 				}
@@ -72,6 +76,9 @@ namespace Strawberry::Accoutrement
 				metronome.Tick();
 			}
 		}
+
+		// Remove songs where appropriate
+		for (auto id : soundsToRemove) { RemoveSound(id); }
 
 		std::this_thread::yield();
 	}

@@ -31,7 +31,7 @@ namespace Strawberry::Accoutrement
 		/// Removes the sound associated with the given Id.
 		void                             RemoveSound(Id id);
 		/// Returns an pointer to the sound with the given id if it exists.
-		[[nodiscard]] Core::Optional<const Sound*> GetSound(Id id) const;
+		[[nodiscard]] Core::Optional<Sound*> GetSound(Id id);
 		/// Returns the number of sounds in the database.
 		size_t                           Count() const;
 

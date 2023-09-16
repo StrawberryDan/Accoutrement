@@ -44,14 +44,16 @@ add_executable(Accoutrement
 		src/UI/Panels/SoundEffectsPanel.hpp
 		src/UI/Panels/SoundControlPanel.cpp
 		src/UI/Panels/SoundControlPanel.hpp
-		src/UI/Model/SongDatabase.cpp
-		src/UI/Model/SongDatabase.hpp
-		src/UI/Model/Song.cpp
-		src/UI/Model/Song.hpp
-		src/UI/Model/SoundDatabase.cpp
-		src/UI/Model/SoundDatabase.hpp
-		src/UI/Model/Sound.cpp
-		src/UI/Model/Sound.hpp
+		src/Model/SongDatabase.cpp
+		src/Model/SongDatabase.hpp
+		src/Model/Song.cpp
+		src/Model/Song.hpp
+		src/Model/SoundDatabase.cpp
+		src/Model/SoundDatabase.hpp
+		src/Model/Sound.cpp
+		src/Model/Sound.hpp
+		src/Model/SoundPlayer.cpp
+		src/Model/SoundPlayer.hpp
 )
 
 

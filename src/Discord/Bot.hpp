@@ -3,6 +3,8 @@
 //======================================================================================================================
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
+// This Project
+#include "../Model/SoundPlayer.hpp"
 // Discord
 #include "Discord/Bot.hpp"
 // Codec
@@ -10,7 +12,6 @@
 #include "Codec/Audio/Playlist.hpp"
 // Core
 #include "Strawberry/Core/Sync/Mutex.hpp"
-
 
 namespace Strawberry::Accoutrement
 {
@@ -29,6 +30,8 @@ namespace Strawberry::Accoutrement
 
 		auto& GetPlaylist() { return mPlaylist; }
 
+		auto& GetSoundPlayer() { return mSoundPlayer; }
+
 
 	private:
 		Bot();
@@ -36,7 +39,9 @@ namespace Strawberry::Accoutrement
 
 	private:
 		Core::Mutex<Codec::Audio::Playlist>                mPlaylist;
-		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mAudioChannel;
+		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mMusicChannel;
+		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mSoundChannel;
 		Core::Optional<Core::RepeatingTask>                mAudioSendingThread;
+		Core::Mutex<SoundPlayer>                           mSoundPlayer;
 	};
 } // namespace Strawberry::Accoutrement

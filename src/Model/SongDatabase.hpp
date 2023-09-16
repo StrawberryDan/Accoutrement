@@ -11,7 +11,6 @@
 #include <map>
 #include <memory>
 
-
 //======================================================================================================================
 //  Class Declaration
 //----------------------------------------------------------------------------------------------------------------------
@@ -35,9 +34,9 @@ namespace Strawberry::Accoutrement
 		Song&                     GetSong(size_t index);
 		[[nodiscard]] size_t      GetNumSongs() const;
 
-		size_t               AddSong(Song song);
+		size_t                 AddSong(Song song);
 		Core::Optional<size_t> GetSongIndex(const Song& song);
-		void                 RemoveSong(size_t index);
+		void                   RemoveSong(size_t index);
 
 
 	private:

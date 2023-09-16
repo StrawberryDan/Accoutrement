@@ -2,6 +2,10 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 #include "SoundDatabase.hpp"
+// JSON
+#include "nlohmann/json.hpp"
+// Standard Library
+#include <fstream>
 
 //======================================================================================================================
 //  Class Definitions
@@ -17,6 +21,16 @@ namespace Strawberry::Accoutrement
 		return lock->Value().Lock();
 	}
 
+	SoundDatabase::~SoundDatabase()
+	{
+		nlohmann::json json;
+		for (const auto& [index, sound] : mSounds) { json["sounds"].push_back(sound.AsJSON()); }
+
+
+		std::ofstream file("./sound_database.json");
+		file << json.dump('\t');
+	}
+
 	SoundDatabase::Id SoundDatabase::AddSound(Sound sound)
 	{
 		auto id = mNextId++;
@@ -29,7 +43,7 @@ namespace Strawberry::Accoutrement
 		mSounds.erase(id);
 	}
 
-	const Core::Optional<const Sound*> SoundDatabase::GetSound(SoundDatabase::Id id) const
+	Core::Optional<Sound*> SoundDatabase::GetSound(SoundDatabase::Id id)
 	{
 		return mSounds.contains(id) ? Core::Optional(&mSounds.at(id)) : Core::NullOpt;
 	}
@@ -37,5 +51,24 @@ namespace Strawberry::Accoutrement
 	size_t SoundDatabase::Count() const
 	{
 		return mSounds.size();
+	}
+
+	SoundDatabase::SoundDatabase()
+	{
+		std::ifstream file("./sound_database.json");
+
+		if (file.is_open())
+		{
+			nlohmann::json json;
+			file >> json;
+
+			for (auto songData : json["sounds"])
+			{
+				Core::Optional<Sound> sound = Sound::FromJSON(songData);
+				if (!sound) continue;
+				else
+					AddSound(sound.Unwrap());
+			}
+		}
 	}
 } // namespace Strawberry::Accoutrement

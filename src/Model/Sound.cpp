@@ -30,7 +30,31 @@ namespace Strawberry::Accoutrement
 		}
 		// Compress and return as a Sound.
 		frames.shrink_to_fit();
-		return Sound(frames);
+		Sound sound(frames);
+		sound.mFile = path;
+		sound.mName = path;
+		return sound;
+	}
+
+	Core::Optional<Sound> Sound::FromJSON(const nlohmann::json& json)
+	{
+		std::filesystem::path file(json["file"]);
+		if (!std::filesystem::exists(file)) return Core::NullOpt;
+
+		Core::Optional<Sound> sound = Sound::FromFile(file);
+		if (!sound) return Core::NullOpt;
+
+		if (json.contains("name")) { sound->SetName(json["name"]); }
+
+		return sound;
+	}
+
+	nlohmann::json Sound::AsJSON() const
+	{
+		return {
+			{"file", mFile},
+			{"name", mName},
+		};
 	}
 
 	Sound::Sound(std::vector<Codec::Audio::Frame> frames)

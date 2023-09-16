@@ -60,3 +60,7 @@ add_executable(Accoutrement
 
 target_compile_definitions(Accoutrement PRIVATE UNICODE)
 target_link_libraries(Accoutrement PRIVATE StrawberryCore StrawberryCodec StrawberryDiscord wx::mono)
+# Link iconv on Darwin. wxWidgets wasn't building without this.
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	target_link_libraries(Accoutrement PUBLIC iconv)
+endif ()

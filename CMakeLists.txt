@@ -1,23 +1,17 @@
 cmake_minimum_required(VERSION 3.20)
 project(Accoutrement)
 set(CMAKE_CXX_STANDARD 23)
+include(FetchContent)
 
 
 # Get wxWidgets
-message(STATUS "Cloning wxWidgets")
-execute_process(
-		COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/build_wx.sh ${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		COMMAND_ERROR_IS_FATAL ANY
-)
-
-
-# Configure wxWidgets
 message(STATUS "Configuring wxWidgets")
 set(wxBUILD_CXX_STANDARD 20)
 set(wxBUILD_SHARED OFF)
 set(wxBUILD_MONOLITHIC ON)
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/Vendor/wxWidgets)
+FetchContent_Declare(wxWidgets
+	GIT_REPOSITORY "https://github.com/wxWidgets/wxWidgets.git")
+FetchContent_MakeAvailable(wxWidgets)
 
 
 # MODULES

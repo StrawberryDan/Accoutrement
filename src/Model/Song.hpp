@@ -22,7 +22,7 @@ namespace Strawberry::Accoutrement
 	class Song
 	{
 	public:
-		static Core::Optional<Song> FromFile(const std::string& filePath);
+		static Core::Optional<Song> FromFile(const std::filesystem::path& filePath);
 
 
 		[[nodiscard]] std::string                      GetTitle() const;

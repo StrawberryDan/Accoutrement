@@ -11,7 +11,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	Core::Optional<Song> Song::FromFile(const std::string& filePath)
+	Core::Optional<Song> Song::FromFile(const std::filesystem::path& filePath)
 	{
 		Song song;
 
@@ -36,7 +36,7 @@ namespace Strawberry::Accoutrement
 
 	std::string Song::GetTitle() const
 	{
-		std::string fileName = GetPath().filename();
+		std::string fileName = GetPath().filename().string();
 		return mTitle.ValueOr(fileName);
 	}
 

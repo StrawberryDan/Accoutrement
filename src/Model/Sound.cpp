@@ -32,7 +32,7 @@ namespace Strawberry::Accoutrement
 		frames.shrink_to_fit();
 		Sound sound(frames);
 		sound.mFile = path;
-		sound.mName = path;
+		sound.mName = path.string();
 		return sound;
 	}
 

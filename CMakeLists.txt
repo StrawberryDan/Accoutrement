@@ -58,4 +58,4 @@ add_executable(Accoutrement
 )
 
 target_compile_definitions(Accoutrement PRIVATE UNICODE)
-target_link_libraries(Accoutrement PRIVATE StrawberryDiscord StrawberryCodec StrawberryCore wx::mono)
+target_link_libraries(Accoutrement PRIVATE StrawberryCore StrawberryCodec StrawberryDiscord wx::mono)

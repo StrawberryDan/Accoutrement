@@ -9,6 +9,7 @@ message(STATUS "Configuring wxWidgets")
 set(wxBUILD_CXX_STANDARD 20)
 set(wxBUILD_SHARED OFF)
 set(wxBUILD_MONOLITHIC ON)
+set(wxUSE_UNICODE ON)
 FetchContent_Declare(wxWidgets
 	GIT_REPOSITORY "https://github.com/wxWidgets/wxWidgets.git")
 FetchContent_MakeAvailable(wxWidgets)
@@ -56,5 +57,5 @@ add_executable(Accoutrement
 		src/Model/SoundPlayer.hpp
 )
 
-
+target_compile_definitions(Accoutrement PRIVATE UNICODE)
 target_link_libraries(Accoutrement PRIVATE StrawberryDiscord StrawberryCodec StrawberryCore wx::mono)

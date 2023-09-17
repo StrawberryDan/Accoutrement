@@ -5,6 +5,8 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // This Project
+#include "../Events/BotStartedRunningEvent.hpp"
+#include "../Events/BotStoppedRunningEvent.hpp"
 #include "../Events/ConnectToVoice.hpp"
 #include "../Events/DisconnectFromVoice.hpp"
 #include "../Events/GuildCreated.hpp"
@@ -13,7 +15,6 @@
 #include "wx/panel.h"
 #include "wx/sizer.h"
 // Discord
-#include "../Events/BotStartedRunningEvent.hpp"
 #include "Discord/Entity/Channel.hpp"
 #include "Discord/Entity/Guild.hpp"
 #include "Discord/EventListener.hpp"
@@ -30,7 +31,7 @@ namespace Strawberry::Accoutrement
 	class ChannelSelector
 		: public wxPanel
 		, public Discord::EventListener
-		, public Core::IO::Receiver<BotStartedRunningEvent>
+		, public Core::IO::Receiver<BotStartedRunningEvent, BotStoppedRunningEvent>
 	{
 		wxDECLARE_EVENT_TABLE();
 
@@ -72,6 +73,7 @@ namespace Strawberry::Accoutrement
 		void OnSelectChannel(wxCommandEvent& event);
 
 		virtual void Receive(BotStartedRunningEvent event) override;
+		virtual void Receive(BotStoppedRunningEvent event) override;
 
 		void PopulateGuildsList();
 

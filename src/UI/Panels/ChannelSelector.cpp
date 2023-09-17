@@ -59,7 +59,7 @@ namespace Strawberry::Accoutrement
 			mDisconnectButton->Disable();
 		}
 
-		if (Bot::Get()) { PopulateGuildsList(); }
+		if (Bot::Get() && Bot::Get()->GetBot()) { PopulateGuildsList(); }
 	}
 
 	bool ChannelSelector::Destroy()
@@ -238,10 +238,24 @@ namespace Strawberry::Accoutrement
 		mDisconnectButton->Enable();
 	}
 
+	void ChannelSelector::Receive(BotStoppedRunningEvent event)
+	{
+		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(SERVER));
+		serverChoice->Clear();
+		wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(CHANNEL));
+		channelChoice->Clear();
+		mConnectButton->Disable();
+		mDisconnectButton->Disable();
+	}
+
 	void ChannelSelector::PopulateGuildsList()
 	{
 		Core::Assert(Bot::Get().HasValue());
 
+		wxChoice* serverChoice = static_cast<wxChoice*>(FindWindowById(SERVER));
+		serverChoice->Clear();
+		wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(CHANNEL));
+		channelChoice->Clear();
 		for (auto snowflake : Bot::Get()->GetBot()->FetchGuilds())
 		{
 			auto guild = Bot::Get()->GetBot()->FetchGuild(snowflake);

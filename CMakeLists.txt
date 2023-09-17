@@ -15,7 +15,7 @@ FetchContent_Declare(wxWidgets
 	GIT_REPOSITORY "https://github.com/wxWidgets/wxWidgets.git"
 	GIT_TAG "v3.2.2.1")
 FetchContent_MakeAvailable(wxWidgets)
-
+FetchContent_GetProperties(wxWidgets_SOURCE_DIR SOURCE_DIR)
 
 # MODULES
 add_subdirectory(../Core ${CMAKE_CURRENT_BINARY_DIR}/Core)
@@ -59,6 +59,8 @@ add_executable(Accoutrement
 		src/Model/SoundPlayer.hpp
 		src/UI/Events/BotStartedRunningEvent.hpp
 		src/UI/Events/BotStoppedRunningEvent.hpp
+		${wxWidgets_SOURCE_DIR}/include/wx/msw/wx.manifest
+		${wxWidgets_SOURCE_DIR}/include/wx/msw/wx.rc
 )
 
 target_compile_definitions(Accoutrement PRIVATE UNICODE)

@@ -18,7 +18,7 @@ namespace Strawberry::Accoutrement
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
-		auto sizer = new wxGridBagSizer(5, 5);
+		auto sizer = new wxGridBagSizer();
 
 		auto list  = new wxListCtrl(this, wxID_ANY);
 		sizer->Add(list, {0, 0}, {2, 1}, wxALL | wxEXPAND, 5);

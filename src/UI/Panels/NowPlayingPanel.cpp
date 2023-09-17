@@ -33,7 +33,7 @@ namespace Strawberry::Accoutrement
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
-		auto sizer = new wxGridBagSizer(5, 5);
+		auto sizer = new wxGridBagSizer();
 
 		mSongTitle = new wxStaticText(this, wxID_ANY, "No Song Playing");
 		mSongTitle->SetWindowStyle(wxALIGN_CENTRE_HORIZONTAL);

@@ -44,7 +44,7 @@ namespace Strawberry::Accoutrement
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
-		auto sizer = new wxGridBagSizer(5, 5);
+		auto sizer = new wxGridBagSizer();
 
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Sound Effects"), {0, 0}, {1, 2}, wxALL | wxEXPAND, 5);
 

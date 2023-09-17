@@ -19,9 +19,6 @@ namespace Strawberry::Accoutrement
 {
 	class Application : public wxApp
 	{
-		wxDECLARE_EVENT_TABLE();
-
-
 	public:
 		bool OnInit() override
 		{
@@ -45,28 +42,10 @@ namespace Strawberry::Accoutrement
 			return wxAppBase::OnExit();
 		}
 
-		void OnVoiceConnect(ConnectToVoice& event)
-		{
-			if (Bot::Get()) Bot::Get()->GetBot()->ConnectToVoice(event.GetGuild().GetId(), event.GetChannel().GetId());
-		}
-
-		void OnVoiceDisconnect(DisconnectFromVoice& event)
-		{
-			if (Bot::Get()) Bot::Get()->GetBot()->DisconnectFromVoice();
-		}
-
 
 	private:
 		MainWindow* mMainWindow;
 	};
-
-
-	// clang-format off
-	wxBEGIN_EVENT_TABLE(Application, wxApp)
-	EVT_CONNECT_TO_VOICE(wxID_ANY, Application::OnVoiceConnect)
-	EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, Application::OnVoiceDisconnect)
-	wxEND_EVENT_TABLE();
-	// clang-format on
 } // namespace Strawberry::Accoutrement
 
 

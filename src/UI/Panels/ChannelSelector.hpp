@@ -7,8 +7,8 @@
 // This Project
 #include "../Events/BotStartedRunningEvent.hpp"
 #include "../Events/BotStoppedRunningEvent.hpp"
-#include "../Events/ConnectToVoice.hpp"
-#include "../Events/DisconnectFromVoice.hpp"
+#include "../Events/ConnectedToVoice.hpp"
+#include "../Events/DisconnectedFromVoice.hpp"
 #include "../Events/GuildCreated.hpp"
 // wxWidgets
 #include "wx/choice.h"

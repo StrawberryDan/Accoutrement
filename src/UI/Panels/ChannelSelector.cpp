@@ -152,15 +152,18 @@ namespace Strawberry::Accoutrement
 			if (!selection) return;
 			auto [guildId, channelId] = selection.Unwrap();
 
+			Bot::Get()->GetBot()->ConnectToVoice(guildId, channelId);
+
 			mConnectButton->Disable();
-			QueueEvent(new ConnectToVoice(*Bot::Get()->GetBot()->GetGuild(guildId), *Bot::Get()->GetBot()->GetChannel(channelId)));
+			QueueEvent(new ConnectedToVoice(*Bot::Get()->GetBot()->GetGuild(guildId), *Bot::Get()->GetBot()->GetChannel(channelId)));
 		}
 	}
 
 	void ChannelSelector::OnDisconnect(wxCommandEvent& event)
 	{
 		mConnectButton->Enable();
-		QueueEvent(new DisconnectFromVoice());
+		Bot::Get()->GetBot()->DisconnectFromVoice();
+		QueueEvent(new DisconnectedFromVoice());
 	}
 
 	void ChannelSelector::OnSelectServer(wxCommandEvent& event)

@@ -1,23 +1,20 @@
 //======================================================================================================================
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
-#include "ConnectToVoice.hpp"
-
+#include "ConnectedToVoice.hpp"
 
 namespace Strawberry::Accoutrement
 {
-	wxDEFINE_EVENT(EVT_TYPE_CONNECT_TO_VOICE, ConnectToVoice);
+	wxDEFINE_EVENT(EVT_TYPE_CONNECT_TO_VOICE, ConnectedToVoice);
 
-
-	ConnectToVoice::ConnectToVoice(Discord::Entity::Guild guild, Discord::Entity::Channel channel)
+	ConnectedToVoice::ConnectedToVoice(Discord::Entity::Guild guild, Discord::Entity::Channel channel)
 		: wxCommandEvent(EVT_TYPE_CONNECT_TO_VOICE, GetId())
 		, mGuild(std::move(guild))
 		, mChannel(std::move(channel))
 	{}
 
-
-	wxEvent* ConnectToVoice::Clone() const
+	wxEvent* ConnectedToVoice::Clone() const
 	{
-		return new ConnectToVoice(mGuild, mChannel);
+		return new ConnectedToVoice(mGuild, mChannel);
 	}
 } // namespace Strawberry::Accoutrement

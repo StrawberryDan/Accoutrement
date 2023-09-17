@@ -38,9 +38,9 @@ add_executable(Accoutrement
 		src/UI/Panels/MusicPanel.cpp
 		src/UI/Panels/MusicPanel.hpp
 		src/UI/Events/ConnectToVoice.cpp
-		src/UI/Events/ConnectToVoice.hpp
+		src/UI/Events/ConnectedToVoice.hpp
 		src/UI/Events/DisconnectFromVoice.cpp
-		src/UI/Events/DisconnectFromVoice.hpp
+		src/UI/Events/DisconnectedFromVoice.hpp
 		src/UI/Panels/NowPlayingPanel.cpp
 		src/UI/Panels/NowPlayingPanel.hpp
 		src/UI/Panels/SoundEffectsPanel.cpp

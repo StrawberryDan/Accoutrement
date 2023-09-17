@@ -18,24 +18,32 @@ namespace Strawberry::Accoutrement
 	static std::unique_ptr<Bot> gBot = nullptr;
 	static std::future<void>    gRun = {};
 
-	void Bot::Initialise()
+	bool Bot::Initialise()
 	{
 		Assert(!gBot);
-		gBot = std::unique_ptr<Bot>(new Bot());
+
+		if (!Config::Get().GetToken()) return false;
+		if (!gBot) gBot = std::unique_ptr<Bot>(new Bot());
+		if (!gBot->GetBot()) return false;
+
+		return true;
 	}
 
 	void Bot::Run()
 	{
-		gRun = std::async(std::launch::async, []() { gBot->Strawberry::Discord::Bot::Run(); });
+		if (gBot && gBot->GetBot())
+		{
+			gBot->Broadcast(BotInitialisedEvent());
+			gRun = std::async(std::launch::async, []() { gBot->GetBot()->Run(); });
+		}
 	}
 
-	void Bot::Stop()
+	void Bot::Shutdown()
 	{
 		if (gBot)
 		{
-			gBot->Strawberry::Discord::Bot::Stop();
+			if (gBot->mBot) gBot->mBot->Shutdown();
 			gRun.wait();
-			gRun = {};
 			gBot.reset();
 		}
 	}
@@ -51,7 +59,7 @@ namespace Strawberry::Accoutrement
 	}
 
 	Bot::Bot()
-		: Strawberry::Discord::Bot(Config::Get().GetToken().Value(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
+		: mBot(Discord::Bot::Connect(Config::Get().GetToken().Value(), Intent::GUILDS | Intent::GUILD_VOICE_STATES))
 		, mPlaylist(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
 		, mSoundPlayer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
 	{
@@ -59,7 +67,7 @@ namespace Strawberry::Accoutrement
 			[this, musicClock = Core::Metronome(0.00, 0.01), sfxClock = Core::Metronome(0.00, 0.01)](Core::RepeatingTask* thread) mutable {
 				if (musicClock || sfxClock)
 				{
-					if (auto connection = Bot::TryGet().AndThen([](auto x) { return x->GetVoiceConnection().AsPtr(); });
+					if (auto connection = Bot::TryGet().AndThen([](auto x) { return x->mBot ? x->mBot->GetVoiceConnection() : Core::NullOpt; });
 						connection && !mMusicChannel && !mSoundChannel)
 					{
 						mMusicChannel = connection->CreateInputChannel();

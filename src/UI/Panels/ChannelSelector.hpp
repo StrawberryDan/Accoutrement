@@ -13,7 +13,7 @@
 #include "wx/panel.h"
 #include "wx/sizer.h"
 // Discord
-#include "../Events/BotInitialisedEvent.hpp"
+#include "../Events/BotStartedRunningEvent.hpp"
 #include "Discord/Entity/Channel.hpp"
 #include "Discord/Entity/Guild.hpp"
 #include "Discord/EventListener.hpp"
@@ -30,7 +30,7 @@ namespace Strawberry::Accoutrement
 	class ChannelSelector
 		: public wxPanel
 		, public Discord::EventListener
-		, public Core::IO::Receiver<BotInitialisedEvent>
+		, public Core::IO::Receiver<BotStartedRunningEvent>
 	{
 		wxDECLARE_EVENT_TABLE();
 
@@ -71,7 +71,7 @@ namespace Strawberry::Accoutrement
 		void OnSelectServer(const Discord::Snowflake& guildId);
 		void OnSelectChannel(wxCommandEvent& event);
 
-		virtual void Receive(BotInitialisedEvent event) override;
+		virtual void Receive(BotStartedRunningEvent event) override;
 
 		void PopulateGuildsList();
 

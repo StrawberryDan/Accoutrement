@@ -9,6 +9,6 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class BotInitialisedEvent
+	class BotStartedRunningEvent
 	{};
 } // namespace Strawberry::Accoutrement

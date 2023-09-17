@@ -33,7 +33,7 @@ namespace Strawberry::Accoutrement
 	{
 		if (gBot && gBot->GetBot())
 		{
-			gBot->Broadcast(BotInitialisedEvent());
+			gBot->Broadcast(BotStartedRunningEvent());
 			gRun = std::async(std::launch::async, []() { gBot->GetBot()->Run(); });
 		}
 	}

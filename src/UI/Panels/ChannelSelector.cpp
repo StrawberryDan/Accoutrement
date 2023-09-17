@@ -230,7 +230,7 @@ namespace Strawberry::Accoutrement
 		return false;
 	}
 
-	void ChannelSelector::Receive(BotInitialisedEvent event)
+	void ChannelSelector::Receive(BotStartedRunningEvent event)
 	{
 		Bot::Get()->GetBot()->RegisterEventListener(this);
 		PopulateGuildsList();

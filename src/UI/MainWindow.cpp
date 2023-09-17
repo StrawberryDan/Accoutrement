@@ -5,7 +5,7 @@
 // This Project
 #include "../Config.hpp"
 #include "../Discord/Bot.hpp"
-#include "Events/BotInitialisedEvent.hpp"
+#include "Events/BotStartedRunningEvent.hpp"
 #include "Panels/ChannelSelector.hpp"
 #include "Panels/MusicPanel.hpp"
 #include "Panels/NowPlayingPanel.hpp"

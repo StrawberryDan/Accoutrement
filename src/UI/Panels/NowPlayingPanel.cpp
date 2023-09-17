@@ -79,4 +79,14 @@ namespace Strawberry::Accoutrement
 		mSongTitle->SetLabelText("No Song Playing");
 		Layout();
 	}
+
+	void NowPlayingPanel::Receive(BotStartedRunningEvent event)
+	{
+		Bot::Get()->GetPlaylist().Lock()->Register(this);
+	}
+
+	void NowPlayingPanel::Receive(BotStoppedRunningEvent event)
+	{
+		Bot::Get()->GetPlaylist().Lock()->Unregister(this);
+	}
 } // namespace Strawberry::Accoutrement

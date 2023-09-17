@@ -215,4 +215,14 @@ namespace Strawberry::Accoutrement
 		Core::Assert(event.index < mPlaylistView->GetItemCount());
 		mPlaylistView->DeleteItem(event.index);
 	}
+
+	void MusicPanel::Receive(BotStartedRunningEvent value)
+	{
+		Bot::Get()->GetPlaylist().Lock()->Register(this);
+	}
+
+	void MusicPanel::Receive(BotStoppedRunningEvent value)
+	{
+		Bot::Get()->GetPlaylist().Lock()->Unregister(this);
+	}
 } // namespace Strawberry::Accoutrement

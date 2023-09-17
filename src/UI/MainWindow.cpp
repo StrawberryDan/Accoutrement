@@ -91,7 +91,7 @@ namespace Strawberry::Accoutrement
 	void MainWindow::OnSetToken(wxCommandEvent& event)
 	{
 		auto dialog = new wxTextEntryDialog(this, "Enter your bot token...");
-		if (dialog->ShowModal())
+		if (dialog->ShowModal() == wxID_OK)
 		{
 			std::string token(dialog->GetValue());
 			if (Bot::Get()) { Bot::Shutdown(); }

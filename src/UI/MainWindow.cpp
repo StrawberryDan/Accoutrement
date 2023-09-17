@@ -94,10 +94,8 @@ namespace Strawberry::Accoutrement
 		if (dialog->ShowModal())
 		{
 			std::string token(dialog->GetValue());
-			Config::Get().SetToken(token);
-
 			if (Bot::Get()) { Bot::Shutdown(); }
-
+			Config::Get().SetToken(token);
 			if (Bot::Initialise()) { Bot::Run(); }
 		}
 	}

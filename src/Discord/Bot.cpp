@@ -43,8 +43,9 @@ namespace Strawberry::Accoutrement
 		if (gBot)
 		{
 			if (gBot->mBot) gBot->mBot->Shutdown();
-			gRun.wait();
+			if (gRun.valid()) gRun.wait();
 			gBot.reset();
+			gBot->Broadcast(BotStoppedRunningEvent());
 		}
 	}
 

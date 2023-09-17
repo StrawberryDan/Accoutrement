@@ -6,6 +6,7 @@
 // This Project
 #include "../Model/SoundPlayer.hpp"
 #include "../UI/Events/BotStartedRunningEvent.hpp"
+#include "../UI/Events/BotStoppedRunningEvent.hpp"
 // Discord
 #include "Discord/Bot.hpp"
 // Codec
@@ -17,7 +18,7 @@
 
 namespace Strawberry::Accoutrement
 {
-	class Bot : public Core::IO::Broadcaster<BotStartedRunningEvent>
+	class Bot : public Core::IO::Broadcaster<BotStartedRunningEvent, BotStoppedRunningEvent>
 	{
 	public:
 		[[nodiscard]] static bool Initialise();

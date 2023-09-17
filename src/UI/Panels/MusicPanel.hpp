@@ -42,6 +42,7 @@ namespace Strawberry::Accoutrement
 		void Receive(Codec::Audio::Playlist::SongRemovedEvent event) override;
 		void Receive(BotStartedRunningEvent value) override;
 		void Receive(BotStoppedRunningEvent value) override;
+		void Receive(Codec::Audio::Playlist::PlaybackEndedEvent value) override;
 
 
 	protected:

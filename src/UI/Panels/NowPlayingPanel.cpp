@@ -87,4 +87,8 @@ namespace Strawberry::Accoutrement
 	{
 		Bot::Get()->GetPlaylist().Lock()->Unregister(this);
 	}
+
+	void NowPlayingPanel::Receive(Codec::Audio::Playlist::SongAddedEvent value) {}
+
+	void NowPlayingPanel::Receive(Codec::Audio::Playlist::SongRemovedEvent value) {}
 } // namespace Strawberry::Accoutrement

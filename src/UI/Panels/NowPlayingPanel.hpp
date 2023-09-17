@@ -42,6 +42,8 @@ namespace Strawberry::Accoutrement
 		void Receive(Codec::Audio::Playlist::PlaybackEndedEvent event) override final;
 		void Receive(BotStartedRunningEvent event) override final;
 		void Receive(BotStoppedRunningEvent event) override final;
+		void Receive(Codec::Audio::Playlist::SongAddedEvent value) override;
+		void Receive(Codec::Audio::Playlist::SongRemovedEvent value) override;
 
 
 	private:

@@ -223,4 +223,7 @@ namespace Strawberry::Accoutrement
 	{
 		Bot::Get()->GetPlaylist().Lock()->Unregister(this);
 	}
+
+	void MusicPanel::Receive(Codec::Audio::Playlist::PlaybackEndedEvent value) {}
+
 } // namespace Strawberry::Accoutrement

@@ -45,8 +45,7 @@ namespace Strawberry::Accoutrement
 	{
 		wxFrame::SetMenuBar(CreateMenuBar());
 		wxFrame::CreateToolBar();
-		auto statusBar = wxFrame::CreateStatusBar();
-		statusBar->SetStatusText("Not Connected");
+		auto statusBar       = wxFrame::CreateStatusBar();
 
 		auto sizer           = new wxFlexGridSizer(3, 1, 5, 5);
 
@@ -74,17 +73,36 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(0);
 		sizer->AddGrowableRow(1);
 		SetSizerAndFit(sizer);
+
+		UpdateStatusBar();
 	}
 
-	void MainWindow::OnVoiceConnect(ConnectToVoice& event)
+	void MainWindow::UpdateStatusBar()
 	{
-		GetStatusBar()->SetStatusText(fmt::format("Connected to [{}] --> [{}]", event.GetGuild().GetName(), event.GetChannel().GetName()));
+		const bool botExists        = Bot::Get() && Bot::Get()->GetBot();
+		const bool connectedToVoice = botExists && Bot::Get()->GetBot()->GetVoiceConnection();
+
+		if (connectedToVoice)
+		{
+			auto voice   = Bot::Get()->GetBot()->GetVoiceConnection().Unwrap();
+			auto guild   = Bot::Get()->GetBot()->GetGuild(voice->GetGuild())->GetName();
+			auto channel = Bot::Get()->GetBot()->GetChannel(voice->GetChannel())->GetName();
+			GetStatusBar()->SetStatusText(fmt::format("Connected to \'{}\' -> \'{}\'", guild, channel));
+		}
+		else if (botExists) { GetStatusBar()->SetStatusText("Not connected to a voice channel"); }
+		else if (!botExists) { GetStatusBar()->SetStatusText("Bot not initialised"); }
+		else { Core::Unreachable(); }
+	}
+
+	void MainWindow::OnVoiceConnect(ConnectedToVoice& event)
+	{
+		UpdateStatusBar();
 		event.Skip();
 	}
 
-	void MainWindow::OnVoiceDisconnect(DisconnectFromVoice& event)
+	void MainWindow::OnVoiceDisconnect(DisconnectedFromVoice& event)
 	{
-		GetStatusBar()->SetStatusText("Not Connected");
+		UpdateStatusBar();
 		event.Skip();
 	}
 
@@ -98,6 +116,16 @@ namespace Strawberry::Accoutrement
 			Config::Get().SetToken(token);
 			if (Bot::Initialise()) { Bot::Run(); }
 		}
+	}
+
+	void MainWindow::Receive(BotStartedRunningEvent event)
+	{
+		UpdateStatusBar();
+	}
+
+	void MainWindow::Receive(BotStoppedRunningEvent event)
+	{
+		UpdateStatusBar();
 	}
 
 	wxMenuBar* MainWindow::CreateMenuBar()

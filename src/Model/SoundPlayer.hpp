@@ -9,10 +9,12 @@
 #include "Codec/Audio/Frame.hpp"
 #include "Codec/Audio/Mixer.hpp"
 // Core
+#include "Strawberry/Core/IO/ChannelBroadcaster.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
 #include "Strawberry/Core/Util/IDGenerator.hpp"
 #include "Strawberry/Core/Util/Metronome.hpp"
 // Standard Library
+#include <Strawberry/Core/IO/ChannelReceiver.hpp>
 #include <map>
 #include <tuple>
 
@@ -21,15 +23,35 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class SoundPlayer
+	namespace SoundPlayerEvent
+	{
+		struct SoundStarted {
+			unsigned int songID;
+		};
+
+		struct SoundEnded {
+			unsigned int songID;
+		};
+
+		struct SoundRepeat {
+			unsigned int songID;
+			bool         repeating;
+		};
+	} // namespace SoundPlayerEvent
+
+	class SoundPlayer : public Core::IO::ChannelBroadcaster<SoundPlayerEvent::SoundStarted, SoundPlayerEvent::SoundEnded, SoundPlayerEvent::SoundRepeat>
 	{
 	public:
 		SoundPlayer(Codec::Audio::FrameFormat format, unsigned int size);
-		// Receive a frame of audio from the player.
+		/// Receive a frame of audio from the player.
 		Core::Optional<Codec::Audio::Frame> ReceiveAudio();
-		// Add a sound to the set of currently playing sounds.
+		/// Add a sound to the set of currently playing sounds.
 		unsigned int                        PlaySound(Sound sound, bool repeat = false);
-		// Remove a sound from the list of currently playing sounds.
+		/// Returns whether the given sound is repeating
+		bool                                GetRepeat(unsigned int id) const;
+		/// Sets whether the given sound should repeat
+		void                                SetRepeat(unsigned int id, bool repeat);
+		/// Remove a sound from the list of currently playing sounds.
 		void                                RemoveSound(unsigned int id);
 
 	protected:

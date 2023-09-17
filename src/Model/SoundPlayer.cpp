@@ -25,7 +25,21 @@ namespace Strawberry::Accoutrement
 	{
 		auto id = mIdGenerator.Generate();
 		mCurrentSounds.emplace(id, std::make_tuple(std::move(sound), 0, repeat));
+		Broadcast(SoundPlayerEvent::SoundStarted{.songID = id});
 		return id;
+	}
+
+	bool SoundPlayer::GetRepeat(unsigned int id) const
+	{
+		const auto& [song, position, repeating] = mCurrentSounds.at(id);
+		return repeating;
+	}
+
+	void SoundPlayer::SetRepeat(unsigned int id, bool repeat)
+	{
+		auto& [song, position, repeating] = mCurrentSounds.at(id);
+		repeating                         = repeat;
+		Broadcast(SoundPlayerEvent::SoundRepeat{.songID = id, .repeating = repeat});
 	}
 
 	void SoundPlayer::RemoveSound(unsigned int id)
@@ -34,6 +48,7 @@ namespace Strawberry::Accoutrement
 		mMixerChannels.erase(id);
 		mMixingMetronomes.erase(id);
 		mIdGenerator.Free(id);
+		Broadcast(SoundPlayerEvent::SoundEnded{.songID = id});
 	}
 
 	void SoundPlayer::Mix()

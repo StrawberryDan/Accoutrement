@@ -18,7 +18,6 @@
 // Standard Library
 #include <filesystem>
 
-
 namespace Strawberry::Accoutrement
 {
 	enum Component
@@ -31,7 +30,6 @@ namespace Strawberry::Accoutrement
 		RemoveSongFromPlaylistButton,
 	};
 
-
 	// clang-format off
 	wxBEGIN_EVENT_TABLE(MusicPanel, wxPanel)
 					EVT_BUTTON(Component::AddSongToDatabaseButton, MusicPanel::OnAddSong)
@@ -39,14 +37,13 @@ namespace Strawberry::Accoutrement
 					EVT_BUTTON(Component::RemoveSongFromDatabaseButton, MusicPanel::OnRemoveFromDatabase)
 					EVT_BUTTON(Component::RemoveSongFromPlaylistButton, MusicPanel::OnRemoveSong)
 					EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
-					EVT_UPDATE_UI(wxID_ANY, MusicPanel::OnUpdate)
 	wxEND_EVENT_TABLE();
+
 	// clang-format on
 
 
 	MusicPanel::MusicPanel(wxWindow* parent)
-			: wxPanel(parent),
-			  mEventReceiver(Bot::Get() ? Bot::Get()->GetPlaylist().Lock()->CreateEventReceiver() : nullptr)
+		: wxPanel(parent)
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
@@ -59,8 +56,7 @@ namespace Strawberry::Accoutrement
 		mSongDatabaseList->SetWindowStyle(wxLC_LIST);
 		for (int i = 0; i < SongDatabase::Get().GetNumSongs(); i++)
 		{
-			auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(),
-													   SongDatabase::Get().GetSong(i).GetTitle());
+			auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), SongDatabase::Get().GetSong(i).GetTitle());
 			mSongDatabaseList->SetItemPtrData(index, i);
 		}
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
@@ -79,8 +75,7 @@ namespace Strawberry::Accoutrement
 		sizer->Add(songListButtons, {3, 0}, {1, 1}, wxALIGN_CENTER_HORIZONTAL, 5);
 
 		auto playlistButtons = new wxGridBagSizer(5, 5);
-		playlistButtons->Add(new wxButton(this, Component::RemoveSongFromPlaylistButton, "Remove"), {0, 0}, {1, 1},
-							 wxEXPAND | wxALL, 5);
+		playlistButtons->Add(new wxButton(this, Component::RemoveSongFromPlaylistButton, "Remove"), {0, 0}, {1, 1}, wxEXPAND | wxALL, 5);
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Up"), {0, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Down"), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Shuffle"), {0, 2}, {1, 1}, wxEXPAND | wxALL, 5);
@@ -92,63 +87,33 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(1, 1);
 
 		SetSizerAndFit(sizer);
+
+		Bot::Get()->GetPlaylist().Lock()->Register(this);
 	}
-
-
-	void MusicPanel::OnUpdate(wxUpdateUIEvent& event)
-	{
-		if (mEventReceiver)
-		{
-			auto playlistMessage = mEventReceiver->Read();
-			if (!playlistMessage) return;
-
-			if (auto songAdded = playlistMessage->Value<Codec::Audio::Playlist::SongAddedEvent>())
-			{
-				Song song = std::any_cast<Song>(songAdded->associatedData);
-				mPlaylistView->InsertItem(songAdded->index, song.GetTitle());
-			}
-			else if (auto songRemoved = playlistMessage->Value<Codec::Audio::Playlist::SongRemovedEvent>())
-			{
-				Core::Assert(songRemoved->index < mPlaylistView->GetItemCount());
-				mPlaylistView->DeleteItem(songRemoved->index);
-			}
-			else if (auto songBegan = playlistMessage->Value<Codec::Audio::Playlist::SongBeganEvent>())
-			{
-				for (int i = 0; i < mPlaylistView->GetItemCount(); i++)
-				{
-					mPlaylistView->SetItemBackgroundColour(i, i == songBegan->index ? wxColor(32, 128, 32, 255)
-																					: mPlaylistView->GetBackgroundColour());
-				}
-			}
-		}
-	}
-
 
 	void MusicPanel::OnAddSong(wxCommandEvent& event)
 	{
 		wxFileDialog fileDialog(this, "Choose a song file...");
 		fileDialog.SetWindowStyle(wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST);
 		auto dialogResult = fileDialog.ShowModal();
-		if (dialogResult == wxID_CANCEL)
-		{ return; }
+		if (dialogResult == wxID_CANCEL) { return; }
 		else if (dialogResult == wxID_OK)
 		{
 			wxArrayString paths;
 			fileDialog.GetPaths(paths);
-			for (const auto& path: paths)
+			for (const auto& path : paths)
 			{
 				auto fullPath = std::filesystem::absolute(std::string(path));
-				auto song = Song::FromFile(fullPath);
+				auto song     = Song::FromFile(fullPath);
 				if (!song) return;
 
-				auto songIndex = SongDatabase::Get().AddSong(song.Value());
-				std::string title = song.Value().GetTitle();
-				auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), title);
+				auto        songIndex = SongDatabase::Get().AddSong(song.Value());
+				std::string title     = song.Value().GetTitle();
+				auto        index     = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), title);
 				mSongDatabaseList->SetItemPtrData(index, songIndex);
 			}
 		}
 	}
-
 
 	void MusicPanel::OnEnqueueSong(wxCommandEvent& event)
 	{
@@ -163,23 +128,20 @@ namespace Strawberry::Accoutrement
 
 			selectedSongIndex = selectedSongItem.GetData();
 
-			auto playlist = Bot::Get()->GetPlaylist().Lock();
-			auto song = SongDatabase::Get().GetSong(selectedSongIndex);
+			auto playlist     = Bot::Get()->GetPlaylist().Lock();
+			auto song         = SongDatabase::Get().GetSong(selectedSongIndex);
 			playlist->EnqueueFile(song.GetPath(), song).Unwrap();
 		}
 	}
-
 
 	void MusicPanel::OnRemoveSong(wxCommandEvent& event)
 	{
 		if (Bot::Get())
 		{
 			auto index = mPlaylistView->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-			if (index != -1)
-				Bot::Get()->GetPlaylist().Lock()->RemoveTrack(index);
+			if (index != -1) Bot::Get()->GetPlaylist().Lock()->RemoveTrack(index);
 		}
 	}
-
 
 	void MusicPanel::OnRenameSong(wxCommandEvent& event)
 	{
@@ -188,9 +150,9 @@ namespace Strawberry::Accoutrement
 			long item = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 			if (item != -1)
 			{
-				auto songID = mSongDatabaseList->GetItemData(item);
-				auto& song = SongDatabase::Get().GetSong(songID);
-				auto strDialog = new wxTextEntryDialog(this, "Choose a new name:");
+				auto  songID    = mSongDatabaseList->GetItemData(item);
+				auto& song      = SongDatabase::Get().GetSong(songID);
+				auto  strDialog = new wxTextEntryDialog(this, "Choose a new name:");
 				strDialog->SetValue(song.GetTitle());
 				if (strDialog->ShowModal() == wxID_OK)
 				{
@@ -217,7 +179,6 @@ namespace Strawberry::Accoutrement
 		}
 	}
 
-
 	void MusicPanel::OnRemoveFromDatabase(wxCommandEvent& event)
 	{
 		wxMessageDialog* mCheckDialog = new wxMessageDialog(this, "Are you Sure?");
@@ -233,5 +194,25 @@ namespace Strawberry::Accoutrement
 				mSongDatabaseList->DeleteItem(index);
 			}
 		}
+	}
+
+	void MusicPanel::Receive(Codec::Audio::Playlist::SongBeganEvent event)
+	{
+		for (int i = 0; i < mPlaylistView->GetItemCount(); i++)
+		{
+			mPlaylistView->SetItemBackgroundColour(i, i == event.index ? wxColor(32, 128, 32, 255) : mPlaylistView->GetBackgroundColour());
+		}
+	}
+
+	void MusicPanel::Receive(Codec::Audio::Playlist::SongAddedEvent event)
+	{
+		Song song = std::any_cast<Song>(event.associatedData);
+		mPlaylistView->InsertItem(event.index, song.GetTitle());
+	}
+
+	void MusicPanel::Receive(Codec::Audio::Playlist::SongRemovedEvent event)
+	{
+		Core::Assert(event.index < mPlaylistView->GetItemCount());
+		mPlaylistView->DeleteItem(event.index);
 	}
 } // namespace Strawberry::Accoutrement

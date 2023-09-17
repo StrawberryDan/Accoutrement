@@ -11,13 +11,14 @@
 #include <Codec/Audio/Playlist.hpp>
 #include <Strawberry/Core/IO/ChannelReceiver.hpp>
 
-
 //======================================================================================================================
 //  Class Declaration
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class NowPlayingPanel : public wxPanel
+	class NowPlayingPanel
+		: public wxPanel
+		, public Codec::Audio::Playlist::EventReceiver
 	{
 		wxDECLARE_EVENT_TABLE();
 
@@ -26,9 +27,12 @@ namespace Strawberry::Accoutrement
 
 
 	protected:
-		void Update(wxUpdateUIEvent& event);
 		void NextSong(wxCommandEvent& event);
 		void PrevSong(wxCommandEvent& event);
+
+
+		virtual void Receive(Codec::Audio::Playlist::SongBeganEvent event) override;
+		virtual void Receive(Codec::Audio::Playlist::PlaybackEndedEvent event) override;
 
 
 	private:
@@ -36,8 +40,5 @@ namespace Strawberry::Accoutrement
 		wxButton*     mPlayPauseButton;
 		wxButton*     mPrevSongButton;
 		wxButton*     mNextSongButton;
-
-
-		Codec::Audio::Playlist::EventReceiver mEventReceiver;
 	};
 } // namespace Strawberry::Accoutrement

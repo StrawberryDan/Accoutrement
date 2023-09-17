@@ -10,10 +10,12 @@
 // Codec
 #include "Codec/Audio/Playlist.hpp"
 
-
 namespace Strawberry::Accoutrement
+
 {
-	class MusicPanel : public wxPanel
+	class MusicPanel
+		: public wxPanel
+		, public Codec::Audio::Playlist::EventReceiver
 	{
 		wxDECLARE_EVENT_TABLE();
 
@@ -23,17 +25,19 @@ namespace Strawberry::Accoutrement
 
 
 	protected:
-		void OnUpdate(wxUpdateUIEvent& event);
 		void OnAddSong(wxCommandEvent& event);
 		void OnEnqueueSong(wxCommandEvent& event);
 		void OnRemoveSong(wxCommandEvent& event);
 		void OnRenameSong(wxCommandEvent& event);
 		void OnRemoveFromDatabase(wxCommandEvent& event);
 
+		virtual void Receive(Codec::Audio::Playlist::SongBeganEvent event) override;
+		virtual void Receive(Codec::Audio::Playlist::SongAddedEvent event) override;
+		virtual void Receive(Codec::Audio::Playlist::SongRemovedEvent event) override;
+
 
 	protected:
-		wxListCtrl*                           mSongDatabaseList;
-		wxListCtrl*                           mPlaylistView;
-		Codec::Audio::Playlist::EventReceiver mEventReceiver;
+		wxListCtrl* mSongDatabaseList;
+		wxListCtrl* mPlaylistView;
 	};
 } // namespace Strawberry::Accoutrement

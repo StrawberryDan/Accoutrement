@@ -44,7 +44,7 @@ namespace Strawberry::Accoutrement
 
 	private:
 		Core::Optional<Discord::Bot>                       mBot;
-		Core::Mutex<Codec::Audio::Playlist>                mPlaylist;
+		Core::Mutex<Codec::Audio::Playlist::Playlist>      mPlaylist;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mMusicChannel;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mSoundChannel;
 		Core::Optional<Core::RepeatingTask>                mAudioSendingThread;

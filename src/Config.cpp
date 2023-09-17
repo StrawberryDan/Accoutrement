@@ -12,28 +12,25 @@
 
 using Strawberry::Core::Assert;
 
-
 namespace Strawberry::Accoutrement
 {
-	constexpr const char* kConfigFile = "config.json";
-	std::unique_ptr<Config> gConfig = nullptr;
-
+	constexpr const char*   kConfigFile = "config.json";
+	std::unique_ptr<Config> gConfig     = nullptr;
 
 	void Config::Initialise()
 	{
 		Assert(gConfig == nullptr);
 
 		if (std::filesystem::exists(kConfigFile)) gConfig = std::make_unique<Config>(Read());
-		else gConfig = std::make_unique<Config>();
+		else
+			gConfig = std::make_unique<Config>();
 	}
-
 
 	Config& Config::Get()
 	{
 		Assert(gConfig != nullptr);
 		return *gConfig;
 	}
-
 
 	Config Config::Read()
 	{
@@ -46,12 +43,11 @@ namespace Strawberry::Accoutrement
 		if (data.contains("token"))
 		{
 			std::string tokenString = data["token"];
-			config.mToken = tokenString.empty() ? Core::NullOpt : Core::Optional(tokenString);
+			config.mToken           = tokenString.empty() ? Core::NullOpt : Core::Optional(tokenString);
 		}
 
 		return config;
 	}
-
 
 	void Config::Dump()
 	{
@@ -64,9 +60,13 @@ namespace Strawberry::Accoutrement
 		file << data.dump(1, '\t', false);
 	}
 
-
 	const Core::Optional<std::string>& Config::GetToken() const
 	{
 		return mToken;
+	}
+
+	void Config::SetToken(std::string token)
+	{
+		mToken = token;
 	}
 } // namespace Strawberry::Accoutrement

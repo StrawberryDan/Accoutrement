@@ -20,6 +20,7 @@ namespace Strawberry::Accoutrement
 
 	public:
 		[[nodiscard]] const Core::Optional<std::string>& GetToken() const;
+		void                                             SetToken(std::string token);
 
 
 	private:

@@ -24,7 +24,11 @@ namespace Strawberry::Accoutrement
 		MainWindow();
 
 
+	protected:
 		void OnVoiceConnect(ConnectToVoice& event);
 		void OnVoiceDisconnect(DisconnectFromVoice& event);
+		void OnSetToken(wxCommandEvent& event);
+
+		static wxMenuBar* CreateMenuBar();
 	};
 } // namespace Strawberry::Accoutrement

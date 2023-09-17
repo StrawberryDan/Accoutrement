@@ -3,35 +3,47 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include "MainWindow.hpp"
 // This Project
+#include "../Config.hpp"
+#include "../Discord/Bot.hpp"
+#include "Events/BotInitialisedEvent.hpp"
 #include "Panels/ChannelSelector.hpp"
 #include "Panels/MusicPanel.hpp"
 #include "Panels/NowPlayingPanel.hpp"
 #include "Panels/SoundControlPanel.hpp"
 #include "Panels/SoundEffectsPanel.hpp"
+// Strawberry Core
+#include "Strawberry/Core/Util/Logging.hpp"
 // wxWidgets
 #include "wx/gbsizer.h"
 #include "wx/menu.h"
+#include "wx/textdlg.h"
 // Format
 #include "fmt/format.h"
-
 
 //======================================================================================================================
 //  Class Definitions
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
+	enum : wxWindowID
+	{
+		SET_TOKEN_MENU_ITEM = wxID_HIGHEST,
+	};
+
 	// clang-format off
 	wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
-	EVT_CONNECT_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
-	EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, MainWindow::OnVoiceDisconnect)
+		EVT_CONNECT_TO_VOICE(wxID_ANY, MainWindow::OnVoiceConnect)
+		EVT_DISCONNECTED_FROM_VOICE(wxID_ANY, MainWindow::OnVoiceDisconnect)
+		EVT_MENU(SET_TOKEN_MENU_ITEM, MainWindow::OnSetToken)
 	wxEND_EVENT_TABLE();
+
 	// clang-format on
 
 
 	MainWindow::MainWindow()
 		: wxFrame(nullptr, wxID_ANY, "Accoutrement")
 	{
-		wxFrame::SetMenuBar(new wxMenuBar());
+		wxFrame::SetMenuBar(CreateMenuBar());
 		wxFrame::CreateToolBar();
 		auto statusBar = wxFrame::CreateStatusBar();
 		statusBar->SetStatusText("Not Connected");
@@ -64,17 +76,40 @@ namespace Strawberry::Accoutrement
 		SetSizerAndFit(sizer);
 	}
 
-
 	void MainWindow::OnVoiceConnect(ConnectToVoice& event)
 	{
 		GetStatusBar()->SetStatusText(fmt::format("Connected to [{}] --> [{}]", event.GetGuild().GetName(), event.GetChannel().GetName()));
 		event.Skip();
 	}
 
-
 	void MainWindow::OnVoiceDisconnect(DisconnectFromVoice& event)
 	{
 		GetStatusBar()->SetStatusText("Not Connected");
 		event.Skip();
+	}
+
+	void MainWindow::OnSetToken(wxCommandEvent& event)
+	{
+		auto dialog = new wxTextEntryDialog(this, "Enter your bot token...");
+		if (dialog->ShowModal())
+		{
+			std::string token(dialog->GetValue());
+			Config::Get().SetToken(token);
+
+			if (Bot::Get()) { Bot::Shutdown(); }
+
+			if (Bot::Initialise()) { Bot::Run(); }
+		}
+	}
+
+	wxMenuBar* MainWindow::CreateMenuBar()
+	{
+		auto menu    = new wxMenuBar();
+
+		auto botMenu = new wxMenu();
+		botMenu->Append(SET_TOKEN_MENU_ITEM, "Set Token");
+		menu->Append(botMenu, "Bot");
+
+		return menu;
 	}
 } // namespace Strawberry::Accoutrement

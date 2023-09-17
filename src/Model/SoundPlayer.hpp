@@ -36,7 +36,7 @@ namespace Strawberry::Accoutrement
 		void Mix();
 
 	private:
-		// A Sound Entry is a sound, how far into the sound we've mixes, and whether it should repeat.
+		// A Sound Entry is a sound, how far into the sound we've mixed, and whether it should repeat.
 		using SoundEntry = std::tuple<Sound, unsigned int, bool>;
 
 		// A map of our currently active sounds

@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "Strawberry/Core/Util/Optional.hpp"
 #include <string>
 
 
@@ -19,10 +19,10 @@ namespace Strawberry::Accoutrement
 
 
 	public:
-		[[nodiscard]] const std::string& GetToken() const;
+		[[nodiscard]] const Core::Optional<std::string>& GetToken() const;
 
 
 	private:
-		std::string mToken;
+		Core::Optional<std::string> mToken;
 	};
 } // namespace Strawberry::Accoutrement

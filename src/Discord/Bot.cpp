@@ -31,16 +31,18 @@ namespace Strawberry::Accoutrement
 
 	void Bot::Stop()
 	{
-		gBot->Strawberry::Discord::Bot::Stop();
-		gRun.wait();
-		gRun = {};
-		gBot.reset();
+		if (gBot)
+		{
+			gBot->Strawberry::Discord::Bot::Stop();
+			gRun.wait();
+			gRun = {};
+			gBot.reset();
+		}
 	}
 
-	Bot& Bot::Get()
+	Core::Optional<Bot*> Bot::Get()
 	{
-		Assert(gBot != nullptr);
-		return *gBot;
+		return gBot ? Core::Optional(gBot.get()) : Core::NullOpt;
 	}
 
 	Core::Optional<Bot*> Bot::TryGet()
@@ -49,7 +51,7 @@ namespace Strawberry::Accoutrement
 	}
 
 	Bot::Bot()
-		: Strawberry::Discord::Bot(Config::Get().GetToken(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
+		: Strawberry::Discord::Bot(Config::Get().GetToken().Value(), Intent::GUILDS | Intent::GUILD_VOICE_STATES)
 		, mPlaylist(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
 		, mSoundPlayer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
 	{

@@ -5,6 +5,8 @@
 #include "Config.hpp"
 #include "Discord/Bot.hpp"
 #include "UI/MainWindow.hpp"
+// Strawberry Core
+#include "Strawberry/Core/Util/Logging.hpp"
 // WxWidgets
 #include "wx/sizer.h"
 #include "wx/wx.h"
@@ -24,8 +26,11 @@ namespace Strawberry::Accoutrement
 		bool OnInit() override
 		{
 			Config::Initialise();
-			Bot::Initialise();
-			Bot::Run();
+			if (Config::Get().GetToken())
+			{
+				Bot::Initialise();
+				Bot::Run();
+			}
 
 			mMainWindow = new MainWindow();
 			SetTopWindow(mMainWindow);
@@ -43,10 +48,10 @@ namespace Strawberry::Accoutrement
 		}
 
 
-		void OnVoiceConnect(ConnectToVoice& event) { Bot::Get().ConnectToVoice(event.GetGuild().GetId(), event.GetChannel().GetId()); }
+		void OnVoiceConnect(ConnectToVoice& event) { if (Bot::Get()) Bot::Get()->ConnectToVoice(event.GetGuild().GetId(), event.GetChannel().GetId()); }
 
 
-		void OnVoiceDisconnect(DisconnectFromVoice& event) { Bot::Get().DisconnectFromVoice(); }
+		void OnVoiceDisconnect(DisconnectFromVoice& event) { if (Bot::Get()) Bot::Get()->DisconnectFromVoice(); }
 
 
 	private:

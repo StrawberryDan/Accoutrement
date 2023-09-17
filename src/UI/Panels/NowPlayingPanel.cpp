@@ -31,7 +31,7 @@ namespace Strawberry::Accoutrement
 
 	NowPlayingPanel::NowPlayingPanel(wxWindow* parent)
 		: wxPanel(parent)
-		, mEventReceiver(Bot::Get().GetPlaylist().Lock()->CreateEventReceiver())
+		, mEventReceiver(Bot::Get() ? Bot::Get()->GetPlaylist().Lock()->CreateEventReceiver() : nullptr)
 	{
 		SetWindowStyle(wxSUNKEN_BORDER);
 
@@ -60,6 +60,8 @@ namespace Strawberry::Accoutrement
 
 	void NowPlayingPanel::Update(wxUpdateUIEvent& event)
 	{
+		if (!mEventReceiver) return;
+
 		while (true)
 		{
 			auto mMessage = mEventReceiver->Read();
@@ -82,12 +84,14 @@ namespace Strawberry::Accoutrement
 
 	void NowPlayingPanel::NextSong(wxCommandEvent& event)
 	{
-		Bot::Get().GetPlaylist().Lock()->GotoNextTrack();
+		if (Bot::Get())
+			Bot::Get()->GetPlaylist().Lock()->GotoNextTrack();
 	}
 
 
 	void NowPlayingPanel::PrevSong(wxCommandEvent& event)
 	{
-		Bot::Get().GetPlaylist().Lock()->GotoPrevTrack();
+		if (Bot::Get())
+			Bot::Get()->GetPlaylist().Lock()->GotoPrevTrack();
 	}
 } // namespace Strawberry::Accoutrement

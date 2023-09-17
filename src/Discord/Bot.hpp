@@ -24,7 +24,7 @@ namespace Strawberry::Accoutrement
 
 		static void Stop();
 
-		static Bot& Get();
+		static Core::Optional<Bot*> Get();
 
 		static Core::Optional<Bot*> TryGet();
 

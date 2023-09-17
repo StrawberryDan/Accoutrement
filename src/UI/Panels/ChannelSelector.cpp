@@ -53,19 +53,24 @@ namespace Strawberry::Accoutrement
 		sizer->AddGrowableCol(3, 1);
 		SetSizerAndFit(sizer);
 
-		Bot::Get().RegisterEventListener(this);
-
-		for (auto snowflake : Bot::Get().FetchGuilds())
+		if (Bot::Get())
 		{
-			auto guild = Bot::Get().FetchGuild(snowflake);
-			wxPanel::QueueEvent(new GuildCreated(*guild));
+			Bot::Get()->RegisterEventListener(this);
+
+			for (auto snowflake: Bot::Get()->FetchGuilds())
+			{
+				auto guild = Bot::Get()->FetchGuild(snowflake);
+				wxPanel::QueueEvent(new GuildCreated(*guild));
+			}
 		}
 	}
 
 
 	bool ChannelSelector::Destroy()
 	{
-		Bot::Get().DeregisterEventListener(this);
+		if (Bot::Get())
+			Bot::Get()->DeregisterEventListener(this);
+
 		return wxWindowBase::Destroy();
 	}
 
@@ -150,14 +155,14 @@ namespace Strawberry::Accoutrement
 	{
 		const bool alreadyConnected = IsConnectedToSelectedChannel();
 
-		if (!alreadyConnected)
+		if (Bot::Get() && !alreadyConnected)
 		{
 			auto selection = GetSelectedChannel();
 			if (!selection) return;
 			auto [guildId, channelId] = selection.Unwrap();
 
 			mConnectButton->Disable();
-			QueueEvent(new ConnectToVoice(*Bot::Get().GetGuild(guildId), *Bot::Get().GetChannel(channelId)));
+			QueueEvent(new ConnectToVoice(*Bot::Get()->GetGuild(guildId), *Bot::Get()->GetChannel(channelId)));
 		}
 	}
 
@@ -180,25 +185,31 @@ namespace Strawberry::Accoutrement
 	{
 		using namespace Strawberry::Discord::Entity;
 
-		wxBusyCursor busyCursor;
-
-		const auto* guild         = Bot::Get().FetchGuild(guildId);
-		wxChoice*   channelChoice = static_cast<wxChoice*>(FindWindowById(CHANNEL));
-		channelChoice->Clear();
-
-
-		std::vector<Channel> channels;
-		for (auto channelId : Bot::Get().FetchChannels(guild->GetId()))
+		if (Bot::Get())
 		{
-			auto* channel = Bot::Get().GetChannel(channelId);
-			if (channel->GetType() == Channel::Type::GUILD_VOICE) { channels.push_back(*channel); }
+			wxBusyCursor busyCursor;
+
+			const auto* guild = Bot::Get()->FetchGuild(guildId);
+			wxChoice* channelChoice = static_cast<wxChoice*>(FindWindowById(CHANNEL));
+			channelChoice->Clear();
+
+
+			std::vector<Channel> channels;
+			for (auto channelId : Bot::Get()->FetchChannels(guild->GetId()))
+			{
+				auto* channel = Bot::Get()->GetChannel(channelId);
+				if (channel->GetType() == Channel::Type::GUILD_VOICE)
+				{ channels.push_back(*channel); }
+			}
+
+
+			std::sort(channels.begin(), channels.end(), [](const auto& a, const auto& b)
+			{ return a.GetPosition() < b.GetPosition(); });
+			for (const auto& channel: channels)
+			{ AddChannel(channel); }
+
+			UpdateConnectButton();
 		}
-
-
-		std::sort(channels.begin(), channels.end(), [](const auto& a, const auto& b) { return a.GetPosition() < b.GetPosition(); });
-		for (const auto& channel : channels) { AddChannel(channel); }
-
-		UpdateConnectButton();
 	}
 
 
@@ -210,11 +221,12 @@ namespace Strawberry::Accoutrement
 
 	void ChannelSelector::UpdateConnectButton()
 	{
+		Core::Assert(Bot::Get().HasValue());
 		if (auto selection = GetSelectedChannel())
 		{
 			auto [guildId, channelId] = selection.Unwrap();
-			auto connectedGuild       = Bot::Get().GetVoiceConnection().Map([](const auto& x) { return x.GetGuild(); });
-			auto connectedChannel     = Bot::Get().GetVoiceConnection().Map([](const auto& x) { return x.GetChannel(); });
+			auto connectedGuild       = Bot::Get()->GetVoiceConnection().Map([](const auto& x) { return x.GetGuild(); });
+			auto connectedChannel     = Bot::Get()->GetVoiceConnection().Map([](const auto& x) { return x.GetChannel(); });
 
 			if (guildId == connectedGuild && channelId == connectedChannel) { mConnectButton->Disable(); }
 			else { mConnectButton->Enable(); }
@@ -224,11 +236,12 @@ namespace Strawberry::Accoutrement
 
 	bool ChannelSelector::IsConnectedToSelectedChannel() const
 	{
+		Core::Assert(Bot::Get().HasValue());
 		if (auto selection = GetSelectedChannel())
 		{
 			auto [guildId, channelId] = selection.Unwrap();
-			auto connectedGuild       = Bot::Get().GetVoiceConnection().Map([](const auto& x) { return x.GetGuild(); });
-			auto connectedChannel     = Bot::Get().GetVoiceConnection().Map([](const auto& x) { return x.GetChannel(); });
+			auto connectedGuild       = Bot::Get()->GetVoiceConnection().Map([](const auto& x) { return x.GetGuild(); });
+			auto connectedChannel     = Bot::Get()->GetVoiceConnection().Map([](const auto& x) { return x.GetChannel(); });
 			return guildId == connectedGuild && channelId == connectedChannel;
 		}
 

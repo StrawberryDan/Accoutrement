@@ -85,26 +85,32 @@ namespace Strawberry::Accoutrement
 
 	void SoundEffectsPanel::OnPlayOnceButton(wxCommandEvent& event)
 	{
-		auto selectedItem = mSoundEffectsList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (selectedItem == -1) return;
+		if (Bot::Get())
+		{
+			auto selectedItem = mSoundEffectsList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+			if (selectedItem == -1) return;
 
-		auto soundID = mSoundEffectsList->GetItemData(selectedItem);
-		auto sound   = SoundDatabase::Get()->GetSound(soundID);
-		Core::Assert(sound.HasValue());
+			auto soundID = mSoundEffectsList->GetItemData(selectedItem);
+			auto sound = SoundDatabase::Get()->GetSound(soundID);
+			Core::Assert(sound.HasValue());
 
-		Bot::Get().GetSoundPlayer().Lock()->PlaySound(**sound, false);
+			Bot::Get()->GetSoundPlayer().Lock()->PlaySound(**sound, false);
+		}
 	}
 
 	void SoundEffectsPanel::OnPlayRepeatButton(wxCommandEvent& event)
 	{
-		auto selectedItem = mSoundEffectsList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (selectedItem == -1) return;
+		if (Bot::Get())
+		{
+			auto selectedItem = mSoundEffectsList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+			if (selectedItem == -1) return;
 
-		auto soundID = mSoundEffectsList->GetItemData(selectedItem);
-		auto sound   = SoundDatabase::Get()->GetSound(soundID);
-		Core::Assert(sound.HasValue());
+			auto soundID = mSoundEffectsList->GetItemData(selectedItem);
+			auto sound = SoundDatabase::Get()->GetSound(soundID);
+			Core::Assert(sound.HasValue());
 
-		Bot::Get().GetSoundPlayer().Lock()->PlaySound(**sound, true);
+			Bot::Get()->GetSoundPlayer().Lock()->PlaySound(**sound, true);
+		}
 	}
 
 	void SoundEffectsPanel::OnAddSoundButton(wxCommandEvent& event)

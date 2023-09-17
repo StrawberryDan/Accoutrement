@@ -57,8 +57,8 @@ add_executable(Accoutrement
 		src/Model/Sound.hpp
 		src/Model/SoundPlayer.cpp
 		src/Model/SoundPlayer.hpp
-		src/UI/Events/BotInitialisedEvent.hpp
 		src/UI/Events/BotStartedRunningEvent.hpp
+		src/UI/Events/BotStoppedRunningEvent.hpp
 )
 
 target_compile_definitions(Accoutrement PRIVATE UNICODE)

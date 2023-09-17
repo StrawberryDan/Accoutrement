@@ -44,7 +44,7 @@ namespace Strawberry::Accoutrement
 		: wxFrame(nullptr, wxID_ANY, "Accoutrement")
 	{
 		wxFrame::SetMenuBar(CreateMenuBar());
-		wxFrame::CreateToolBar();
+
 		auto statusBar       = wxFrame::CreateStatusBar();
 
 		auto sizer           = new wxFlexGridSizer(3, 1, 0, 0);

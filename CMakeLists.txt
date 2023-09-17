@@ -10,6 +10,7 @@ set(wxBUILD_CXX_STANDARD 20)
 set(wxBUILD_SHARED OFF)
 set(wxBUILD_MONOLITHIC ON)
 set(wxUSE_UNICODE ON)
+set(wxUSE_EXCEPTIONS 0)
 FetchContent_Declare(wxWidgets
 	GIT_REPOSITORY "https://github.com/wxWidgets/wxWidgets.git"
 	GIT_TAG "v3.2.2.1")

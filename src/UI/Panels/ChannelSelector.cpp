@@ -37,8 +37,6 @@ namespace Strawberry::Accoutrement
 	ChannelSelector::ChannelSelector(wxWindow* parent)
 		: wxPanel(parent)
 	{
-		SetWindowStyle(wxSUNKEN_BORDER);
-
 		auto sizer = new wxGridBagSizer();
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Server:"), {0, 0}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 		sizer->Add(new wxChoice(this, SERVER), {0, 1}, {1, 1}, wxALL | wxEXPAND, 5);

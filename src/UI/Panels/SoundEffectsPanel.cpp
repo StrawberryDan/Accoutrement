@@ -42,8 +42,6 @@ namespace Strawberry::Accoutrement
 	SoundEffectsPanel::SoundEffectsPanel(wxWindow* parent)
 		: wxPanel(parent)
 	{
-		SetWindowStyle(wxSUNKEN_BORDER);
-
 		auto sizer = new wxGridBagSizer();
 
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Sound Effects"), {0, 0}, {1, 2}, wxALL | wxEXPAND, 5);

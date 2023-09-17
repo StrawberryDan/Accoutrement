@@ -16,8 +16,6 @@ namespace Strawberry::Accoutrement
 	SoundControlPanel::SoundControlPanel(wxWindow* parent)
 		: wxPanel(parent)
 	{
-		SetWindowStyle(wxSUNKEN_BORDER);
-
 		auto sizer = new wxGridBagSizer();
 
 		auto list  = new wxListCtrl(this, wxID_ANY);

@@ -31,8 +31,6 @@ namespace Strawberry::Accoutrement
 	NowPlayingPanel::NowPlayingPanel(wxWindow* parent)
 		: wxPanel(parent)
 	{
-		SetWindowStyle(wxSUNKEN_BORDER);
-
 		auto sizer = new wxGridBagSizer();
 
 		mSongTitle = new wxStaticText(this, wxID_ANY, "No Song Playing");

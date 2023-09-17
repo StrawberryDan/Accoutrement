@@ -45,8 +45,6 @@ namespace Strawberry::Accoutrement
 	MusicPanel::MusicPanel(wxWindow* parent)
 		: wxPanel(parent)
 	{
-		SetWindowStyle(wxSUNKEN_BORDER);
-
 		auto sizer = new wxGridBagSizer();
 
 		sizer->Add(new wxStaticText(this, wxID_ANY, "Available Songs"), {0, 0}, {1, 1}, wxALL | wxALIGN_CENTER, 5);

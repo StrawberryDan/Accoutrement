@@ -26,9 +26,7 @@ namespace Strawberry::Accoutrement
 		bool OnInit() override
 		{
 			Config::Initialise();
-			if (Config::Get().GetToken())
-			{
-				Bot::Initialise();
+			if (Bot::Initialise()) {
 				Bot::Run();
 			}
 
@@ -42,16 +40,20 @@ namespace Strawberry::Accoutrement
 
 		int OnExit() override
 		{
-			Bot::Stop();
+			Bot::Shutdown();
 			Config::Dump();
 			return wxAppBase::OnExit();
 		}
 
+		void OnVoiceConnect(ConnectToVoice& event)
+		{
+			if (Bot::Get()) Bot::Get()->GetBot()->ConnectToVoice(event.GetGuild().GetId(), event.GetChannel().GetId());
+		}
 
-		void OnVoiceConnect(ConnectToVoice& event) { if (Bot::Get()) Bot::Get()->ConnectToVoice(event.GetGuild().GetId(), event.GetChannel().GetId()); }
-
-
-		void OnVoiceDisconnect(DisconnectFromVoice& event) { if (Bot::Get()) Bot::Get()->DisconnectFromVoice(); }
+		void OnVoiceDisconnect(DisconnectFromVoice& event)
+		{
+			if (Bot::Get()) Bot::Get()->GetBot()->DisconnectFromVoice();
+		}
 
 
 	private:

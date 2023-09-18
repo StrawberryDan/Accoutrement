@@ -11,7 +11,7 @@
 // Core
 #include "Strawberry/Core/IO/ChannelBroadcaster.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
-#include "Strawberry/Core/Util/IDGenerator.hpp"
+#include "Strawberry/Core/Util/IDPool.hpp"
 #include "Strawberry/Core/Util/Metronome.hpp"
 // Standard Library
 #include <Strawberry/Core/IO/ChannelReceiver.hpp>
@@ -71,7 +71,7 @@ namespace Strawberry::Accoutrement
 		// Our audio mixer channels
 		std::map<unsigned int, std::shared_ptr<Codec::Audio::Mixer::InputChannel>> mMixerChannels;
 		// The generator for our sound IDs.
-		Core::IDGenerator<unsigned int>                                            mIdGenerator;
+		Core::IDPool<unsigned int>                                                 mIdGenerator;
 		// The metronomes to time the mixing of frames by.
 		std::map<unsigned int, Core::Metronome>                                    mMixingMetronomes;
 		// The thread which does the mixing.

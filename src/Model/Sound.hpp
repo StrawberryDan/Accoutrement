@@ -40,6 +40,9 @@ namespace Strawberry::Accoutrement
 		/// Returns the name of the sound.
 		const std::string& GetName() const { return mName; }
 
+		/// Returns the path to the sound file.
+		const std::filesystem::path& GetPath() const { return mFile; }
+
 		/// Sets the name of the sound
 		void SetName(const std::string& name) { mName = name; }
 

@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 project(Accoutrement)
-set(CMAKE_CXX_STANDARD 23)
 include(FetchContent)
 
 
@@ -63,6 +62,7 @@ add_executable(Accoutrement
 		${wxWidgets_SOURCE_DIR}/include/wx/msw/wx.rc
 )
 
+set_target_properties(Accoutrement PROPERTIES CXX_STANDARD 23)
 target_compile_definitions(Accoutrement PRIVATE UNICODE)
 target_link_libraries(Accoutrement PRIVATE StrawberryCore StrawberryCodec StrawberryDiscord wx::mono)
 # Link iconv on Darwin. wxWidgets wasn't building without this.

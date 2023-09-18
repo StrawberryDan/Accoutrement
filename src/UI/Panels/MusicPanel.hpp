@@ -36,6 +36,7 @@ namespace Strawberry::Accoutrement
 		void OnRemoveSong(wxCommandEvent& event);
 		void OnRenameSong(wxCommandEvent& event);
 		void OnRemoveFromDatabase(wxCommandEvent& event);
+		void OnToggleRepeatSong(wxCommandEvent& event);
 
 		void Receive(Codec::Audio::Playlist::SongBeganEvent event) override;
 		void Receive(Codec::Audio::Playlist::SongAddedEvent event) override;

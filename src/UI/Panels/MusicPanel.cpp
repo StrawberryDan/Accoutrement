@@ -28,6 +28,8 @@ namespace Strawberry::Accoutrement
 
 		EnqueueSongToPlaylistButton,
 		RemoveSongFromPlaylistButton,
+
+		ToggleRepeatSongButton,
 	};
 
 	// clang-format off
@@ -37,6 +39,7 @@ namespace Strawberry::Accoutrement
 					EVT_BUTTON(Component::RemoveSongFromDatabaseButton, MusicPanel::OnRemoveFromDatabase)
 					EVT_BUTTON(Component::RemoveSongFromPlaylistButton, MusicPanel::OnRemoveSong)
 					EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
+					EVT_BUTTON(Component::ToggleRepeatSongButton, MusicPanel::OnToggleRepeatSong)
 	wxEND_EVENT_TABLE();
 
 	// clang-format on
@@ -77,7 +80,7 @@ namespace Strawberry::Accoutrement
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Up"), {0, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Move Down"), {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Shuffle"), {0, 2}, {1, 1}, wxEXPAND | wxALL, 5);
-		playlistButtons->Add(new wxButton(this, wxID_ANY, "Repeat"), {1, 2}, {1, 1}, wxEXPAND | wxALL, 5);
+		playlistButtons->Add(new wxButton(this, ToggleRepeatSongButton, "Repeat"), {1, 2}, {1, 1}, wxEXPAND | wxALL, 5);
 		sizer->Add(playlistButtons, {2, 1}, {2, 1}, wxALIGN_CENTER, 5);
 
 		sizer->AddGrowableRow(1, 1);
@@ -111,6 +114,7 @@ namespace Strawberry::Accoutrement
 				mSongDatabaseList->SetItemPtrData(index, songIndex);
 			}
 		}
+		Refresh();
 	}
 
 	void MusicPanel::OnEnqueueSong(wxCommandEvent& event)
@@ -130,6 +134,7 @@ namespace Strawberry::Accoutrement
 			auto song         = SongDatabase::Get().GetSong(selectedSongIndex);
 			playlist->EnqueueFile(song.GetPath(), song).Unwrap();
 		}
+		Refresh();
 	}
 
 	void MusicPanel::OnRemoveSong(wxCommandEvent& event)
@@ -139,6 +144,7 @@ namespace Strawberry::Accoutrement
 			auto index = mPlaylistView->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 			if (index != -1) Bot::Get()->GetPlaylist().Lock()->RemoveTrack(index);
 		}
+		Refresh();
 	}
 
 	void MusicPanel::OnRenameSong(wxCommandEvent& event)
@@ -175,6 +181,7 @@ namespace Strawberry::Accoutrement
 				}
 			}
 		}
+		Refresh();
 	}
 
 	void MusicPanel::OnRemoveFromDatabase(wxCommandEvent& event)
@@ -192,6 +199,18 @@ namespace Strawberry::Accoutrement
 				mSongDatabaseList->DeleteItem(index);
 			}
 		}
+		Refresh();
+	}
+
+	void MusicPanel::OnToggleRepeatSong(wxCommandEvent& event)
+	{
+		auto selected = mPlaylistView->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (selected == -1) return;
+
+		auto playlist  = Bot::Get()->GetPlaylist().Lock();
+		bool repeating = playlist->GetTrackRepeating(selected);
+		playlist->SetTrackRepeating(selected, !repeating);
+		Refresh();
 	}
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::SongBeganEvent event)
@@ -200,18 +219,21 @@ namespace Strawberry::Accoutrement
 		{
 			mPlaylistView->SetItemBackgroundColour(i, i == event.index ? wxColor(32, 128, 32, 255) : mPlaylistView->GetBackgroundColour());
 		}
+		Refresh();
 	}
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::SongAddedEvent event)
 	{
 		Song song = std::any_cast<Song>(event.associatedData);
 		mPlaylistView->InsertItem(event.index, song.GetTitle());
+		Refresh();
 	}
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::SongRemovedEvent event)
 	{
 		Core::Assert(event.index < mPlaylistView->GetItemCount());
 		mPlaylistView->DeleteItem(event.index);
+		Refresh();
 	}
 
 	void MusicPanel::Receive(BotStartedRunningEvent value)

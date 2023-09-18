@@ -26,11 +26,14 @@ namespace Strawberry::Accoutrement
 	namespace SoundPlayerEvent
 	{
 		struct SoundStarted {
-			unsigned int songID;
+			unsigned int soundID;
+			const Sound* sound;
+			bool         repeating;
 		};
 
 		struct SoundEnded {
 			unsigned int songID;
+			const Sound* sound;
 		};
 
 		struct SoundRepeat {

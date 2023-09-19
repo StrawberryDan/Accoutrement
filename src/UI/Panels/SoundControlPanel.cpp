@@ -56,7 +56,7 @@ namespace Strawberry::Accoutrement
 		Bot::Get()->GetSoundPlayer().Lock()->Unregister(this);
 	}
 
-	void SoundControlPanel::Receive(SoundPlayerEvent::SoundStarted value)
+	void SoundControlPanel::Receive(SoundPlayer::SoundStartedEvent value)
 	{
 		auto itemID = mList->InsertItem(mList->GetItemCount(), value.sound->GetName());
 		mList->SetItemPtrData(itemID, value.soundID);
@@ -65,7 +65,7 @@ namespace Strawberry::Accoutrement
 		mList->SetItemBackgroundColour(itemID, value.repeating ? *wxGREEN : mList->GetBackgroundColour());
 	}
 
-	void SoundControlPanel::Receive(SoundPlayerEvent::SoundEnded value)
+	void SoundControlPanel::Receive(SoundPlayer::SoundEndedEvent value)
 	{
 		for (int i = 0; i < mList->GetItemCount(); i++)
 		{
@@ -73,7 +73,7 @@ namespace Strawberry::Accoutrement
 		}
 	}
 
-	void SoundControlPanel::Receive(SoundPlayerEvent::SoundRepeat value)
+	void SoundControlPanel::Receive(SoundPlayer::SoundRepeatEvent value)
 	{
 		for (int i = 0; i < mList->GetItemCount(); i++)
 		{

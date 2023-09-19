@@ -8,7 +8,7 @@
 //======================================================================================================================
 //  Class Definitions
 //----------------------------------------------------------------------------------------------------------------------
-namespace Strawberry::Accoutrement
+namespace Strawberry::Accoutrement::SoundPlayer
 {
 	SoundPlayer::SoundPlayer(Codec::Audio::FrameFormat format, unsigned int size)
 		: mAudioMixer(format, size)
@@ -25,7 +25,7 @@ namespace Strawberry::Accoutrement
 	{
 		auto id = mIdGenerator.Generate();
 		mCurrentSounds.emplace(id, std::make_tuple(std::move(sound), 0, repeat));
-		Broadcast(SoundPlayerEvent::SoundStarted{.soundID = id, .sound = &std::get<0>(mCurrentSounds.at(id)), .repeating = repeat});
+		Broadcast(SoundStartedEvent{.soundID = id, .sound = &std::get<0>(mCurrentSounds.at(id)), .repeating = repeat});
 		return id;
 	}
 
@@ -39,13 +39,13 @@ namespace Strawberry::Accoutrement
 	{
 		auto& [song, position, repeating] = mCurrentSounds.at(id);
 		repeating                         = repeat;
-		Broadcast(SoundPlayerEvent::SoundRepeat{.songID = id, .repeating = repeat});
+		Broadcast(SoundRepeatEvent{.songID = id, .repeating = repeat});
 	}
 
 	void SoundPlayer::RemoveSound(unsigned int id)
 	{
 		const auto& [sound, progress, repeating] = mCurrentSounds.at(id);
-		Broadcast(SoundPlayerEvent::SoundEnded{.songID = id, .sound = &sound});
+		Broadcast(SoundEndedEvent{.songID = id, .sound = &sound});
 		mCurrentSounds.erase(id);
 		mMixerChannels.erase(id);
 		mMixingMetronomes.erase(id);
@@ -98,4 +98,4 @@ namespace Strawberry::Accoutrement
 
 		std::this_thread::yield();
 	}
-} // namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement::SoundPlayer

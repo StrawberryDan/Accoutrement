@@ -21,28 +21,25 @@
 //======================================================================================================================
 //  Class Declaration
 //----------------------------------------------------------------------------------------------------------------------
-namespace Strawberry::Accoutrement
+namespace Strawberry::Accoutrement::SoundPlayer
 {
-	namespace SoundPlayerEvent
-	{
-		struct SoundStarted {
-			unsigned int soundID;
-			const Sound* sound;
-			bool         repeating;
-		};
+	struct SoundStartedEvent {
+		unsigned int soundID;
+		const Sound* sound;
+		bool         repeating;
+	};
 
-		struct SoundEnded {
-			unsigned int songID;
-			const Sound* sound;
-		};
+	struct SoundEndedEvent {
+		unsigned int songID;
+		const Sound* sound;
+	};
 
-		struct SoundRepeat {
-			unsigned int songID;
-			bool         repeating;
-		};
-	} // namespace SoundPlayerEvent
+	struct SoundRepeatEvent {
+		unsigned int songID;
+		bool         repeating;
+	};
 
-	class SoundPlayer : public Core::IO::ChannelBroadcaster<SoundPlayerEvent::SoundStarted, SoundPlayerEvent::SoundEnded, SoundPlayerEvent::SoundRepeat>
+	class SoundPlayer : public Core::IO::ChannelBroadcaster<SoundStartedEvent, SoundEndedEvent, SoundRepeatEvent>
 	{
 	public:
 		SoundPlayer(Codec::Audio::FrameFormat format, unsigned int size);
@@ -77,4 +74,4 @@ namespace Strawberry::Accoutrement
 		// The thread which does the mixing.
 		Core::RepeatingTask                                                        mMixingThread;
 	};
-} // namespace Strawberry::Accoutrement
+} // namespace Strawberry::Accoutrement::SoundPlayer

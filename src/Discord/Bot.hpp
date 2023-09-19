@@ -48,6 +48,6 @@ namespace Strawberry::Accoutrement
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mMusicChannel;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mSoundChannel;
 		Core::Optional<Core::RepeatingTask>                mAudioSendingThread;
-		Core::Mutex<SoundPlayer>                           mSoundPlayer;
+		Core::Mutex<SoundPlayer::SoundPlayer>              mSoundPlayer;
 	};
 } // namespace Strawberry::Accoutrement

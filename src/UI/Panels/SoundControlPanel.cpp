@@ -28,7 +28,13 @@ namespace Strawberry::Accoutrement
 	{
 		auto sizer = new wxGridBagSizer();
 
+		wxImage playingIcon("data/repeat.png");
+		playingIcon.Rescale(15, 15);
+		auto* imageList = new wxImageList(15, 15);
+		imageList->Add(playingIcon);
+
 		mList      = new wxListCtrl(this, wxID_ANY);
+		mList->AssignImageList(imageList, wxIMAGE_LIST_SMALL);
 		mList->SetWindowStyleFlag(wxLC_LIST);
 		sizer->Add(mList, {0, 0}, {2, 1}, wxALL | wxEXPAND, 5);
 
@@ -60,9 +66,7 @@ namespace Strawberry::Accoutrement
 	{
 		auto itemID = mList->InsertItem(mList->GetItemCount(), value.sound->GetName());
 		mList->SetItemPtrData(itemID, value.soundID);
-
-		mList->SetItemTextColour(itemID, value.repeating ? *wxBLACK : mList->GetTextColour());
-		mList->SetItemBackgroundColour(itemID, value.repeating ? *wxGREEN : mList->GetBackgroundColour());
+		mList->SetItemImage(itemID, value.repeating ? 0 : -1);
 	}
 
 	void SoundControlPanel::Receive(SoundPlayer::SoundEndedEvent value)
@@ -76,10 +80,8 @@ namespace Strawberry::Accoutrement
 	void SoundControlPanel::Receive(SoundPlayer::SoundRepeatEvent value)
 	{
 		for (int i = 0; i < mList->GetItemCount(); i++)
-		{
-			if (value.songID == mList->GetItemData(i)) { mList->SetItemTextColour(i, value.repeating ? *wxBLACK : mList->GetTextColour()); }
-			if (value.songID == mList->GetItemData(i)) { mList->SetItemBackgroundColour(i, value.repeating ? *wxGREEN : mList->GetBackgroundColour()); }
-		}
+		{ mList->SetItemImage(i, value.songID == mList->GetItemData(i) && value.repeating ? 0 : -1); }
+		Layout();
 	}
 
 	void SoundControlPanel::OnRemoveSound(wxCommandEvent& event)
@@ -98,6 +100,7 @@ namespace Strawberry::Accoutrement
 		if (selected == -1) return;
 
 		auto soundID = mList->GetItemData(selected);
-		Bot::Get()->GetSoundPlayer().Lock()->SetRepeat(soundID, !Bot::Get()->GetSoundPlayer().Lock()->GetRepeat(soundID));
+		auto soundPlayer = Bot::Get()->GetSoundPlayer().Lock();
+		soundPlayer->SetRepeat(soundID, !soundPlayer->GetRepeat(soundID));
 	}
 } // namespace Strawberry::Accoutrement

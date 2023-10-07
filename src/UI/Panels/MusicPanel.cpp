@@ -72,9 +72,12 @@ namespace Strawberry::Accoutrement
 
 		mPlaylistView = new wxListCtrl(this, wxID_ANY);
 		mPlaylistView->AssignImageList(imageList, wxIMAGE_LIST_SMALL);
-		mPlaylistView->SetWindowStyleFlag(wxLC_REPORT);
-		mPlaylistView->InsertColumn(0, "Name");
-		mPlaylistView->InsertColumn(1, "Repeating");
+		mPlaylistView->SetWindowStyleFlag(wxLC_REPORT | wxLC_NO_HEADER);
+		mPlaylistView->InsertColumn(0, "");
+		mPlaylistView->InsertColumn(1, "");
+		mPlaylistView->InsertColumn(2, "");
+		mPlaylistView->SetColumnWidth(0, wxLIST_AUTOSIZE);
+		mPlaylistView->SetColumnWidth(1, wxLIST_AUTOSIZE);
 		sizer->Add(mPlaylistView, {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 
 		sizer->Add(new wxTextCtrl(this, wxID_ANY), {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
@@ -222,19 +225,30 @@ namespace Strawberry::Accoutrement
 		const bool repeating = !playlist->GetTrackRepeating(selected);
 		playlist->SetTrackRepeating(selected, repeating);
 
-		mPlaylistView->SetItemColumnImage(selected, 1, repeating ? 1 : -1);
+		mPlaylistView->SetItemColumnImage(selected, 2, repeating ? 1 : -1);
 	}
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::SongBeganEvent event)
 	{
-		for (int i = 0; i < mPlaylistView->GetItemCount(); i++) { mPlaylistView->SetItemImage(i, i == event.index ? 0 : -1); }
+		for (int i = 0; i < mPlaylistView->GetItemCount(); i++) { mPlaylistView->SetItemColumnImage(i, 0, i == event.index ? 0 : -1); }
+
+		mPlaylistView->SetColumnWidth(0, wxLIST_AUTOSIZE);
+		mPlaylistView->SetColumnWidth(1, wxLIST_AUTOSIZE);
 		Refresh();
 	}
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::SongAddedEvent event)
 	{
 		Song song = std::any_cast<Song>(event.associatedData);
-		mPlaylistView->InsertItem(event.index, song.GetTitle());
+
+		wxListItem item;
+		item.SetId(event.index);
+		item.SetColumn(1);
+		item.SetText(song.GetTitle());
+		mPlaylistView->InsertItem(item);
+
+		mPlaylistView->SetColumnWidth(0, wxLIST_AUTOSIZE);
+		mPlaylistView->SetColumnWidth(1, wxLIST_AUTOSIZE);
 		Refresh();
 	}
 
@@ -242,6 +256,9 @@ namespace Strawberry::Accoutrement
 	{
 		Core::Assert(event.index < mPlaylistView->GetItemCount());
 		mPlaylistView->DeleteItem(event.index);
+
+		mPlaylistView->SetColumnWidth(0, wxLIST_AUTOSIZE);
+		mPlaylistView->SetColumnWidth(1, wxLIST_AUTOSIZE);
 		Refresh();
 	}
 

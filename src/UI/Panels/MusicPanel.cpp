@@ -62,8 +62,16 @@ namespace Strawberry::Accoutrement
 		}
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
 
+		wxImage playingIcon("data/playing.png");
+		playingIcon     = playingIcon.Rescale(10, 10);
+		auto* imageList = new wxImageList(10, 10);
+		imageList->Add(playingIcon);
+
 		mPlaylistView = new wxListCtrl(this, wxID_ANY);
-		mPlaylistView->SetWindowStyleFlag(wxLC_LIST);
+		mPlaylistView->AssignImageList(imageList, wxIMAGE_LIST_SMALL);
+		mPlaylistView->SetWindowStyleFlag(wxLC_REPORT);
+		mPlaylistView->InsertColumn(0, "Name");
+		mPlaylistView->InsertColumn(1, "Repeating");
 		sizer->Add(mPlaylistView, {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 
 		sizer->Add(new wxTextCtrl(this, wxID_ANY), {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
@@ -210,15 +218,14 @@ namespace Strawberry::Accoutrement
 		auto playlist  = Bot::Get()->GetPlaylist().Lock();
 		bool repeating = playlist->GetTrackRepeating(selected);
 		playlist->SetTrackRepeating(selected, !repeating);
-		Refresh();
+
+		mPlaylistView->SetItem(selected, 1, repeating ? "Repeating" : "");
 	}
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::SongBeganEvent event)
 	{
 		for (int i = 0; i < mPlaylistView->GetItemCount(); i++)
-		{
-			mPlaylistView->SetItemBackgroundColour(i, i == event.index ? wxColor(32, 128, 32, 255) : mPlaylistView->GetBackgroundColour());
-		}
+		{ mPlaylistView->SetItemImage(i, i == event.index ? 0 : -1); }
 		Refresh();
 	}
 

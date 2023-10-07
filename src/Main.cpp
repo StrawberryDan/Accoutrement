@@ -27,6 +27,7 @@ namespace Strawberry::Accoutrement
 				Bot::Run();
 			}
 
+			wxInitAllImageHandlers();
 			mMainWindow = new MainWindow();
 			SetTopWindow(mMainWindow);
 			mMainWindow->Show();

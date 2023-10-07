@@ -63,9 +63,12 @@ namespace Strawberry::Accoutrement
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
 
 		wxImage playingIcon("data/playing.png");
-		playingIcon     = playingIcon.Rescale(10, 10);
+		playingIcon = playingIcon.Rescale(10, 10);
+		wxImage repeatIcon("data/repeat.png");
+		repeatIcon      = repeatIcon.Rescale(10, 10);
 		auto* imageList = new wxImageList(10, 10);
 		imageList->Add(playingIcon);
+		imageList->Add(repeatIcon);
 
 		mPlaylistView = new wxListCtrl(this, wxID_ANY);
 		mPlaylistView->AssignImageList(imageList, wxIMAGE_LIST_SMALL);
@@ -215,17 +218,16 @@ namespace Strawberry::Accoutrement
 		auto selected = mPlaylistView->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 		if (selected == -1) return;
 
-		auto playlist  = Bot::Get()->GetPlaylist().Lock();
-		bool repeating = playlist->GetTrackRepeating(selected);
-		playlist->SetTrackRepeating(selected, !repeating);
+		auto       playlist  = Bot::Get()->GetPlaylist().Lock();
+		const bool repeating = !playlist->GetTrackRepeating(selected);
+		playlist->SetTrackRepeating(selected, repeating);
 
-		mPlaylistView->SetItem(selected, 1, repeating ? "Repeating" : "");
+		mPlaylistView->SetItemColumnImage(selected, 1, repeating ? 1 : -1);
 	}
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::SongBeganEvent event)
 	{
-		for (int i = 0; i < mPlaylistView->GetItemCount(); i++)
-		{ mPlaylistView->SetItemImage(i, i == event.index ? 0 : -1); }
+		for (int i = 0; i < mPlaylistView->GetItemCount(); i++) { mPlaylistView->SetItemImage(i, i == event.index ? 0 : -1); }
 		Refresh();
 	}
 
@@ -250,7 +252,7 @@ namespace Strawberry::Accoutrement
 
 	void MusicPanel::Receive(BotStoppedRunningEvent value)
 	{
-		Bot::Get()->GetPlaylist().Lock()->Unregister(this);
+		if (Bot::Get()) { Bot::Get()->GetPlaylist().Lock()->Unregister(this); }
 	}
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::PlaybackEndedEvent value) {}

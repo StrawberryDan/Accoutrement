@@ -19,6 +19,8 @@ FetchContent_Declare(wxWidgets
 	GIT_TAG "v3.2.2.1")
 FetchContent_MakeAvailable(wxWidgets)
 FetchContent_GetProperties(wxWidgets_SOURCE_DIR SOURCE_DIR)
+# Exclude wxrc from building all since it will not link anyways
+set_target_properties(wxrc PROPERTIES EXCLUDE_FROM_ALL 1)
 
 # MODULES
 add_subdirectory(../Core ${CMAKE_CURRENT_BINARY_DIR}/Core)

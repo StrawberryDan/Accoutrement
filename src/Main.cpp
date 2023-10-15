@@ -6,7 +6,7 @@
 #include "Discord/Bot.hpp"
 #include "UI/MainWindow.hpp"
 // Strawberry Core
-#include "Strawberry/Core/Util/Logging.hpp"
+#include "Strawberry/Core/IO/Logging.hpp"
 // WxWidgets
 #include "wx/sizer.h"
 #include "wx/wx.h"

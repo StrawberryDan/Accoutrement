@@ -12,7 +12,7 @@
 #include "Panels/SoundControlPanel.hpp"
 #include "Panels/SoundEffectsPanel.hpp"
 // Strawberry Core
-#include "Strawberry/Core/Util/Logging.hpp"
+#include "Strawberry/Core/IO/Logging.hpp"
 // wxWidgets
 #include "wx/gbsizer.h"
 #include "wx/menu.h"

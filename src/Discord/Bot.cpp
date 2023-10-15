@@ -5,8 +5,8 @@
 
 
 #include "../Config.hpp"
-#include "Strawberry/Core/Util/Assert.hpp"
-#include "Strawberry/Core/Util/Metronome.hpp"
+#include "Strawberry/Core/Assert.hpp"
+#include "Strawberry/Core/Timing/Metronome.hpp"
 #include <thread>
 
 

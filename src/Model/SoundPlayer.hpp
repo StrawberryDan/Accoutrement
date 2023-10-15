@@ -12,7 +12,7 @@
 #include "Strawberry/Core/IO/ChannelBroadcaster.hpp"
 #include "Strawberry/Core/Thread/RepeatingTask.hpp"
 #include "Strawberry/Core/Util/IDPool.hpp"
-#include "Strawberry/Core/Util/Metronome.hpp"
+#include "Strawberry/Core/Timing/Metronome.hpp"
 // Standard Library
 #include <Strawberry/Core/IO/ChannelReceiver.hpp>
 #include <map>

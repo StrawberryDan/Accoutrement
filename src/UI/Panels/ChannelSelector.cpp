@@ -5,7 +5,7 @@
 // This Project
 #include "../../Discord/Bot.hpp"
 // Core
-#include "Strawberry/Core/Util/Assert.hpp"
+#include "Strawberry/Core/Assert.hpp"
 // Codec
 #include "Codec/MediaFile.hpp"
 // Wx Widgets

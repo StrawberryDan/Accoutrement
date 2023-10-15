@@ -6,7 +6,7 @@
 // Codec
 #include "Codec/Audio/Frame.hpp"
 // Core
-#include "Strawberry/Core/Util/Optional.hpp"
+#include "Strawberry/Core/Types/Optional.hpp"
 // JSON
 #include "nlohmann/json.hpp"
 // Standard Library

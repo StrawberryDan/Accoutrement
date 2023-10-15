@@ -7,7 +7,7 @@
 // JSON
 #include "nlohmann/json.hpp"
 // Core
-#include "Strawberry/Core/Util/Optional.hpp"
+#include "Strawberry/Core/Types/Optional.hpp"
 // Standard Library
 #include <cstdint>
 #include <filesystem>

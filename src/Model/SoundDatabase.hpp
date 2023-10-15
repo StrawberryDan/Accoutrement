@@ -7,7 +7,7 @@
 #include "Sound.hpp"
 // Core
 #include "Strawberry/Core/Sync/Mutex.hpp"
-#include "Strawberry/Core/Util/Optional.hpp"
+#include "Strawberry/Core/Types/Optional.hpp"
 // Standard Library
 #include <cstddef>
 #include <map>

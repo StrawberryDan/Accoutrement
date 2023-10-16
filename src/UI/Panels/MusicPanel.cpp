@@ -241,11 +241,9 @@ namespace Strawberry::Accoutrement
 	{
 		Song song = std::any_cast<Song>(event.associatedData);
 
-		wxListItem item;
-		item.SetId(event.index);
-		item.SetColumn(1);
-		item.SetText(song.GetTitle());
-		mPlaylistView->InsertItem(item);
+		mPlaylistView->InsertItem(mPlaylistView->GetItemCount(), "");\
+		mPlaylistView->SetItemColumnImage(mPlaylistView->GetItemCount() - 1, 0, -1);
+		mPlaylistView->SetItem(mPlaylistView->GetItemCount() - 1, 1, song.GetTitle());
 
 		mPlaylistView->SetColumnWidth(0, wxLIST_AUTOSIZE);
 		mPlaylistView->SetColumnWidth(1, wxLIST_AUTOSIZE);

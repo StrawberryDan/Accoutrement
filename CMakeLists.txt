@@ -3,10 +3,6 @@ project(Accoutrement)
 include(FetchContent)
 
 
-add_compile_options("-fsanitize=address")
-add_link_options("-fsanitize=address")
-
-
 # Get wxWidgets
 message(STATUS "Configuring wxWidgets")
 set(wxBUILD_CXX_STANDARD 20)

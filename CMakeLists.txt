@@ -3,6 +3,15 @@ project(Accoutrement)
 include(FetchContent)
 
 
+if (PROJECT_IS_TOP_LEVEL)
+	FetchContent_Declare(StrawberryConfig
+			GIT_REPOSITORY "https://github.com/StrawberryDan/Config.git"
+			GIT_TAG "main")
+	FetchContent_MakeAvailable(StrawberryConfig)
+	include(StrawberryConfig)
+endif()
+
+
 # Get wxWidgets
 message(STATUS "Configuring wxWidgets")
 set(wxBUILD_CXX_STANDARD 20)

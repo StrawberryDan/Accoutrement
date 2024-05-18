@@ -118,7 +118,8 @@ namespace Strawberry::Accoutrement
 			fileDialog.GetPaths(paths);
 			for (const auto& path : paths)
 			{
-				auto fullPath = std::string(path);
+				std::filesystem::path fullPath(path.ToUTF8().data());
+
 				auto song     = Song::FromFile(fullPath);
 				if (!song) return;
 

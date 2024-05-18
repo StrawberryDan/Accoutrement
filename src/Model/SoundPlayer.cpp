@@ -23,7 +23,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 	unsigned int SoundPlayer::PlaySound(Sound sound, bool repeat)
 	{
-		auto id = mIdGenerator.Generate();
+		auto id = mIdGenerator.Allocate();
 		mCurrentSounds.emplace(id, std::make_tuple(std::move(sound), 0, repeat));
 		Broadcast(SoundStartedEvent{.soundID = id, .sound = &std::get<0>(mCurrentSounds.at(id)), .repeating = repeat});
 		return id;

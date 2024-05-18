@@ -12,13 +12,12 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	static Core::Mutex<Core::Optional<Core::Mutex<SoundDatabase>>> sInstance;
+	static Core::Mutex<SoundDatabase> sInstance;
 
 	Core::MutexGuard<SoundDatabase> SoundDatabase::Get()
 	{
 		auto lock = sInstance.Lock();
-		if (!lock->HasValue()) { (*lock) = Core::Mutex(SoundDatabase()); }
-		return lock->Value().Lock();
+		return lock;
 	}
 
 	SoundDatabase::~SoundDatabase()

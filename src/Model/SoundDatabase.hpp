@@ -20,6 +20,9 @@ namespace Strawberry::Accoutrement
 	class SoundDatabase
 	{
 	public:
+		friend class Core::Mutex<SoundDatabase>;
+
+
 		static Core::MutexGuard<SoundDatabase> Get();
 
 	public:
@@ -37,7 +40,7 @@ namespace Strawberry::Accoutrement
 		/// Returns the number of sounds in the database.
 		size_t                           Count() const;
 
-	private:
+	public:
 		/// Loads database from file
 		SoundDatabase();
 

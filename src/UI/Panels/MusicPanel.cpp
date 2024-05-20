@@ -209,12 +209,20 @@ namespace Strawberry::Accoutrement
 		auto result = mCheckDialog->ShowModal();
 		if (result == wxID_OK)
 		{
+			std::set<size_t> toRemove;
+
 			auto index = mSongDatabaseList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-			if (index != -1)
+			while (index != -1)
 			{
-				SongDatabase::Get().RemoveSong(index);
-				mSongDatabaseList->DeleteItem(index);
-				mSearchTreeNavigator.RemoveSong(index);
+				toRemove.emplace(index);
+				index = mSongDatabaseList->GetNextItem(index, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+			}
+
+			for (auto x : std::ranges::reverse_view(toRemove))
+			{
+				SongDatabase::Get().RemoveSong(x);
+				mSongDatabaseList->DeleteItem(x);
+				mSearchTreeNavigator.RemoveSong(x);
 				mSearchTreeNavigator.Update();
 			}
 		}

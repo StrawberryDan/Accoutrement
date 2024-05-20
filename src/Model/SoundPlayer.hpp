@@ -58,6 +58,8 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	protected:
 		void Mix();
 
+		Codec::Audio::Frame AdjustVolume(Codec::Audio::Frame input);
+
 	private:
 		// A Sound Entry is a sound, how far into the sound we've mixed, and whether it should repeat.
 		using SoundEntry = std::tuple<size_t, unsigned int, bool>;
@@ -74,5 +76,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		std::map<unsigned int, Core::Metronome>                                    mMixingMetronomes;
 		// The thread which does the mixing.
 		Core::RepeatingTask                                                        mMixingThread;
+
+		float                                                                      mVolume = 1.0f;
 	};
 } // namespace Strawberry::Accoutrement::SoundPlayer

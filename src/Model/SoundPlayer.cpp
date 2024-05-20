@@ -18,7 +18,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 	Core::Optional<Codec::Audio::Frame> SoundPlayer::ReceiveAudio()
 	{
-		if (!mAudioMixer.IsEmpty()) { return mAudioMixer.ReadFrame(); }
+		if (!mAudioMixer.IsEmpty()) { return AdjustVolume(mAudioMixer.ReadFrame()); }
 		else { return Core::NullOpt; }
 	}
 
@@ -116,5 +116,12 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		for (auto id : soundsToRemove) { RemoveSound(id); }
 
 		std::this_thread::yield();
+	}
+
+
+	Codec::Audio::Frame SoundPlayer::AdjustVolume(Codec::Audio::Frame input)
+	{
+		input.Multiply(mVolume);
+		return input;
 	}
 } // namespace Strawberry::Accoutrement::SoundPlayer

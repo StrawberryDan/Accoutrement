@@ -62,7 +62,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		using SoundEntry = std::tuple<Sound, unsigned int, bool>;
 
 		// A map of our currently active sounds
-		std::map<unsigned int, SoundEntry>                                         mCurrentSounds;
+		Core::Mutex<std::map<unsigned int, SoundEntry>>                            mCurrentSounds;
 		// Our audio mixer.
 		Codec::Audio::Mixer                                                        mAudioMixer;
 		// Our audio mixer channels

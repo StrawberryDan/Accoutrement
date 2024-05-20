@@ -23,30 +23,38 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 	unsigned int SoundPlayer::PlaySound(Sound sound, bool repeat)
 	{
+		auto currentSounds = mCurrentSounds.Lock();
+
 		auto id = mIdGenerator.Allocate();
-		mCurrentSounds.emplace(id, std::make_tuple(std::move(sound), 0, repeat));
-		Broadcast(SoundStartedEvent{.soundID = id, .sound = &std::get<0>(mCurrentSounds.at(id)), .repeating = repeat});
+		currentSounds->emplace(id, std::make_tuple(std::move(sound), 0, repeat));
+		Broadcast(SoundStartedEvent{.soundID = id, .sound = &std::get<0>(currentSounds->at(id)), .repeating = repeat});
 		return id;
 	}
 
 	bool SoundPlayer::GetRepeat(unsigned int id) const
 	{
-		const auto& [song, position, repeating] = mCurrentSounds.at(id);
+		auto currentSounds = mCurrentSounds.Lock();
+
+		const auto& [song, position, repeating] = currentSounds->at(id);
 		return repeating;
 	}
 
 	void SoundPlayer::SetRepeat(unsigned int id, bool repeat)
 	{
-		auto& [song, position, repeating] = mCurrentSounds.at(id);
+		auto currentSounds = mCurrentSounds.Lock();
+
+		auto& [song, position, repeating] = currentSounds->at(id);
 		repeating                         = repeat;
 		Broadcast(SoundRepeatEvent{.songID = id, .repeating = repeat});
 	}
 
 	void SoundPlayer::RemoveSound(unsigned int id)
 	{
-		const auto& [sound, progress, repeating] = mCurrentSounds.at(id);
+		auto currentSounds = mCurrentSounds.Lock();
+
+		const auto& [sound, progress, repeating] = currentSounds->at(id);
 		Broadcast(SoundEndedEvent{.songID = id, .sound = &sound});
-		mCurrentSounds.erase(id);
+		currentSounds->erase(id);
 		mMixerChannels.erase(id);
 		mMixingMetronomes.erase(id);
 		mIdGenerator.Free(id);
@@ -54,10 +62,11 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 	void SoundPlayer::Mix()
 	{
+		auto currentSounds = mCurrentSounds.Lock();
 		// List of sounds to remove once we're done iterating.
 		std::set<unsigned int> soundsToRemove;
 		// Iterate over our current sounds
-		for (auto& [id, soundEntry] : mCurrentSounds)
+		for (auto& [id, soundEntry] : *currentSounds)
 		{
 			// Unpack our sound data
 			auto& [sound, progress, repeating] = soundEntry;

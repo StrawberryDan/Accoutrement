@@ -47,7 +47,9 @@ namespace Strawberry::Accoutrement
 		Core::Mutex<Codec::Audio::Playlist::Playlist>      mPlaylist;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mMusicChannel;
 		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mSoundChannel;
-		Core::Optional<Core::RepeatingTask>                mAudioSendingThread;
 		Core::Mutex<SoundPlayer::SoundPlayer>              mSoundPlayer;
+
+		// Must be deleted first
+		Core::Optional<Core::RepeatingTask>                mAudioSendingThread;
 	};
 } // namespace Strawberry::Accoutrement

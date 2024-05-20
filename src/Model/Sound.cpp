@@ -40,14 +40,16 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	Codec::Audio::Frame Sound::GetFrame(size_t index)
+	Core::Optional<Codec::Audio::Frame> Sound::GetFrame(size_t index)
 	{
 		Seek(index);
 
 		if (mBufferedPackets.empty())
 		{
-			while (auto packet = mStream->Read())
+			for (int i = 0; i < 1024; i++)
 			{
+				auto packet = mStream->Read();
+				if (!packet) break;
 				mBufferedPackets.emplace_back(packet.Unwrap());
 			}
 			mBufferedPackets.shrink_to_fit();
@@ -67,6 +69,11 @@ namespace Strawberry::Accoutrement
 			}
 		}
 
+		if (mBufferedFrames.empty())
+		{
+			return Core::NullOpt;
+		}
+
 		auto result = std::move(mBufferedFrames.front());
 		mBufferedFrames.pop_front();
 		return result;
@@ -74,12 +81,7 @@ namespace Strawberry::Accoutrement
 
 	Codec::Audio::Frame Sound::operator[](size_t index)
 	{
-		return GetFrame(index);
-	}
-
-	size_t Sound::Size() const
-	{
-		return mBufferedPackets.size();
+		return GetFrame(index).Unwrap();
 	}
 
 

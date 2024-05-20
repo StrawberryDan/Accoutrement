@@ -64,9 +64,11 @@ namespace Strawberry::Accoutrement
 
 	void SoundControlPanel::Receive(SoundPlayer::SoundStartedEvent value)
 	{
-		auto itemID = mList->InsertItem(mList->GetItemCount(), SoundDatabase::Get()->GetSound(Bot::Get()->GetSoundPlayer().Lock()->GetSoundID(value.soundID))->GetName());
-		mList->SetItemPtrData(itemID, value.soundID);
+		auto name = SoundDatabase::Get()->GetSound(Bot::Get()->GetSoundPlayer().Lock()->GetSoundID(value.soundID))->GetName();
+		auto itemID = mList->InsertItem(mList->GetItemCount(), name);
 		mList->SetItemImage(itemID, value.repeating ? 0 : -1);
+		mList->SetItemPtrData(itemID, value.soundID);
+		mList->Refresh();
 	}
 
 	void SoundControlPanel::Receive(SoundPlayer::SoundEndedEvent value)

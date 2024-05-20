@@ -33,7 +33,7 @@ namespace Strawberry::Accoutrement
 
 
 		/// Returns a constant reference to the index'th audio frame in the sound.
-		[[nodiscard]] Codec::Audio::Frame GetFrame(size_t index);
+		[[nodiscard]] Core::Optional<Codec::Audio::Frame> GetFrame(size_t index);
 		Codec::Audio::Frame operator[](size_t index);
 
 		/// Returns the name of the sound.
@@ -44,9 +44,6 @@ namespace Strawberry::Accoutrement
 
 		/// Sets the name of the sound
 		void SetName(const std::string& name) { mName = name; }
-
-		/// Returns the number of audio frames in the sound.
-		[[nodiscard]] size_t Size() const;
 
 
 	protected:

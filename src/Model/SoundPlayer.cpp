@@ -2,6 +2,7 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 #include "SoundPlayer.hpp"
+#include "SoundDatabase.hpp"
 // Standard Library
 #include <thread>
 
@@ -21,13 +22,13 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		else { return Core::NullOpt; }
 	}
 
-	unsigned int SoundPlayer::PlaySound(Sound sound, bool repeat)
+	unsigned int SoundPlayer::PlaySound(size_t sound, bool repeat)
 	{
 		auto currentSounds = mCurrentSounds.Lock();
 
 		auto id = mIdGenerator.Allocate();
-		currentSounds->emplace(id, std::make_tuple(std::move(sound), 0, repeat));
-		Broadcast(SoundStartedEvent{.soundID = id, .sound = &std::get<0>(currentSounds->at(id)), .repeating = repeat});
+		currentSounds->emplace(id, std::make_tuple(sound, 0, repeat));
+		Broadcast(SoundStartedEvent{.soundID = static_cast<unsigned int>(id), .repeating = repeat});
 		return id;
 	}
 
@@ -43,9 +44,9 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	{
 		auto currentSounds = mCurrentSounds.Lock();
 
-		auto& [song, position, repeating] = currentSounds->at(id);
+		auto& [sound, position, repeating] = currentSounds->at(id);
 		repeating                         = repeat;
-		Broadcast(SoundRepeatEvent{.songID = id, .repeating = repeat});
+		Broadcast(SoundRepeatEvent{.soundID = static_cast<unsigned int>(id), .repeating = repeat});
 	}
 
 	void SoundPlayer::RemoveSound(unsigned int id)
@@ -53,12 +54,19 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		auto currentSounds = mCurrentSounds.Lock();
 
 		const auto& [sound, progress, repeating] = currentSounds->at(id);
-		Broadcast(SoundEndedEvent{.songID = id, .sound = &sound});
+		Broadcast(SoundEndedEvent{.songID = id, .soundID = sound});
 		currentSounds->erase(id);
 		mMixerChannels.erase(id);
 		mMixingMetronomes.erase(id);
 		mIdGenerator.Free(id);
 	}
+
+
+	size_t SoundPlayer::GetSoundID(unsigned int ticket)
+	{
+		return std::get<0>(mCurrentSounds.Lock()->at(ticket));
+	}
+
 
 	void SoundPlayer::Mix()
 	{
@@ -80,8 +88,9 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 			if (metronome)
 			{
+				auto soundData = SoundDatabase::Get()->GetSound(sound).Unwrap();
 				// Update our progress counter
-				if (progress >= sound.Size())
+				if (progress >= soundData->Size())
 				{
 					if (repeating) { progress = 0; }
 					else
@@ -93,7 +102,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 				}
 
 				// Get the frame to mix
-				auto frame = sound[progress++];
+				auto frame = (*soundData)[progress++];
 				// Send our frame
 				inputChannel->EnqueueFrame(frame);
 				// Update metronome

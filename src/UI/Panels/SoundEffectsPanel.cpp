@@ -93,7 +93,7 @@ namespace Strawberry::Accoutrement
 			auto sound = SoundDatabase::Get()->GetSound(soundID);
 			Core::Assert(sound.HasValue());
 
-			Bot::Get()->GetSoundPlayer().Lock()->PlaySound(**sound, false);
+			Bot::Get()->GetSoundPlayer().Lock()->PlaySound(soundID, false);
 		}
 	}
 
@@ -108,7 +108,7 @@ namespace Strawberry::Accoutrement
 			auto sound = SoundDatabase::Get()->GetSound(soundID);
 			Core::Assert(sound.HasValue());
 
-			Bot::Get()->GetSoundPlayer().Lock()->PlaySound(**sound, true);
+			Bot::Get()->GetSoundPlayer().Lock()->PlaySound(soundID, true);
 		}
 	}
 

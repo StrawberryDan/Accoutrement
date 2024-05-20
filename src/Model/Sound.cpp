@@ -15,25 +15,7 @@ namespace Strawberry::Accoutrement
 		// Load our file
 		auto file = Codec::MediaFile::Open(path);
 		if (!file) return Core::NullOpt;
-		// Get the best audio stream in the file.
-		auto audioStream = file->GetBestStream(Codec::MediaType::Audio);
-		if (!audioStream) return Core::NullOpt;
-		// Get a decoder for the stream.
-		Codec::Audio::Decoder            decoder = audioStream->GetDecoder();
-		// Extract and decoder our frames.
-		std::vector<Codec::Audio::Frame> frames;
-		while (auto packet = audioStream->Read())
-		{
-			decoder.Send(packet.Unwrap());
-			auto decodedFrames = decoder.Receive();
-			for (auto& frame : decodedFrames) { frames.emplace_back(std::move(frame)); }
-		}
-		// Compress and return as a Sound.
-		frames.shrink_to_fit();
-		Sound sound(frames);
-		sound.mFile = path;
-		sound.mName = path.string();
-		return sound;
+		return Sound(file.Unwrap());
 	}
 
 	Core::Optional<Sound> Sound::FromJSON(const nlohmann::json& json)
@@ -52,28 +34,79 @@ namespace Strawberry::Accoutrement
 	nlohmann::json Sound::AsJSON() const
 	{
 		return {
-			{"file", mFile},
+			{"file", mFile.GetPath().string()},
 			{"name", mName},
 		};
 	}
 
-	Sound::Sound(std::vector<Codec::Audio::Frame> frames)
-		: mFrames(std::move(frames))
-	{}
 
-	const Codec::Audio::Frame& Sound::GetFrame(size_t index) const
+	Codec::Audio::Frame Sound::GetFrame(size_t index)
 	{
-		Core::Assert(index < mFrames.size());
-		return mFrames[index];
+		Seek(index);
+
+		if (mBufferedPackets.empty())
+		{
+			while (auto packet = mStream->Read())
+			{
+				mBufferedPackets.emplace_back(packet.Unwrap());
+			}
+			mBufferedPackets.shrink_to_fit();
+		}
+
+		if (mBufferedFrames.empty())
+		{
+			for (int i = 0; i < 1024 && mCurrentDTS + i < mBufferedPackets.size(); i++)
+			{
+				mDecoder.Send(mBufferedPackets[mCurrentDTS + i]);
+				auto frames = mDecoder.Receive();
+
+				for (auto& frame: frames)
+				{
+					mBufferedFrames.push_back(std::move(frame));
+				}
+			}
+		}
+
+		auto result = std::move(mBufferedFrames.front());
+		mBufferedFrames.pop_front();
+		return result;
 	}
 
-	const Codec::Audio::Frame& Sound::operator[](size_t index) const
+	Codec::Audio::Frame Sound::operator[](size_t index)
 	{
 		return GetFrame(index);
 	}
 
 	size_t Sound::Size() const
 	{
-		return mFrames.size();
+		return mBufferedPackets.size();
+	}
+
+
+	Sound::Sound(Codec::MediaFile file)
+		: mName(file.GetPath().string())
+		, mFile(std::move(file))
+		, mStream(mFile.GetBestStream(Codec::MediaType::Audio))
+		, mDecoder(mStream->GetDecoder())
+		, mBufferedPackets()
+	{}
+
+
+	void Sound::Seek(int dts)
+	{
+		if (dts != 0 && mCurrentDTS != dts - 1)
+		{
+			mCurrentDTS = dts;
+			while (!(mBufferedPackets[mCurrentDTS]->flags & AV_FRAME_FLAG_KEY) && mCurrentDTS > 0)
+			{
+				mCurrentDTS--;
+			}
+
+			mBufferedFrames.clear();
+		}
+		else
+		{
+			mCurrentDTS = dts;
+		}
 	}
 } // namespace Strawberry::Accoutrement

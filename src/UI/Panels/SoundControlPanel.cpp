@@ -64,7 +64,7 @@ namespace Strawberry::Accoutrement
 
 	void SoundControlPanel::Receive(SoundPlayer::SoundStartedEvent value)
 	{
-		auto itemID = mList->InsertItem(mList->GetItemCount(), value.sound->GetName());
+		auto itemID = mList->InsertItem(mList->GetItemCount(), SoundDatabase::Get()->GetSound(Bot::Get()->GetSoundPlayer().Lock()->GetSoundID(value.soundID))->GetName());
 		mList->SetItemPtrData(itemID, value.soundID);
 		mList->SetItemImage(itemID, value.repeating ? 0 : -1);
 	}
@@ -80,7 +80,7 @@ namespace Strawberry::Accoutrement
 	void SoundControlPanel::Receive(SoundPlayer::SoundRepeatEvent value)
 	{
 		for (int i = 0; i < mList->GetItemCount(); i++)
-		{ mList->SetItemImage(i, value.songID == mList->GetItemData(i) && value.repeating ? 0 : -1); }
+		{ mList->SetItemImage(i, value.soundID == mList->GetItemData(i) && value.repeating ? 0 : -1); }
 		Layout();
 	}
 
@@ -90,8 +90,8 @@ namespace Strawberry::Accoutrement
 		if (selected == -1) return;
 
 		auto soundID = mList->GetItemData(selected);
-		mList->DeleteItem(selected);
 		Bot::Get()->GetSoundPlayer().Lock()->RemoveSound(soundID);
+		mList->DeleteItem(selected);
 	}
 
 	void SoundControlPanel::OnRepeatSound(wxCommandEvent& event)

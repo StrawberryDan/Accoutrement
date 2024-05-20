@@ -25,17 +25,16 @@ namespace Strawberry::Accoutrement::SoundPlayer
 {
 	struct SoundStartedEvent {
 		unsigned int soundID;
-		const Sound* sound;
 		bool         repeating;
 	};
 
 	struct SoundEndedEvent {
 		unsigned int songID;
-		const Sound* sound;
+		size_t       soundID;
 	};
 
 	struct SoundRepeatEvent {
-		unsigned int songID;
+		unsigned int soundID;
 		bool         repeating;
 	};
 
@@ -46,7 +45,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		/// Receive a frame of audio from the player.
 		Core::Optional<Codec::Audio::Frame> ReceiveAudio();
 		/// Add a sound to the set of currently playing sounds.
-		unsigned int                        PlaySound(Sound sound, bool repeat = false);
+		unsigned int                        PlaySound(size_t sound, bool repeat = false);
 		/// Returns whether the given sound is repeating
 		bool                                GetRepeat(unsigned int id) const;
 		/// Sets whether the given sound should repeat
@@ -54,12 +53,14 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		/// Remove a sound from the list of currently playing sounds.
 		void                                RemoveSound(unsigned int id);
 
+		size_t                              GetSoundID(unsigned int ticket);
+
 	protected:
 		void Mix();
 
 	private:
 		// A Sound Entry is a sound, how far into the sound we've mixed, and whether it should repeat.
-		using SoundEntry = std::tuple<Sound, unsigned int, bool>;
+		using SoundEntry = std::tuple<size_t, unsigned int, bool>;
 
 		// A map of our currently active sounds
 		Core::Mutex<std::map<unsigned int, SoundEntry>>                            mCurrentSounds;

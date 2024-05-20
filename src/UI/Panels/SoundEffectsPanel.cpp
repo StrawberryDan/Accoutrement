@@ -128,9 +128,9 @@ namespace Strawberry::Accoutrement
 				auto sound    = Sound::FromFile(fullPath);
 				if (!sound) return;
 
-				auto        soundIndex = SoundDatabase::Get()->AddSound(sound.Value());
 				std::string title      = sound.Value().GetName();
 				auto        index      = mSoundEffectsList->InsertItem(mSoundEffectsList->GetItemCount(), title);
+				auto        soundIndex = SoundDatabase::Get()->AddSound(sound.Unwrap());
 				mSoundEffectsList->SetItemPtrData(index, soundIndex);
 			}
 		}

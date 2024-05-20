@@ -52,9 +52,22 @@ namespace Strawberry::Accoutrement
 	}
 
 
+	std::set<size_t> SongDatabase::GetSongIndices() const
+	{
+		std::set<size_t> indices;
+
+		for (auto& [key, val] : mSongs)
+		{
+			indices.emplace(key);
+		}
+
+		return indices;
+	}
+
+
 	size_t SongDatabase::AddSong(Song song)
 	{
-		auto id = mNextSongId++;
+		auto id = mSongIDGenerator.Allocate();
 		mSongs.emplace(id, std::move(song));
 		return id;
 	}
@@ -73,6 +86,7 @@ namespace Strawberry::Accoutrement
 	void SongDatabase::RemoveSong(size_t index)
 	{
 		mSongs.erase(index);
+		mSongIDGenerator.Free(index);
 	}
 
 

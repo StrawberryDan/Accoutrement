@@ -7,6 +7,7 @@
 // This Project
 #include "../Events/BotStartedRunningEvent.hpp"
 #include "../Events/BotStoppedRunningEvent.hpp"
+#include "SongDatabaseListContentsManager.hpp"
 // WxWidgets
 #include "wx/listctrl.h"
 #include "wx/panel.h"
@@ -14,6 +15,7 @@
 #include "Codec/Audio/Playlist.hpp"
 // Core
 #include "Strawberry/Core/IO/Receiver.hpp"
+
 
 namespace Strawberry::Accoutrement
 
@@ -37,6 +39,7 @@ namespace Strawberry::Accoutrement
 		void OnRenameSong(wxCommandEvent& event);
 		void OnRemoveFromDatabase(wxCommandEvent& event);
 		void OnToggleRepeatSong(wxCommandEvent& event);
+		void OnSongSearchBarText(wxCommandEvent& event);
 
 		void Receive(Codec::Audio::Playlist::SongBeganEvent event) override;
 		void Receive(Codec::Audio::Playlist::SongAddedEvent event) override;
@@ -48,6 +51,9 @@ namespace Strawberry::Accoutrement
 
 	protected:
 		wxListCtrl* mSongDatabaseList;
+		wxTextCtrl* mSearchBar;
 		wxListCtrl* mPlaylistView;
+
+		SongDatabaseListContentsManager mSearchTreeNavigator;
 	};
 } // namespace Strawberry::Accoutrement

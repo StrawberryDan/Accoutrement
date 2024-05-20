@@ -30,6 +30,8 @@ namespace Strawberry::Accoutrement
 		RemoveSongFromPlaylistButton,
 
 		ToggleRepeatSongButton,
+
+		SongSearchBar,
 	};
 
 	// clang-format off
@@ -40,6 +42,7 @@ namespace Strawberry::Accoutrement
 					EVT_BUTTON(Component::RemoveSongFromPlaylistButton, MusicPanel::OnRemoveSong)
 					EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
 					EVT_BUTTON(Component::ToggleRepeatSongButton, MusicPanel::OnToggleRepeatSong)
+					EVT_TEXT(Component::SongSearchBar, MusicPanel::OnSongSearchBarText)
 	wxEND_EVENT_TABLE();
 
 	// clang-format on
@@ -55,11 +58,6 @@ namespace Strawberry::Accoutrement
 
 		mSongDatabaseList = new wxListCtrl(this, wxID_ANY);
 		mSongDatabaseList->SetWindowStyle(wxLC_LIST);
-		for (int i = 0; i < SongDatabase::Get().GetNumSongs(); i++)
-		{
-			auto index = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), SongDatabase::Get().GetSong(i).GetTitle());
-			mSongDatabaseList->SetItemPtrData(index, i);
-		}
 		sizer->Add(mSongDatabaseList, {1, 0}, {1, 1}, wxEXPAND | wxALL, 5);
 
 		wxImage playingIcon("data/playing.png");
@@ -80,7 +78,8 @@ namespace Strawberry::Accoutrement
 		mPlaylistView->SetColumnWidth(1, wxLIST_AUTOSIZE);
 		sizer->Add(mPlaylistView, {1, 1}, {1, 1}, wxEXPAND | wxALL, 5);
 
-		sizer->Add(new wxTextCtrl(this, wxID_ANY), {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
+		mSearchBar = new wxTextCtrl(this, Component::SongSearchBar);
+		sizer->Add(mSearchBar, {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
 
 		auto songListButtons = new wxBoxSizer(wxHORIZONTAL);
 		songListButtons->Add(new wxButton(this, Component::AddSongToDatabaseButton, "Add Song"), 0, wxALL, 5);
@@ -104,6 +103,7 @@ namespace Strawberry::Accoutrement
 		SetSizerAndFit(sizer);
 
 		Bot::Get()->GetPlaylist().Lock()->Register(this);
+		mSearchTreeNavigator = SongDatabaseListContentsManager(mSongDatabaseList, mSearchBar);
 	}
 
 	void MusicPanel::OnAddSong(wxCommandEvent& event)
@@ -124,9 +124,8 @@ namespace Strawberry::Accoutrement
 				if (!song) return;
 
 				auto        songIndex = SongDatabase::Get().AddSong(song.Value());
-				std::string title     = song.Value().GetTitle();
-				auto        index     = mSongDatabaseList->InsertItem(mSongDatabaseList->GetItemCount(), title);
-				mSongDatabaseList->SetItemPtrData(index, songIndex);
+				mSearchTreeNavigator.AddSong(songIndex);
+				mSearchTreeNavigator.Update();
 			}
 		}
 		Refresh();
@@ -157,7 +156,10 @@ namespace Strawberry::Accoutrement
 		if (Bot::Get())
 		{
 			auto index = mPlaylistView->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-			if (index != -1) Bot::Get()->GetPlaylist().Lock()->RemoveTrack(index);
+			if (index != -1)
+			{
+				Bot::Get()->GetPlaylist().Lock()->RemoveTrack(index);
+			}
 		}
 		Refresh();
 	}
@@ -212,6 +214,8 @@ namespace Strawberry::Accoutrement
 			{
 				SongDatabase::Get().RemoveSong(index);
 				mSongDatabaseList->DeleteItem(index);
+				mSearchTreeNavigator.RemoveSong(index);
+				mSearchTreeNavigator.Update();
 			}
 		}
 		Refresh();
@@ -228,6 +232,13 @@ namespace Strawberry::Accoutrement
 
 		mPlaylistView->SetItemColumnImage(selected, 2, repeating ? 1 : -1);
 	}
+
+
+	void MusicPanel::OnSongSearchBarText(wxCommandEvent& event)
+	{
+		mSearchTreeNavigator.Update();
+	}
+
 
 	void MusicPanel::Receive(Codec::Audio::Playlist::SongBeganEvent event)
 	{

@@ -71,6 +71,8 @@ add_executable(Accoutrement
 		src/UI/Events/BotStoppedRunningEvent.hpp
 		${wxWidgets_SOURCE_DIR}/include/wx/msw/wx.manifest
 		${wxWidgets_SOURCE_DIR}/include/wx/msw/wx.rc
+		src/UI/Panels/SearchTreeNavigator.cpp
+		src/UI/Panels/SongDatabaseListContentsManager.hpp
 )
 
 set_target_properties(Accoutrement PROPERTIES CXX_STANDARD 23)

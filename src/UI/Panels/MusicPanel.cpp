@@ -32,6 +32,8 @@ namespace Strawberry::Accoutrement
 		ToggleRepeatSongButton,
 
 		SongSearchBar,
+
+		VolumeBar,
 	};
 
 	// clang-format off
@@ -43,6 +45,7 @@ namespace Strawberry::Accoutrement
 					EVT_BUTTON(Component::RenameSongButton, MusicPanel::OnRenameSong)
 					EVT_BUTTON(Component::ToggleRepeatSongButton, MusicPanel::OnToggleRepeatSong)
 					EVT_TEXT(Component::SongSearchBar, MusicPanel::OnSongSearchBarText)
+					EVT_COMMAND_SCROLL(Component::VolumeBar, MusicPanel::OnVolumeChanged)
 	wxEND_EVENT_TABLE();
 
 	// clang-format on
@@ -95,6 +98,9 @@ namespace Strawberry::Accoutrement
 		playlistButtons->Add(new wxButton(this, wxID_ANY, "Shuffle"), {0, 2}, {1, 1}, wxEXPAND | wxALL, 5);
 		playlistButtons->Add(new wxButton(this, ToggleRepeatSongButton, "Repeat"), {1, 2}, {1, 1}, wxEXPAND | wxALL, 5);
 		sizer->Add(playlistButtons, {2, 1}, {2, 1}, wxALIGN_CENTER, 5);
+
+		mVolumeScroll = new wxSlider(this, Component::VolumeBar, 100, 0, 200);
+		sizer->Add(mVolumeScroll, {4, 0}, {1, 2}, wxEXPAND | wxALL, 5);
 
 		sizer->AddGrowableRow(1, 1);
 		sizer->AddGrowableCol(0, 1);
@@ -245,6 +251,12 @@ namespace Strawberry::Accoutrement
 	void MusicPanel::OnSongSearchBarText(wxCommandEvent& event)
 	{
 		mSearchTreeNavigator.Update();
+	}
+
+
+	void MusicPanel::OnVolumeChanged(wxScrollEvent& event)
+	{
+		Bot::Get()->GetPlaylist().Lock()->SetVolume(event.GetPosition());
 	}
 
 

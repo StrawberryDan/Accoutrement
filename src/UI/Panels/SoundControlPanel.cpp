@@ -53,10 +53,10 @@ namespace Strawberry::Accoutrement
 		sizer->Add(mRepeatButton, {1, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
 		auto volumeSizer = new wxBoxSizer(wxHORIZONTAL);
-		mMasterVolumeSlider = new wxSlider(this, CHANGE_MASTER_VOLUME, 0.0, -100.0, 100.0);
+		mMasterVolumeSlider = new wxSlider(this, CHANGE_MASTER_VOLUME, 100.0, 0.0, 200.0);
 		volumeSizer->Add(mMasterVolumeSlider, wxALL | wxEXPAND, 5);
 
-		mSoundVolumeSlider = new wxSlider(this, CHANGE_SOUND_VOLUME, 0.0, -100.0, 100.0);
+		mSoundVolumeSlider = new wxSlider(this, CHANGE_SOUND_VOLUME, 100.0, 0.0, 200.0);
 		volumeSizer->Add(mSoundVolumeSlider, wxALL | wxEXPAND, 5);
 		sizer->Add(volumeSizer, {2, 0}, {1, 2}, wxALL | wxEXPAND, 5);
 
@@ -126,8 +126,7 @@ namespace Strawberry::Accoutrement
 
 	void SoundControlPanel::OnChangeMasterVolume(wxScrollEvent& event)
 	{
-		auto volume = 1.0f + (event.GetPosition() / 100.0f);
-		Bot::Get()->GetSoundPlayer().Lock()->SetVolume(volume);
+		Bot::Get()->GetSoundPlayer().Lock()->SetVolume(mMasterVolumeSlider->GetValue());
 	}
 
 
@@ -136,8 +135,7 @@ namespace Strawberry::Accoutrement
 		auto selected = mList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 		if (selected == -1) return;
 
-		auto volume = 1.0f + (event.GetPosition() / 100.0f);
-		Bot::Get()->GetSoundPlayer().Lock()->SetTrackVolume(mList->GetItemData(selected), volume);
+		Bot::Get()->GetSoundPlayer().Lock()->SetTrackVolume(mList->GetItemData(selected), mSoundVolumeSlider->GetValue());
 	}
 
 
@@ -147,8 +145,7 @@ namespace Strawberry::Accoutrement
 		if (selected == -1) return;
 
 		auto soundID = mList->GetItemData(selected);
-		float volume = Bot::Get()->GetSoundPlayer().Lock()->GetTrackVolume(soundID);
-		volume = volume * 100.0f - 100.0f;
+		int volume = Bot::Get()->GetSoundPlayer().Lock()->GetTrackVolume(soundID);
 		mSoundVolumeSlider->SetValue(volume);
 	}
 } // namespace Strawberry::Accoutrement

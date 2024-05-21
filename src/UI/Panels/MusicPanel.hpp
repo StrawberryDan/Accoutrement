@@ -11,6 +11,7 @@
 // WxWidgets
 #include "wx/listctrl.h"
 #include "wx/panel.h"
+#include "wx/slider.h"
 // Codec
 #include "Codec/Audio/Playlist.hpp"
 // Core
@@ -40,6 +41,7 @@ namespace Strawberry::Accoutrement
 		void OnRemoveFromDatabase(wxCommandEvent& event);
 		void OnToggleRepeatSong(wxCommandEvent& event);
 		void OnSongSearchBarText(wxCommandEvent& event);
+		void OnVolumeChanged(wxScrollEvent& event);
 
 		void Receive(Codec::Audio::Playlist::SongBeganEvent event) override;
 		void Receive(Codec::Audio::Playlist::SongAddedEvent event) override;
@@ -53,6 +55,7 @@ namespace Strawberry::Accoutrement
 		wxListCtrl* mSongDatabaseList;
 		wxTextCtrl* mSearchBar;
 		wxListCtrl* mPlaylistView;
+		wxSlider* mVolumeScroll;
 
 		SongDatabaseListContentsManager mSearchTreeNavigator;
 	};

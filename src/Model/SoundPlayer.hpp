@@ -57,11 +57,11 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		/// Get the master volume scale.
 		float                               GetVolume() const;
 		/// Set the master volume scale.
-		void                                SetVolume(float volume);
+		void                                SetVolume(int volume);
 		/// Get per-track volume.
-		float                               GetTrackVolume(unsigned int ticket) const;
+		int GetTrackVolume(unsigned int ticket) const;
 		/// Set per-track volume.
-		void                                SetTrackVolume(unsigned int ticket, float volume);
+		void                                SetTrackVolume(unsigned int ticket, int volume);
 
 	protected:
 		void Mix();
@@ -73,7 +73,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 			size_t soundID;
 			Core::Seconds progress;
 			bool   repeating;
-			float  volume;
+			Core::Math::Rational<int> volume;
 		};
 
 		// A map of our currently active sounds
@@ -87,7 +87,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		// The metronomes to time the mixing of frames by.
 		std::map<unsigned int, Core::Metronome>                                    mMixingMetronomes;
 		// Master Volume Multiplier
-		float                                                                      mVolume = 1.0f;
+		Core::Math::Rational<int>                                                  mVolume = (100, 100);
 		// The thread which does the mixing.
 		Core::RepeatingTask                                                        mMixingThread;
 	};

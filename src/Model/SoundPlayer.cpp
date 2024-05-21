@@ -14,6 +14,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	SoundPlayer::SoundPlayer(Codec::Audio::FrameFormat format, unsigned int size)
 		: mAudioMixer(format, size)
 		, mMixingThread([this]() { Mix(); })
+		, mVolume(100, 100)
 	{}
 
 	Core::Optional<Codec::Audio::Frame> SoundPlayer::ReceiveAudio()
@@ -21,7 +22,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		if (!mAudioMixer.IsEmpty())
 		{
 			auto frame = mAudioMixer.ReadFrame();
-			frame.Multiply(mVolume <= 0.0 ? 0.0 : std::pow(4.0, mVolume - 1.0));
+			frame.Multiply(std::pow(2.0, mVolume.Evaluate()) - 1.0);
 			return frame;
 		}
 		else
@@ -35,7 +36,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		auto currentSounds = mCurrentSounds.Lock();
 
 		auto id = mIdGenerator.Allocate();
-		currentSounds->emplace(id, SoundEntry{sound, 0.0, repeat, 1.0f});
+		currentSounds->emplace(id, SoundEntry{sound, 0.0, repeat, {100, 100}});
 		SoundDatabase::Get()->GetSound(sound)->Seek(0.0);
 		Broadcast(SoundStartedEvent{.soundTicket = static_cast<unsigned int>(id), .repeating = repeat});
 		return id;
@@ -125,7 +126,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 				metronome.SetFrequency(frame->GetDuration());
 				metronome.Tick();
 				// Send our frame
-				frame->Multiply(volume);
+				frame->Multiply(std::pow(2.0, volume.Evaluate()) - 1.0);
 				inputChannel->EnqueueFrame(std::move(frame.Unwrap()));
 			}
 		}
@@ -139,24 +140,24 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 	float SoundPlayer::GetVolume() const
 	{
-		return mVolume;
+		return mVolume.Numerator();
 	}
 
 
-	void SoundPlayer::SetVolume(float volume)
+	void SoundPlayer::SetVolume(int volume)
 	{
-		mVolume = volume;
+		mVolume.Numerator() = volume;
 	}
 
 
-	float SoundPlayer::GetTrackVolume(unsigned int ticket) const
+	int SoundPlayer::GetTrackVolume(unsigned int ticket) const
 	{
-		return mCurrentSounds.Lock()->at(ticket).volume;
+		return mCurrentSounds.Lock()->at(ticket).volume.Numerator();
 	}
 
 
-	void SoundPlayer::SetTrackVolume(unsigned int ticket, float volume)
+	void SoundPlayer::SetTrackVolume(unsigned int ticket, int volume)
 	{
-		mCurrentSounds.Lock()->at(ticket).volume = volume;
+		mCurrentSounds.Lock()->at(ticket).volume.Numerator() = volume;
 	}
 } // namespace Strawberry::Accoutrement::SoundPlayer

@@ -18,8 +18,16 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 	Core::Optional<Codec::Audio::Frame> SoundPlayer::ReceiveAudio()
 	{
-		if (!mAudioMixer.IsEmpty()) { return AdjustVolume(mAudioMixer.ReadFrame()); }
-		else { return Core::NullOpt; }
+		if (!mAudioMixer.IsEmpty())
+		{
+			auto frame = mAudioMixer.ReadFrame();
+			frame.Multiply(mVolume <= 0.0 ? 0.0 : std::pow(4.0, mVolume - 1.0));
+			return frame;
+		}
+		else
+		{
+			return Core::NullOpt;
+		}
 	}
 
 	unsigned int SoundPlayer::PlaySound(size_t sound, bool repeat)
@@ -27,8 +35,8 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		auto currentSounds = mCurrentSounds.Lock();
 
 		auto id = mIdGenerator.Allocate();
-		currentSounds->emplace(id, std::make_tuple(sound, 0, repeat, 1.0f));
-		Broadcast(SoundStartedEvent{.soundID = static_cast<unsigned int>(id), .repeating = repeat});
+		currentSounds->emplace(id, SoundEntry{sound, 0, repeat, 1.0f});
+		Broadcast(SoundStartedEvent{.soundTicket = static_cast<unsigned int>(id), .repeating = repeat});
 		return id;
 	}
 
@@ -36,7 +44,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	{
 		auto currentSounds = mCurrentSounds.Lock();
 
-		const auto& [song, position, repeating, volume] = currentSounds->at(id);
+		const auto& [song, progress, repeating, volume] = currentSounds->at(id);
 		return repeating;
 	}
 
@@ -44,9 +52,9 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	{
 		auto currentSounds = mCurrentSounds.Lock();
 
-		auto& [sound, position, repeating, volume] = currentSounds->at(id);
+		auto& [sound, progress, repeating, volume] = currentSounds->at(id);
 		repeating                         = repeat;
-		Broadcast(SoundRepeatEvent{.soundID = static_cast<unsigned int>(id), .repeating = repeat});
+		Broadcast(SoundRepeatEvent{.soundTicket = static_cast<unsigned int>(id), .repeating = repeat});
 	}
 
 	void SoundPlayer::RemoveSound(unsigned int id)
@@ -54,7 +62,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		auto currentSounds = mCurrentSounds.Lock();
 
 		const auto& [sound, progress, repeating, volume] = currentSounds->at(id);
-		Broadcast(SoundEndedEvent{.songID = id, .soundID = sound});
+		Broadcast(SoundEndedEvent{.soundTicket = id, .soundID = sound});
 		currentSounds->erase(id);
 		mMixerChannels.erase(id);
 		mMixingMetronomes.erase(id);
@@ -64,7 +72,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 	size_t SoundPlayer::GetSoundID(unsigned int ticket)
 	{
-		return std::get<0>(mCurrentSounds.Lock()->at(ticket));
+		return mCurrentSounds.Lock()->at(ticket).soundID;
 	}
 
 
@@ -119,13 +127,6 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	}
 
 
-	Codec::Audio::Frame SoundPlayer::AdjustVolume(Codec::Audio::Frame input)
-	{
-		input.Multiply(mVolume);
-		return input;
-	}
-
-
 	float SoundPlayer::GetVolume() const
 	{
 		return mVolume;
@@ -135,5 +136,17 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	void SoundPlayer::SetVolume(float volume)
 	{
 		mVolume = volume;
+	}
+
+
+	float SoundPlayer::GetTrackVolume(unsigned int ticket) const
+	{
+		return mCurrentSounds.Lock()->at(ticket).volume;
+	}
+
+
+	void SoundPlayer::SetTrackVolume(unsigned int ticket, float volume)
+	{
+		mCurrentSounds.Lock()->at(ticket).volume = volume;
 	}
 } // namespace Strawberry::Accoutrement::SoundPlayer

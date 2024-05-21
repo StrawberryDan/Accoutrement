@@ -41,6 +41,7 @@ namespace Strawberry::Accoutrement
 		void OnRepeatSound(wxCommandEvent& event);
 		void OnChangeMasterVolume(wxScrollEvent& event);
 		void OnChangeSoundVolume(wxScrollEvent& event);
+		void OnSoundClick(wxListEvent& event);
 
 	private:
 		wxListCtrl* mList               = nullptr;

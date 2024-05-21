@@ -20,12 +20,14 @@ namespace Strawberry::Accoutrement
 		REPEAT_SOUND,
 		CHANGE_MASTER_VOLUME,
 		CHANGE_SOUND_VOLUME,
+		LIST_CTRL,
 	};
 
 	wxBEGIN_EVENT_TABLE(SoundControlPanel, wxPanel)
 		EVT_BUTTON(REMOVE_SOUND, SoundControlPanel::OnRemoveSound)
 		EVT_BUTTON(REPEAT_SOUND, SoundControlPanel::OnRepeatSound)
 		EVT_COMMAND_SCROLL(CHANGE_MASTER_VOLUME, SoundControlPanel::OnChangeMasterVolume)
+		EVT_LIST_ITEM_SELECTED(LIST_CTRL, SoundControlPanel::OnSoundClick)
 		EVT_COMMAND_SCROLL(CHANGE_SOUND_VOLUME, SoundControlPanel::OnChangeSoundVolume)
 	wxEND_EVENT_TABLE()
 
@@ -39,7 +41,7 @@ namespace Strawberry::Accoutrement
 		auto* imageList = new wxImageList(15, 15);
 		imageList->Add(playingIcon);
 
-		mList      = new wxListCtrl(this, wxID_ANY);
+		mList      = new wxListCtrl(this, LIST_CTRL);
 		mList->AssignImageList(imageList, wxIMAGE_LIST_SMALL);
 		mList->SetWindowStyleFlag(wxLC_LIST);
 		sizer->Add(mList, {0, 0}, {2, 1}, wxALL | wxEXPAND, 5);
@@ -50,7 +52,7 @@ namespace Strawberry::Accoutrement
 		mRepeatButton = new wxButton(this, REPEAT_SOUND, "Repeat");
 		sizer->Add(mRepeatButton, {1, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
-		mMasterVolumeSlider = new wxSlider(this, CHANGE_MASTER_VOLUME, 0.0, -100.0, 200.0);
+		mMasterVolumeSlider = new wxSlider(this, CHANGE_MASTER_VOLUME, 0.0, -100.0, 100.0);
 		sizer->Add(mMasterVolumeSlider, {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
 
 		mSoundVolumeSlider = new wxSlider(this, CHANGE_SOUND_VOLUME, 0.0, -100.0, 100.0);
@@ -77,10 +79,10 @@ namespace Strawberry::Accoutrement
 
 	void SoundControlPanel::Receive(SoundPlayer::SoundStartedEvent value)
 	{
-		auto name = SoundDatabase::Get()->GetSound(Bot::Get()->GetSoundPlayer().Lock()->GetSoundID(value.soundID))->GetName();
+		auto name = SoundDatabase::Get()->GetSound(Bot::Get()->GetSoundPlayer().Lock()->GetSoundID(value.soundTicket))->GetName();
 		auto itemID = mList->InsertItem(mList->GetItemCount(), name);
 		mList->SetItemImage(itemID, value.repeating ? 0 : -1);
-		mList->SetItemPtrData(itemID, value.soundID);
+		mList->SetItemPtrData(itemID, value.soundTicket);
 		mList->Refresh();
 	}
 
@@ -88,14 +90,14 @@ namespace Strawberry::Accoutrement
 	{
 		for (int i = 0; i < mList->GetItemCount(); i++)
 		{
-			if (value.songID == mList->GetItemData(i)) { mList->DeleteItem(i); }
+			if (value.soundTicket == mList->GetItemData(i)) { mList->DeleteItem(i); }
 		}
 	}
 
 	void SoundControlPanel::Receive(SoundPlayer::SoundRepeatEvent value)
 	{
 		for (int i = 0; i < mList->GetItemCount(); i++)
-		{ mList->SetItemImage(i, value.soundID == mList->GetItemData(i) && value.repeating ? 0 : -1); }
+		{ mList->SetItemImage(i, value.soundTicket == mList->GetItemData(i) && value.repeating ? 0 : -1); }
 		Layout();
 	}
 
@@ -129,5 +131,22 @@ namespace Strawberry::Accoutrement
 
 	void SoundControlPanel::OnChangeSoundVolume(wxScrollEvent& event)
 	{
+		auto selected = mList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (selected == -1) return;
+
+		auto volume = 1.0f + (event.GetPosition() / 100.0f);
+		Bot::Get()->GetSoundPlayer().Lock()->SetTrackVolume(mList->GetItemData(selected), volume);
+	}
+
+
+	void SoundControlPanel::OnSoundClick(wxListEvent& event)
+	{
+		auto selected = mList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (selected == -1) return;
+
+		auto soundID = mList->GetItemData(selected);
+		float volume = Bot::Get()->GetSoundPlayer().Lock()->GetTrackVolume(soundID);
+		volume = volume * 100.0f - 100.0f;
+		mSoundVolumeSlider->SetValue(volume);
 	}
 } // namespace Strawberry::Accoutrement

@@ -24,17 +24,17 @@
 namespace Strawberry::Accoutrement::SoundPlayer
 {
 	struct SoundStartedEvent {
-		unsigned int soundID;
+		unsigned int soundTicket;
 		bool         repeating;
 	};
 
 	struct SoundEndedEvent {
-		unsigned int songID;
+		unsigned int soundTicket;
 		size_t       soundID;
 	};
 
 	struct SoundRepeatEvent {
-		unsigned int soundID;
+		unsigned int soundTicket;
 		bool         repeating;
 	};
 
@@ -58,15 +58,23 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		float                               GetVolume() const;
 		/// Set the master volume scale.
 		void                                SetVolume(float volume);
+		/// Get per-track volume.
+		float                               GetTrackVolume(unsigned int ticket) const;
+		/// Set per-track volume.
+		void                                SetTrackVolume(unsigned int ticket, float volume);
 
 	protected:
 		void Mix();
 
-		Codec::Audio::Frame AdjustVolume(Codec::Audio::Frame input);
-
 	private:
 		// A Sound Entry is a sound, how far into the sound we've mixed, whether it should repeat, and it's volume scale.
-		using SoundEntry = std::tuple<size_t, unsigned int, bool, float>;
+		struct SoundEntry
+		{
+			size_t soundID;
+			unsigned int progress;
+			bool   repeating;
+			float  volume;
+		};
 
 		// A map of our currently active sounds
 		Core::Mutex<std::map<unsigned int, SoundEntry>>                            mCurrentSounds;

@@ -57,9 +57,9 @@ namespace Strawberry::Accoutrement
 
 		if (mBufferedFrames.empty())
 		{
-			for (int i = 0; i < 1024 && mCurrentDTS + i < mBufferedPackets.size(); i++)
+			for (int i = 0; i < mBufferedPackets.size(); i++)
 			{
-				mDecoder.Send(mBufferedPackets[mCurrentDTS + i]);
+				mDecoder.Send(std::move(mBufferedPackets[i]));
 				auto frames = mDecoder.Receive();
 
 				for (auto& frame: frames)
@@ -67,9 +67,10 @@ namespace Strawberry::Accoutrement
 					mBufferedFrames.push_back(std::move(frame));
 				}
 			}
+			mBufferedPackets.clear();
 		}
 
-		if (mBufferedFrames.empty())
+		if (mBufferedFrames.empty() && mBufferedPackets.empty())
 		{
 			return Core::NullOpt;
 		}

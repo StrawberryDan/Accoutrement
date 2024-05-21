@@ -40,16 +40,20 @@ namespace Strawberry::Accoutrement
 	}
 
 
-	Core::Optional<Codec::Audio::Frame> Sound::GetFrame(size_t index)
+	Core::Optional<Codec::Audio::Frame> Sound::Read()
 	{
-		Seek(index);
-
 		if (mBufferedPackets.empty())
 		{
-			for (int i = 0; i < 1024; i++)
+			mStream->Seek(mDecodePosition);
+			for (int i = 0; i < 64; i++)
 			{
 				auto packet = mStream->Read();
-				if (!packet) break;
+				if (!packet)
+				{
+					break;
+				}
+
+				mDecodePosition += packet.Value()->duration * mStream->GetTimeBase().Evaluate();
 				mBufferedPackets.emplace_back(packet.Unwrap());
 			}
 			mBufferedPackets.shrink_to_fit();
@@ -77,12 +81,8 @@ namespace Strawberry::Accoutrement
 
 		auto result = std::move(mBufferedFrames.front());
 		mBufferedFrames.pop_front();
+		mPosition += result.GetDuration();
 		return result;
-	}
-
-	Codec::Audio::Frame Sound::operator[](size_t index)
-	{
-		return GetFrame(index).Unwrap();
 	}
 
 
@@ -91,25 +91,17 @@ namespace Strawberry::Accoutrement
 		, mFile(std::move(file))
 		, mStream(mFile.GetBestStream(Codec::MediaType::Audio))
 		, mDecoder(mStream->GetDecoder())
-		, mBufferedPackets()
-	{}
-
-
-	void Sound::Seek(int dts)
 	{
-		if (dts != 0 && mCurrentDTS != dts - 1)
-		{
-			mCurrentDTS = dts;
-			while (!(mBufferedPackets[mCurrentDTS]->flags & AV_FRAME_FLAG_KEY) && mCurrentDTS > 0)
-			{
-				mCurrentDTS--;
-			}
+		Seek(0.0);
+	}
 
-			mBufferedFrames.clear();
-		}
-		else
-		{
-			mCurrentDTS = dts;
-		}
+
+	void Sound::Seek(Core::Seconds time)
+	{
+		mStream->Seek(time);
+		mPosition = time;
+		mDecodePosition = time;
+		mBufferedPackets.clear();
+		mBufferedFrames.clear();
 	}
 } // namespace Strawberry::Accoutrement

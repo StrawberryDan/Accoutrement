@@ -35,7 +35,8 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		auto currentSounds = mCurrentSounds.Lock();
 
 		auto id = mIdGenerator.Allocate();
-		currentSounds->emplace(id, SoundEntry{sound, 0, repeat, 1.0f});
+		currentSounds->emplace(id, SoundEntry{sound, 0.0, repeat, 1.0f});
+		SoundDatabase::Get()->GetSound(sound)->Seek(0.0);
 		Broadcast(SoundStartedEvent{.soundTicket = static_cast<unsigned int>(id), .repeating = repeat});
 		return id;
 	}
@@ -96,13 +97,21 @@ namespace Strawberry::Accoutrement::SoundPlayer
 
 			if (metronome)
 			{
-				auto soundData = SoundDatabase::Get()->GetSound(sound).Unwrap();
+				auto soundData = SoundDatabase::Get()->GetSound(sound);
+				if (!soundData)
+					continue;
+
 				// Get the frame to mix
-				auto frame = soundData->GetFrame(progress++);
+				auto frame = soundData->Read();
 				// Update our progress counter
 				if (!frame)
 				{
-					if (repeating) { progress = 0; }
+					if (repeating)
+					{
+						progress = 0.0;
+						soundData->Seek(0.0);
+						continue;
+					}
 					else
 					{
 						// Remove this later
@@ -112,6 +121,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 				}
 
 				// Update metronome
+				progress += frame->GetDuration();
 				metronome.SetFrequency(frame->GetDuration());
 				metronome.Tick();
 				// Send our frame

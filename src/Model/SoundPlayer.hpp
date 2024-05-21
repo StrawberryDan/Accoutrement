@@ -71,7 +71,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		struct SoundEntry
 		{
 			size_t soundID;
-			unsigned int progress;
+			Core::Seconds progress;
 			bool   repeating;
 			float  volume;
 		};

@@ -33,8 +33,7 @@ namespace Strawberry::Accoutrement
 
 
 		/// Returns a constant reference to the index'th audio frame in the sound.
-		[[nodiscard]] Core::Optional<Codec::Audio::Frame> GetFrame(size_t index);
-		Codec::Audio::Frame operator[](size_t index);
+		[[nodiscard]] Core::Optional<Codec::Audio::Frame> Read();
 
 		/// Returns the name of the sound.
 		[[nodiscard]] const std::string& GetName() const { return mName; }
@@ -45,12 +44,11 @@ namespace Strawberry::Accoutrement
 		/// Sets the name of the sound
 		void SetName(const std::string& name) { mName = name; }
 
+		void Seek(Core::Seconds time);
+
 
 	protected:
 		Sound(Codec::MediaFile file);
-
-
-		void Seek(int pts);
 
 
 	private:
@@ -59,8 +57,9 @@ namespace Strawberry::Accoutrement
 		Core::ReflexivePointer<Codec::MediaStream> mStream;
 		Codec::Audio::Decoder mDecoder;
 
-		int                       mCurrentDTS;
-		std::vector<Codec::Packet> mBufferedPackets;
+		std::vector<Codec::Packet>      mBufferedPackets;
 		std::deque<Codec::Audio::Frame> mBufferedFrames;
+		Core::Seconds                   mPosition;
+		Core::Seconds                   mDecodePosition;
 	};
 } // namespace Strawberry::Accoutrement

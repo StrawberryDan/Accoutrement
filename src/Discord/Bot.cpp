@@ -61,8 +61,8 @@ namespace Strawberry::Accoutrement
 
 	Bot::Bot()
 		: mBot(Discord::Bot::Connect(Config::Get().GetToken().Value(), Intent::GUILDS | Intent::GUILD_VOICE_STATES))
-		, mPlaylist(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
-		, mSoundPlayer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_S32, AV_CHANNEL_LAYOUT_STEREO), 960)
+		, mPlaylist(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_FLT, AV_CHANNEL_LAYOUT_STEREO), 960)
+		, mSoundPlayer(Codec::Audio::FrameFormat(48000, AV_SAMPLE_FMT_FLT, AV_CHANNEL_LAYOUT_STEREO), 960)
 	{
 		mAudioSendingThread.Emplace(
 			[this, musicClock = Core::Metronome(0.00, 0.01), sfxClock = Core::Metronome(0.00, 0.01)](Core::RepeatingTask* thread) mutable {

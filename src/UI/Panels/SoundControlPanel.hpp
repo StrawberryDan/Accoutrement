@@ -14,6 +14,7 @@
 // WxWidgets
 #include "wx/listctrl.h"
 #include "wx/panel.h"
+#include "wx/slider.h"
 
 //======================================================================================================================
 //  Class Declaration
@@ -38,10 +39,14 @@ namespace Strawberry::Accoutrement
 		void Receive(SoundPlayer::SoundRepeatEvent value) override;
 		void OnRemoveSound(wxCommandEvent& event);
 		void OnRepeatSound(wxCommandEvent& event);
+		void OnChangeMasterVolume(wxScrollEvent& event);
+		void OnChangeSoundVolume(wxScrollEvent& event);
 
 	private:
-		wxListCtrl* mList         = nullptr;
-		wxButton*   mRemoveButton = nullptr;
-		wxButton*   mRepeatButton = nullptr;
+		wxListCtrl* mList               = nullptr;
+		wxButton*   mRemoveButton       = nullptr;
+		wxButton*   mRepeatButton       = nullptr;
+		wxSlider*   mMasterVolumeSlider = nullptr;
+		wxSlider*   mSoundVolumeSlider  = nullptr;
 	};
 } // namespace Strawberry::Accoutrement

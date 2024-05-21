@@ -17,13 +17,19 @@ namespace Strawberry::Accoutrement
 	enum : wxWindowID
 	{
 		REMOVE_SOUND = wxID_HIGHEST,
-		REPEAT_SOUND
+		REPEAT_SOUND,
+		CHANGE_MASTER_VOLUME,
+		CHANGE_SOUND_VOLUME,
 	};
 
-	wxBEGIN_EVENT_TABLE(SoundControlPanel, wxPanel) EVT_BUTTON(REMOVE_SOUND, SoundControlPanel::OnRemoveSound)
-		EVT_BUTTON(REPEAT_SOUND, SoundControlPanel::OnRepeatSound) wxEND_EVENT_TABLE()
+	wxBEGIN_EVENT_TABLE(SoundControlPanel, wxPanel)
+		EVT_BUTTON(REMOVE_SOUND, SoundControlPanel::OnRemoveSound)
+		EVT_BUTTON(REPEAT_SOUND, SoundControlPanel::OnRepeatSound)
+		EVT_COMMAND_SCROLL(CHANGE_MASTER_VOLUME, SoundControlPanel::OnChangeMasterVolume)
+		EVT_COMMAND_SCROLL(CHANGE_SOUND_VOLUME, SoundControlPanel::OnChangeSoundVolume)
+	wxEND_EVENT_TABLE()
 
-			SoundControlPanel::SoundControlPanel(wxWindow* parent)
+	SoundControlPanel::SoundControlPanel(wxWindow* parent)
 		: wxPanel(parent)
 	{
 		auto sizer = new wxGridBagSizer();
@@ -44,8 +50,15 @@ namespace Strawberry::Accoutrement
 		mRepeatButton = new wxButton(this, REPEAT_SOUND, "Repeat");
 		sizer->Add(mRepeatButton, {1, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
+		mMasterVolumeSlider = new wxSlider(this, CHANGE_MASTER_VOLUME, 0.0, -100.0, 200.0);
+		sizer->Add(mMasterVolumeSlider, {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
+
+		mSoundVolumeSlider = new wxSlider(this, CHANGE_SOUND_VOLUME, 0.0, -100.0, 100.0);
+		sizer->Add(mSoundVolumeSlider, {2, 1}, {1, 1}, wxALL | wxEXPAND, 5);
+
 		sizer->AddGrowableRow(0);
 		sizer->AddGrowableRow(1);
+		sizer->AddGrowableRow(2);
 		sizer->AddGrowableCol(0);
 		SetSizerAndFit(sizer);
 
@@ -104,5 +117,17 @@ namespace Strawberry::Accoutrement
 		auto soundID = mList->GetItemData(selected);
 		auto soundPlayer = Bot::Get()->GetSoundPlayer().Lock();
 		soundPlayer->SetRepeat(soundID, !soundPlayer->GetRepeat(soundID));
+	}
+
+
+	void SoundControlPanel::OnChangeMasterVolume(wxScrollEvent& event)
+	{
+		auto volume = 1.0f + (event.GetPosition() / 100.0f);
+		Bot::Get()->GetSoundPlayer().Lock()->SetVolume(volume);
+	}
+
+
+	void SoundControlPanel::OnChangeSoundVolume(wxScrollEvent& event)
+	{
 	}
 } // namespace Strawberry::Accoutrement

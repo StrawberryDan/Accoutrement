@@ -27,7 +27,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		auto currentSounds = mCurrentSounds.Lock();
 
 		auto id = mIdGenerator.Allocate();
-		currentSounds->emplace(id, std::make_tuple(sound, 0, repeat));
+		currentSounds->emplace(id, std::make_tuple(sound, 0, repeat, 1.0f));
 		Broadcast(SoundStartedEvent{.soundID = static_cast<unsigned int>(id), .repeating = repeat});
 		return id;
 	}
@@ -36,7 +36,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	{
 		auto currentSounds = mCurrentSounds.Lock();
 
-		const auto& [song, position, repeating] = currentSounds->at(id);
+		const auto& [song, position, repeating, volume] = currentSounds->at(id);
 		return repeating;
 	}
 
@@ -44,7 +44,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	{
 		auto currentSounds = mCurrentSounds.Lock();
 
-		auto& [sound, position, repeating] = currentSounds->at(id);
+		auto& [sound, position, repeating, volume] = currentSounds->at(id);
 		repeating                         = repeat;
 		Broadcast(SoundRepeatEvent{.soundID = static_cast<unsigned int>(id), .repeating = repeat});
 	}
@@ -53,7 +53,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	{
 		auto currentSounds = mCurrentSounds.Lock();
 
-		const auto& [sound, progress, repeating] = currentSounds->at(id);
+		const auto& [sound, progress, repeating, volume] = currentSounds->at(id);
 		Broadcast(SoundEndedEvent{.songID = id, .soundID = sound});
 		currentSounds->erase(id);
 		mMixerChannels.erase(id);
@@ -77,7 +77,7 @@ namespace Strawberry::Accoutrement::SoundPlayer
 		for (auto& [id, soundEntry] : *currentSounds)
 		{
 			// Unpack our sound data
-			auto& [sound, progress, repeating] = soundEntry;
+			auto& [sound, progress, repeating, volume] = soundEntry;
 			// Make sure we have the input channel for this sound
 			if (!mMixerChannels.contains(id)) { mMixerChannels.emplace(id, mAudioMixer.CreateInputChannel()); }
 			// Get our input channel
@@ -91,7 +91,6 @@ namespace Strawberry::Accoutrement::SoundPlayer
 				auto soundData = SoundDatabase::Get()->GetSound(sound).Unwrap();
 				// Get the frame to mix
 				auto frame = soundData->GetFrame(progress++);
-
 				// Update our progress counter
 				if (!frame)
 				{
@@ -108,7 +107,8 @@ namespace Strawberry::Accoutrement::SoundPlayer
 				metronome.SetFrequency(frame->GetDuration());
 				metronome.Tick();
 				// Send our frame
-				inputChannel->EnqueueFrame(frame.Unwrap());
+				frame->Multiply(volume);
+				inputChannel->EnqueueFrame(std::move(frame.Unwrap()));
 			}
 		}
 
@@ -123,5 +123,17 @@ namespace Strawberry::Accoutrement::SoundPlayer
 	{
 		input.Multiply(mVolume);
 		return input;
+	}
+
+
+	float SoundPlayer::GetVolume() const
+	{
+		return mVolume;
+	}
+
+
+	void SoundPlayer::SetVolume(float volume)
+	{
+		mVolume = volume;
 	}
 } // namespace Strawberry::Accoutrement::SoundPlayer

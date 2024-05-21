@@ -110,7 +110,6 @@ namespace Strawberry::Accoutrement
 
 		auto soundID = mList->GetItemData(selected);
 		Bot::Get()->GetSoundPlayer().Lock()->RemoveSound(soundID);
-		mList->DeleteItem(selected);
 	}
 
 	void SoundControlPanel::OnRepeatSound(wxCommandEvent& event)

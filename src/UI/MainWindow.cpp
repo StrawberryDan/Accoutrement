@@ -56,7 +56,9 @@ namespace Strawberry::Accoutrement
 
 		musicSizer->Add(new MusicPanel(this), {0, 0}, {1, 1}, wxALL | wxEXPAND, 0);
 
-		musicSizer->Add(new SoundEffectsPanel(this), {0, 1}, {1, 1}, wxALL | wxEXPAND, 0);
+		auto soundEffectsPanel = new SoundEffectsPanel(this);
+		soundEffectsPanel->SetMinClientSize({500, 500});
+		musicSizer->Add(soundEffectsPanel, {0, 1}, {1, 1}, wxALL | wxEXPAND, 0);
 
 		auto nowPlayer = new NowPlayingPanel(this);
 		musicSizer->Add(nowPlayer, {1, 0}, {1, 1}, wxALL | wxEXPAND, 0);
@@ -66,8 +68,8 @@ namespace Strawberry::Accoutrement
 
 		musicSizer->AddGrowableRow(0, 6);
 		musicSizer->AddGrowableRow(1, 1);
-		musicSizer->AddGrowableCol(0, 4);
-		musicSizer->AddGrowableCol(1, 3);
+		musicSizer->AddGrowableCol(0, 1);
+		musicSizer->AddGrowableCol(1, 1);
 		sizer->Add(musicSizer, 0, wxALL | wxEXPAND, 0);
 
 		sizer->AddGrowableCol(0);

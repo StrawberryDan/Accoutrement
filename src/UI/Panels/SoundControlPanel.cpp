@@ -52,11 +52,13 @@ namespace Strawberry::Accoutrement
 		mRepeatButton = new wxButton(this, REPEAT_SOUND, "Repeat");
 		sizer->Add(mRepeatButton, {1, 1}, {1, 1}, wxALL | wxALIGN_CENTER, 5);
 
+		auto volumeSizer = new wxBoxSizer(wxHORIZONTAL);
 		mMasterVolumeSlider = new wxSlider(this, CHANGE_MASTER_VOLUME, 0.0, -100.0, 100.0);
-		sizer->Add(mMasterVolumeSlider, {2, 0}, {1, 1}, wxALL | wxEXPAND, 5);
+		volumeSizer->Add(mMasterVolumeSlider, wxALL | wxEXPAND, 5);
 
 		mSoundVolumeSlider = new wxSlider(this, CHANGE_SOUND_VOLUME, 0.0, -100.0, 100.0);
-		sizer->Add(mSoundVolumeSlider, {2, 1}, {1, 1}, wxALL | wxEXPAND, 5);
+		volumeSizer->Add(mSoundVolumeSlider, wxALL | wxEXPAND, 5);
+		sizer->Add(volumeSizer, {2, 0}, {1, 2}, wxALL | wxEXPAND, 5);
 
 		sizer->AddGrowableRow(0);
 		sizer->AddGrowableRow(1);

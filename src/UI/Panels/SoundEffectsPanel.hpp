@@ -14,28 +14,26 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class SoundEffectsPanel : public wxPanel
-	{
-		wxDECLARE_EVENT_TABLE();
+    class SoundEffectsPanel : public wxPanel
+    {
+            wxDECLARE_EVENT_TABLE();
 
-	public:
-		SoundEffectsPanel(wxWindow* parent);
+        public:
+            SoundEffectsPanel(wxWindow* parent);
 
+        protected:
+            void OnPlayOnceButton(wxCommandEvent& event);
+            void OnPlayRepeatButton(wxCommandEvent& event);
+            void OnAddSoundButton(wxCommandEvent& event);
+            void OnRemoveSoundButton(wxCommandEvent& event);
+            void OnRenameSoundButton(wxCommandEvent& event);
 
-	protected:
-		void OnPlayOnceButton(wxCommandEvent& event);
-		void OnPlayRepeatButton(wxCommandEvent& event);
-		void OnAddSoundButton(wxCommandEvent& event);
-		void OnRemoveSoundButton(wxCommandEvent& event);
-		void OnRenameSoundButton(wxCommandEvent& event);
-
-
-	private:
-		wxListCtrl* mSoundEffectsList  = nullptr;
-		wxButton*   mPlayOnceButton    = nullptr;
-		wxButton*   mPlayRepeatButton  = nullptr;
-		wxButton*   mAddSoundButton    = nullptr;
-		wxButton*   mRemoveSoundButton = nullptr;
-		wxButton*   mRenameSoundButton = nullptr;
-	};
+        private:
+            wxListCtrl* mSoundEffectsList  = nullptr;
+            wxButton*   mPlayOnceButton    = nullptr;
+            wxButton*   mPlayRepeatButton  = nullptr;
+            wxButton*   mAddSoundButton    = nullptr;
+            wxButton*   mRemoveSoundButton = nullptr;
+            wxButton*   mRenameSoundButton = nullptr;
+    };
 } // namespace Strawberry::Accoutrement

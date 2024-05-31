@@ -19,38 +19,42 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class Song
-	{
-	public:
-		static Core::Optional<Song> FromFile(const std::filesystem::path& filePath);
+    class Song
+    {
+        public:
+            static Core::Optional<Song> FromFile(const std::filesystem::path& filePath);
 
 
-		[[nodiscard]] std::string                      GetTitle() const;
-		[[nodiscard]] const Core::Optional<std::string>& GetAlbum() const;
-		[[nodiscard]] const Core::Optional<std::string>& GetArtist() const;
-		[[nodiscard]] const std::filesystem::path&     GetPath() const;
+            [[nodiscard]] std::string                        GetTitle() const;
+            [[nodiscard]] const Core::Optional<std::string>& GetAlbum() const;
+            [[nodiscard]] const Core::Optional<std::string>& GetArtist() const;
+            [[nodiscard]] const std::filesystem::path&       GetPath() const;
 
 
-		void SetTitle(const std::string& title);
+            void SetTitle(const std::string& title);
 
 
-		bool operator==(const Song& rhs) const { return mPath == rhs.mPath; }
+            bool operator==(const Song& rhs) const
+            {
+                return mPath == rhs.mPath;
+            }
 
 
-		bool operator!=(const Song& rhs) const { return mPath != rhs.mPath; }
+            bool operator!=(const Song& rhs) const
+            {
+                return mPath != rhs.mPath;
+            }
 
 
-		[[nodiscard]] nlohmann::json ToJSON() const;
+            [[nodiscard]] nlohmann::json ToJSON() const;
 
+        private:
+            Song() = default;
 
-	private:
-		Song() = default;
-
-
-	private:
-		Core::Optional<std::string> mTitle;
-		Core::Optional<std::string> mAlbum;
-		Core::Optional<std::string> mArtist;
-		std::filesystem::path     mPath;
-	};
+        private:
+            Core::Optional<std::string> mTitle;
+            Core::Optional<std::string> mAlbum;
+            Core::Optional<std::string> mArtist;
+            std::filesystem::path       mPath;
+    };
 } // namespace Strawberry::Accoutrement

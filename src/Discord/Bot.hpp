@@ -18,38 +18,48 @@
 
 namespace Strawberry::Accoutrement
 {
-	class Bot : public Core::IO::Broadcaster<BotStartedRunningEvent, BotStoppedRunningEvent>
-	{
-	public:
-		[[nodiscard]] static bool Initialise();
+    class Bot : public Core::IO::Broadcaster<BotStartedRunningEvent, BotStoppedRunningEvent>
+    {
+        public:
+            [[nodiscard]] static bool Initialise();
 
-		static void Run();
+            static void Run();
 
-		static void Shutdown();
+            static void Shutdown();
 
-		static Core::Optional<Bot*> Get();
+            static Core::Optional<Bot*> Get();
 
-		static Core::Optional<Bot*> TryGet();
-
-		auto& GetBot() { return mBot; }
-
-		auto& GetPlaylist() { return mPlaylist; }
-
-		auto& GetSoundPlayer() { return mSoundPlayer; }
+            static Core::Optional<Bot*> TryGet();
 
 
-	private:
-		Bot();
+            auto& GetBot()
+            {
+                return mBot;
+            }
 
 
-	private:
-		Core::Optional<Discord::Bot>                       mBot;
-		Core::Mutex<Codec::Audio::Playlist::Playlist>      mPlaylist;
-		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mMusicChannel;
-		std::shared_ptr<Codec::Audio::Mixer::InputChannel> mSoundChannel;
-		Core::Mutex<SoundPlayer::SoundPlayer>              mSoundPlayer;
+            auto& GetPlaylist()
+            {
+                return mPlaylist;
+            }
 
-		// Must be deleted first
-		Core::Optional<Core::RepeatingTask>                mAudioSendingThread;
-	};
+
+            auto& GetSoundPlayer()
+            {
+                return mSoundPlayer;
+            }
+
+        private:
+            Bot();
+
+        private:
+            Core::Optional<Discord::Bot>                       mBot;
+            Core::Mutex<Codec::Audio::Playlist::Playlist>      mPlaylist;
+            std::shared_ptr<Codec::Audio::Mixer::InputChannel> mMusicChannel;
+            std::shared_ptr<Codec::Audio::Mixer::InputChannel> mSoundChannel;
+            Core::Mutex<SoundPlayer::SoundPlayer>              mSoundPlayer;
+
+            // Must be deleted first
+            Core::Optional<Core::RepeatingTask> mAudioSendingThread;
+    };
 } // namespace Strawberry::Accoutrement

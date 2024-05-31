@@ -21,33 +21,34 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class SoundControlPanel
-		: public wxPanel
-		, public Core::IO::ChannelReceiver<SoundPlayer::SoundStartedEvent, SoundPlayer::SoundEndedEvent, SoundPlayer::SoundRepeatEvent>
-		, public Core::IO::Receiver<BotStartedRunningEvent, BotStoppedRunningEvent>
-	{
-		wxDECLARE_EVENT_TABLE();
+    class SoundControlPanel
+            : public wxPanel,
+              public Core::IO::ChannelReceiver<
+                  SoundPlayer::SoundStartedEvent, SoundPlayer::SoundEndedEvent, SoundPlayer::SoundRepeatEvent>,
+              public Core::IO::Receiver<BotStartedRunningEvent, BotStoppedRunningEvent>
+    {
+            wxDECLARE_EVENT_TABLE();
 
-	public:
-		explicit SoundControlPanel(wxWindow* parent);
+        public:
+            explicit SoundControlPanel(wxWindow* parent);
 
-	protected:
-		void Receive(BotStartedRunningEvent value) override;
-		void Receive(BotStoppedRunningEvent value) override;
-		void Receive(SoundPlayer::SoundStartedEvent value) override;
-		void Receive(SoundPlayer::SoundEndedEvent value) override;
-		void Receive(SoundPlayer::SoundRepeatEvent value) override;
-		void OnRemoveSound(wxCommandEvent& event);
-		void OnRepeatSound(wxCommandEvent& event);
-		void OnChangeMasterVolume(wxScrollEvent& event);
-		void OnChangeSoundVolume(wxScrollEvent& event);
-		void OnSoundClick(wxListEvent& event);
+        protected:
+            void Receive(BotStartedRunningEvent value) override;
+            void Receive(BotStoppedRunningEvent value) override;
+            void Receive(SoundPlayer::SoundStartedEvent value) override;
+            void Receive(SoundPlayer::SoundEndedEvent value) override;
+            void Receive(SoundPlayer::SoundRepeatEvent value) override;
+            void OnRemoveSound(wxCommandEvent& event);
+            void OnRepeatSound(wxCommandEvent& event);
+            void OnChangeMasterVolume(wxScrollEvent& event);
+            void OnChangeSoundVolume(wxScrollEvent& event);
+            void OnSoundClick(wxListEvent& event);
 
-	private:
-		wxListCtrl* mList               = nullptr;
-		wxButton*   mRemoveButton       = nullptr;
-		wxButton*   mRepeatButton       = nullptr;
-		wxSlider*   mMasterVolumeSlider = nullptr;
-		wxSlider*   mSoundVolumeSlider  = nullptr;
-	};
+        private:
+            wxListCtrl* mList               = nullptr;
+            wxButton*   mRemoveButton       = nullptr;
+            wxButton*   mRepeatButton       = nullptr;
+            wxSlider*   mMasterVolumeSlider = nullptr;
+            wxSlider*   mSoundVolumeSlider  = nullptr;
+    };
 } // namespace Strawberry::Accoutrement

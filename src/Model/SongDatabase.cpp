@@ -12,103 +12,110 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	std::unique_ptr<SongDatabase> SongDatabase::sGlobalInstance = nullptr;
+    std::unique_ptr<SongDatabase> SongDatabase::sGlobalInstance = nullptr;
 
 
-	SongDatabase& SongDatabase::Get()
-	{
-		if (!sGlobalInstance) { sGlobalInstance = std::unique_ptr<SongDatabase>(new SongDatabase()); }
+    SongDatabase& SongDatabase::Get()
+    {
+        if (!sGlobalInstance)
+        {
+            sGlobalInstance = std::unique_ptr<SongDatabase>(new SongDatabase());
+        }
 
-		return *sGlobalInstance;
-	}
-
-
-	SongDatabase::~SongDatabase()
-	{
-		nlohmann::json json;
-		for (const auto& [index, song] : mSongs) { json["songs"].push_back(song.ToJSON()); }
+        return *sGlobalInstance;
+    }
 
 
-		std::ofstream file("./song_database.json");
-		file << json.dump('\t');
-	}
+    SongDatabase::~SongDatabase()
+    {
+        nlohmann::json json;
+        for (const auto& [index, song]: mSongs)
+        {
+            json["songs"].push_back(song.ToJSON());
+        }
 
 
-	const Song& SongDatabase::GetSong(size_t index) const
-	{
-		return mSongs.at(index);
-	}
+        std::ofstream file("./song_database.json");
+        file << json.dump('\t');
+    }
 
 
-	Song& SongDatabase::GetSong(size_t index)
-	{
-		return mSongs.at(index);
-	}
+    const Song& SongDatabase::GetSong(size_t index) const
+    {
+        return mSongs.at(index);
+    }
 
 
-	size_t SongDatabase::GetNumSongs() const
-	{
-		return mSongs.size();
-	}
+    Song& SongDatabase::GetSong(size_t index)
+    {
+        return mSongs.at(index);
+    }
 
 
-	std::set<size_t> SongDatabase::GetSongIndices() const
-	{
-		std::set<size_t> indices;
-
-		for (auto& [key, val] : mSongs)
-		{
-			indices.emplace(key);
-		}
-
-		return indices;
-	}
+    size_t SongDatabase::GetNumSongs() const
+    {
+        return mSongs.size();
+    }
 
 
-	size_t SongDatabase::AddSong(Song song)
-	{
-		auto id = mSongIDGenerator.Allocate();
-		mSongs.emplace(id, std::move(song));
-		return id;
-	}
+    std::set<size_t> SongDatabase::GetSongIndices() const
+    {
+        std::set<size_t> indices;
 
-	Core::Optional<size_t> SongDatabase::GetSongIndex(const Song& song)
-	{
-		for (int i = 0; i < mSongs.size(); i++)
-		{
-			if (song == mSongs.at(i)) return i;
-		}
+        for (auto& [key, val]: mSongs)
+        {
+            indices.emplace(key);
+        }
 
-		return Core::NullOpt;
-	}
+        return indices;
+    }
 
 
-	void SongDatabase::RemoveSong(size_t index)
-	{
-		mSongs.erase(index);
-		mSongIDGenerator.Free(index);
-	}
+    size_t SongDatabase::AddSong(Song song)
+    {
+        auto id = mSongIDGenerator.Allocate();
+        mSongs.emplace(id, std::move(song));
+        return id;
+    }
 
 
-	SongDatabase::SongDatabase()
-	{
-		std::ifstream file("./song_database.json");
+    Core::Optional<size_t> SongDatabase::GetSongIndex(const Song& song)
+    {
+        for (int i = 0; i < mSongs.size(); i++)
+        {
+            if (song == mSongs.at(i)) return i;
+        }
 
-		if (file.is_open())
-		{
-			nlohmann::json json;
-			file >> json;
+        return Core::NullOpt;
+    }
 
-			for (auto songData : json["songs"])
-			{
-				std::string title = songData["title"];
-				auto        song  = Song::FromFile(songData["path"]);
-				if (song)
-				{
-					song->SetTitle(title);
-					AddSong(song.Value());
-				}
-			}
-		}
-	}
+
+    void SongDatabase::RemoveSong(size_t index)
+    {
+        mSongs.erase(index);
+        mSongIDGenerator.Free(index);
+    }
+
+
+    SongDatabase::SongDatabase()
+    {
+        std::ifstream file("./song_database.json");
+
+        if (file.is_open())
+        {
+            nlohmann::json json;
+            file >> json;
+
+            for (auto songData: json["songs"])
+            {
+                std::string title = songData["title"];
+                auto        song  = Song::FromFile(songData["path"]);
+                if (song)
+                {
+                    song->SetTitle(title);
+                    AddSong(song.Value());
+                }
+            }
+        }
+    }
 } // namespace Strawberry::Accoutrement

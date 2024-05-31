@@ -16,38 +16,36 @@
 namespace Strawberry::Accoutrement
 {
     class SongDatabaseListContentsManager
-	{
-	public:
-		using StringType = wxString;
+    {
+        public:
+            using StringType = wxString;
 
 
-		SongDatabaseListContentsManager() = default;
-		SongDatabaseListContentsManager(wxListCtrl* songList, wxTextCtrl* searchBar);
+            SongDatabaseListContentsManager() = default;
+            SongDatabaseListContentsManager(wxListCtrl* songList, wxTextCtrl* searchBar);
 
 
-		void Update();
+            void Update();
 
 
-		void AddSong(size_t songIndex);
-		void RemoveSong(size_t songIndex);
+            void AddSong(size_t songIndex);
+            void RemoveSong(size_t songIndex);
+
+        protected:
+            static int32_t GetStringDifference(StringType& a, StringType& b);
+            static int32_t GetLongestPrefixLength(StringType& a, StringType& b);
 
 
-	protected:
-		static int32_t GetStringDifference(StringType& a, StringType &b);
-		static int32_t GetLongestPrefixLength(StringType& a, StringType& b);
+            void Extend(StringType suffix);
+
+        private:
+            wxListCtrl* mSongList;
+            wxTextCtrl* mSearchBar;
 
 
-		void Extend(StringType suffix);
+            wxString mLastStringValue;
 
 
-	private:
-		wxListCtrl* mSongList;
-		wxTextCtrl* mSearchBar;
-
-
-		wxString mLastStringValue;
-
-
-		std::vector<std::pair<wxString, std::set<size_t>>> mSearchBuffer;
-	};
+            std::vector<std::pair<wxString, std::set<size_t> > > mSearchBuffer;
+    };
 }

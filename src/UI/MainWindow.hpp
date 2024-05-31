@@ -19,26 +19,24 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class MainWindow
-		: public wxFrame
-		, public Core::IO::Receiver<BotStartedRunningEvent, BotStoppedRunningEvent>
-	{
-		wxDECLARE_EVENT_TABLE();
+    class MainWindow
+            : public wxFrame, public Core::IO::Receiver<BotStartedRunningEvent, BotStoppedRunningEvent>
+    {
+            wxDECLARE_EVENT_TABLE();
 
-	public:
-		MainWindow();
+        public:
+            MainWindow();
 
-		void UpdateStatusBar();
+            void UpdateStatusBar();
 
+        protected:
+            void OnVoiceConnect(ConnectedToVoice& event);
+            void OnVoiceDisconnect(DisconnectedFromVoice& event);
+            void OnSetToken(wxCommandEvent& event);
 
-	protected:
-		void OnVoiceConnect(ConnectedToVoice& event);
-		void OnVoiceDisconnect(DisconnectedFromVoice& event);
-		void OnSetToken(wxCommandEvent& event);
+            void Receive(BotStartedRunningEvent event);
+            void Receive(BotStoppedRunningEvent event);
 
-		void Receive(BotStartedRunningEvent event);
-		void Receive(BotStoppedRunningEvent event);
-
-		static wxMenuBar* CreateMenuBar();
-	};
+            static wxMenuBar* CreateMenuBar();
+    };
 } // namespace Strawberry::Accoutrement

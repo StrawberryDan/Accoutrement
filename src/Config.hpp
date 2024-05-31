@@ -7,24 +7,22 @@
 
 namespace Strawberry::Accoutrement
 {
-	class Config
-	{
-	public:
-		static void Initialise();
+    class Config
+    {
+        public:
+            static void Initialise();
 
-		static Config& Get();
+            static Config& Get();
 
-		static Config Read();
+            static Config Read();
 
-		static void Dump();
+            static void Dump();
 
+        public:
+            [[nodiscard]] const Core::Optional<std::string>& GetToken() const;
+            void                                             SetToken(std::string token);
 
-	public:
-		[[nodiscard]] const Core::Optional<std::string>& GetToken() const;
-		void                                             SetToken(std::string token);
-
-
-	private:
-		Core::Optional<std::string> mToken;
-	};
+        private:
+            Core::Optional<std::string> mToken;
+    };
 } // namespace Strawberry::Accoutrement

@@ -14,59 +14,65 @@ using Strawberry::Core::Assert;
 
 namespace Strawberry::Accoutrement
 {
-	constexpr const char*   kConfigFile = "config.json";
-	std::unique_ptr<Config> gConfig     = nullptr;
+    constexpr const char*   kConfigFile = "config.json";
+    std::unique_ptr<Config> gConfig     = nullptr;
 
-	void Config::Initialise()
-	{
-		Assert(gConfig == nullptr);
 
-		if (std::filesystem::exists(kConfigFile)) gConfig = std::make_unique<Config>(Read());
-		else
-			gConfig = std::make_unique<Config>();
-	}
+    void Config::Initialise()
+    {
+        Assert(gConfig == nullptr);
 
-	Config& Config::Get()
-	{
-		Assert(gConfig != nullptr);
-		return *gConfig;
-	}
+        if (std::filesystem::exists(kConfigFile)) gConfig = std::make_unique<Config>(Read());
+        else
+            gConfig = std::make_unique<Config>();
+    }
 
-	Config Config::Read()
-	{
-		using nlohmann::json;
 
-		auto data = json::parse(std::ifstream(kConfigFile));
+    Config& Config::Get()
+    {
+        Assert(gConfig != nullptr);
+        return *gConfig;
+    }
 
-		Config config;
 
-		if (data.contains("token"))
-		{
-			std::string tokenString = data["token"];
-			config.mToken           = tokenString.empty() ? Core::NullOpt : Core::Optional(tokenString);
-		}
+    Config Config::Read()
+    {
+        using nlohmann::json;
 
-		return config;
-	}
+        auto data = json::parse(std::ifstream(kConfigFile));
 
-	void Config::Dump()
-	{
-		using nlohmann::json;
+        Config config;
 
-		json data;
-		data["token"] = gConfig->mToken.ValueOr("");
+        if (data.contains("token"))
+        {
+            std::string tokenString = data["token"];
+            config.mToken           = tokenString.empty() ? Core::NullOpt : Core::Optional(tokenString);
+        }
 
-		std::ofstream file(kConfigFile, std::ofstream::ate);
-		file << data.dump(1, '\t', false);
-	}
+        return config;
+    }
 
-	const Core::Optional<std::string>& Config::GetToken() const
-	{
-		return mToken;
-	}
 
-	void Config::SetToken(std::string token)
-	{
-		mToken = token;
-	}
+    void Config::Dump()
+    {
+        using nlohmann::json;
+
+        json data;
+        data["token"] = gConfig->mToken.ValueOr("");
+
+        std::ofstream file(kConfigFile, std::ofstream::ate);
+        file << data.dump(1, '\t', false);
+    }
+
+
+    const Core::Optional<std::string>& Config::GetToken() const
+    {
+        return mToken;
+    }
+
+
+    void Config::SetToken(std::string token)
+    {
+        mToken = token;
+    }
 } // namespace Strawberry::Accoutrement

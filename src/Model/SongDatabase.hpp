@@ -17,36 +17,32 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class SongDatabase
-	{
-	public:
-		static SongDatabase& Get();
+    class SongDatabase
+    {
+        public:
+            static SongDatabase& Get();
+
+        private:
+            static std::unique_ptr<SongDatabase> sGlobalInstance;
+
+        public:
+            ~SongDatabase();
 
 
-	private:
-		static std::unique_ptr<SongDatabase> sGlobalInstance;
+            [[nodiscard]] const Song&      GetSong(size_t index) const;
+            Song&                          GetSong(size_t index);
+            [[nodiscard]] size_t           GetNumSongs() const;
+            [[nodiscard]] std::set<size_t> GetSongIndices() const;
 
+            size_t                 AddSong(Song song);
+            Core::Optional<size_t> GetSongIndex(const Song& song);
+            void                   RemoveSong(size_t index);
 
-	public:
-		~SongDatabase();
+        private:
+            Core::IDPool<size_t>   mSongIDGenerator;
+            std::map<size_t, Song> mSongs;
 
-
-		[[nodiscard]] const Song&      GetSong(size_t index) const;
-		Song&                          GetSong(size_t index);
-		[[nodiscard]] size_t           GetNumSongs() const;
-		[[nodiscard]] std::set<size_t> GetSongIndices() const;
-
-		size_t                 AddSong(Song song);
-		Core::Optional<size_t> GetSongIndex(const Song& song);
-		void                   RemoveSong(size_t index);
-
-
-	private:
-		Core::IDPool<size_t>   mSongIDGenerator;
-		std::map<size_t, Song> mSongs;
-
-
-	private:
-		SongDatabase();
-	};
+        private:
+            SongDatabase();
+    };
 } // namespace Strawberry::Accoutrement

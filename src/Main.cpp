@@ -17,36 +17,36 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Strawberry::Accoutrement
 {
-	class Application : public wxApp
-	{
-	public:
-		bool OnInit() override
-		{
-			Config::Initialise();
-			if (Bot::Initialise()) {
-				Bot::Run();
-			}
+    class Application : public wxApp
+    {
+        public:
+            bool OnInit() override
+            {
+                Config::Initialise();
+                if (Bot::Initialise())
+                {
+                    Bot::Run();
+                }
 
-			wxInitAllImageHandlers();
-			mMainWindow = new MainWindow();
-			SetTopWindow(mMainWindow);
-			mMainWindow->Show();
+                wxInitAllImageHandlers();
+                mMainWindow = new MainWindow();
+                SetTopWindow(mMainWindow);
+                mMainWindow->Show();
 
-			return true;
-		}
-
-
-		int OnExit() override
-		{
-			Bot::Shutdown();
-			Config::Dump();
-			return wxAppBase::OnExit();
-		}
+                return true;
+            }
 
 
-	private:
-		MainWindow* mMainWindow;
-	};
+            int OnExit() override
+            {
+                Bot::Shutdown();
+                Config::Dump();
+                return wxAppBase::OnExit();
+            }
+
+        private:
+            MainWindow* mMainWindow;
+    };
 } // namespace Strawberry::Accoutrement
 
 

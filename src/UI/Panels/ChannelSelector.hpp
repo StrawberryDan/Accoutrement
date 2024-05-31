@@ -15,8 +15,8 @@
 #include "wx/panel.h"
 #include "wx/sizer.h"
 // Discord
-#include "Discord/Entity/Channel.hpp"
-#include "Discord/Entity/Guild.hpp"
+#include "Discord/Entities/Channel.hpp"
+#include "Discord/Entities/Guild.hpp"
 #include "Discord/EventListener.hpp"
 #include "Discord/Snowflake.hpp"
 // Strawberry Core

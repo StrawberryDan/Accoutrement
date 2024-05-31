@@ -7,8 +7,8 @@
 // wxWidgets
 #include "wx/event.h"
 // Discord
-#include "Discord/Entity/Channel.hpp"
-#include "Discord/Entity/Guild.hpp"
+#include "Discord/Entities/Channel.hpp"
+#include "Discord/Entities/Guild.hpp"
 
 
 namespace Strawberry::Accoutrement

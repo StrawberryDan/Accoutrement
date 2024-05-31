@@ -5,7 +5,7 @@
 //  Includes
 //----------------------------------------------------------------------------------------------------------------------
 // Discord
-#include "Discord/Entity/Guild.hpp"
+#include "Discord/Entities/Guild.hpp"
 // WxWidgets
 #include "wx/event.h"
 

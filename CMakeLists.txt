@@ -21,7 +21,7 @@ set(wxUSE_UNICODE ON)
 set(wxUSE_EXCEPTIONS 0)
 FetchContent_Declare(wxWidgets
 	GIT_REPOSITORY "https://github.com/wxWidgets/wxWidgets.git"
-	GIT_TAG "v3.2.2.1")
+	GIT_TAG "v3.2.9")
 FetchContent_MakeAvailable(wxWidgets)
 FetchContent_GetProperties(wxWidgets_SOURCE_DIR SOURCE_DIR)
 # Exclude wxrc from building all since it will not link anyways
